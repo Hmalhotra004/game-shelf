@@ -1,0 +1,1 @@
+ALTER TABLE "dlc" ADD COLUMN "image" text;

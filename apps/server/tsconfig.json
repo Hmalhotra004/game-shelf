@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "rootDir": "./src",
     "outDir": "./dist", // Output directory for compiled files
     "strict": true, // Enable strict type-checking options
     "skipLibCheck": true, // Skip type checking of declaration files

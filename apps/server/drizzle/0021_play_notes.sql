@@ -1,0 +1,1 @@
+ALTER TABLE "playthrough" ADD COLUMN "notes" text;
