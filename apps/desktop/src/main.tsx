@@ -1,14 +1,27 @@
+import { ThemeProvider } from "@repo/ui/components/ThemeProvider";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
 
 // Import the generated route tree
-import { ThemeProvider } from "@repo/ui/components/ThemeProvider";
-import "@repo/ui/globals.css";
 import { routeTree } from "./routeTree.gen";
 
+import "@repo/ui/globals.css";
 // Create a new router instance
-const router = createRouter({ routeTree });
+
+const TanStackQueryProviderContext = TanStackQueryProvider.getContext();
+
+const router = createRouter({
+  routeTree,
+  context: {
+    ...TanStackQueryProviderContext,
+  },
+  defaultPreload: "intent",
+  scrollRestoration: true,
+  defaultStructuralSharing: true,
+  defaultPreloadStaleTime: 0,
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -27,7 +40,9 @@ if (!rootElement.innerHTML) {
         defaultTheme="dark"
         storageKey="ui-theme"
       >
-        <RouterProvider router={router} />
+        <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+          <RouterProvider router={router} />
+        </TanStackQueryProvider.Provider>
       </ThemeProvider>
     </StrictMode>,
   );
