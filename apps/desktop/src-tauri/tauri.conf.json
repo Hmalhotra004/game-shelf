@@ -12,9 +12,12 @@
   "app": {
     "windows": [
       {
-        "title": "desktop",
-        "width": 800,
-        "height": 600
+        "title": "",
+        "resizable": true,
+        "fullscreen": false,
+        "maximized": true,
+        "titleBarStyle": "Visible",
+        "hiddenTitle": true
       }
     ],
     "security": {
