@@ -5,7 +5,6 @@ export const authClient = createAuthClient({
   baseURL: "http://localhost:8000",
   fetchOptions: {
     credentials: "include",
-    headers: { "content-type": "application/json" },
   },
   plugins: [emailOTPClient()],
 });

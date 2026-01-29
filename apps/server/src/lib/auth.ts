@@ -12,6 +12,7 @@ export const auth = betterAuth({
       ...schema,
     },
   }),
+  trustedOrigins: ["http://localhost:3000", "http://localhost:1420"],
   user: {
     additionalFields: {
       steamId: {
