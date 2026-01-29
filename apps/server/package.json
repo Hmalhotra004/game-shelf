@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/schemas": "workspace:*",
     "@neondatabase/serverless": "^1.0.2",
     "better-auth": "^1.4.17",
     "body-parse": "^0.1.0",

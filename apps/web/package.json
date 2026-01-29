@@ -12,6 +12,7 @@
     "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {
+    "@repo/schemas": "workspace:*",
     "@faker-js/faker": "^10.0.0",
     "@repo/ui": "workspace:*",
     "@tailwindcss/vite": "^4.0.6",
