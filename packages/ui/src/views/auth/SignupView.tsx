@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@repo/schemas/schemas/auth.schema";
+import { signupSchema } from "@repo/schemas/schemas/auth.schema";
 import { LinkType } from "@repo/schemas/types/index";
 import AlertError from "@repo/ui/components/AlertError";
 import { FormInput, FormInputPassword } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
-import { FieldDescription, FieldGroup } from "@repo/ui/components/ui/field";
+import { FieldGroup } from "@repo/ui/components/ui/field";
 import { Separator } from "@repo/ui/components/ui/separator";
 import { Spinner } from "@repo/ui/components/ui/spinner";
 import { authClient } from "@repo/ui/lib/authClient";
@@ -19,22 +19,24 @@ import {
   CardTitle,
 } from "@repo/ui/components/ui/card";
 
-type FormData = z.infer<typeof loginSchema>;
+type FormData = z.infer<typeof signupSchema>;
 
 interface Props {
   onSuccess: () => void;
   Link: LinkType;
 }
 
-const LoginView = ({ onSuccess, Link }: Props) => {
+const SignupView = ({ Link, onSuccess }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   const form = useForm<FormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -42,9 +44,10 @@ const LoginView = ({ onSuccess, Link }: Props) => {
     setError(null);
     setPending(true);
 
-    await authClient.signIn.email(
+    await authClient.signUp.email(
       {
         email: values.email,
+        name: values.name,
         password: values.password,
       },
       {
@@ -60,11 +63,10 @@ const LoginView = ({ onSuccess, Link }: Props) => {
       },
     );
   }
-
   return (
     <Card className="w-full h-full md:w-121.5 max-sm:w-85 sm:w-100">
-      <CardHeader className="flex items-center justify-center text-center px-7 pt-1">
-        <CardTitle className="text-2xl">Welcome back!</CardTitle>
+      <CardHeader className="flex flex-col items-center justify-center text-center px-7 pt-1">
+        <CardTitle className="text-2xl">Sign Up</CardTitle>
       </CardHeader>
 
       <div className="px-7">
@@ -73,7 +75,15 @@ const LoginView = ({ onSuccess, Link }: Props) => {
 
       <CardContent className="px-7">
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup className="gap-4">
+          <FieldGroup className="gap-5">
+            <FormInput
+              name="name"
+              control={form.control}
+              type="text"
+              placeholder="Name"
+              disabled={pending}
+            />
+
             <FormInput
               name="email"
               control={form.control}
@@ -88,11 +98,13 @@ const LoginView = ({ onSuccess, Link }: Props) => {
               control={form.control}
               placeholder="Password"
               disabled={pending}
-              outerElement={
-                <FieldDescription>
-                  <Link to="/forgot-password">Forgot Password?</Link>
-                </FieldDescription>
-              }
+            />
+
+            <FormInputPassword
+              name="confirmPassword"
+              control={form.control}
+              placeholder="Confirm Password"
+              disabled={pending}
             />
 
             {!!error && <AlertError error={error} />}
@@ -101,9 +113,8 @@ const LoginView = ({ onSuccess, Link }: Props) => {
               size="lg"
               className="w-full"
               disabled={pending}
-              type="submit"
             >
-              {pending ? <Spinner /> : "Log In"}
+              {pending ? <Spinner /> : "Sign Up"}
             </Button>
           </FieldGroup>
         </form>
@@ -111,9 +122,9 @@ const LoginView = ({ onSuccess, Link }: Props) => {
 
       <CardContent className="px-7 flex items-center justify-center">
         <p>
-          Don&apos;t have an account?{" "}
-          <Link to="/sign-up">
-            <span className="text-primary">Sign Up</span>
+          Already have an account?{" "}
+          <Link to="/login">
+            <span className="text-primary">log In</span>
           </Link>
         </p>
       </CardContent>
@@ -121,4 +132,4 @@ const LoginView = ({ onSuccess, Link }: Props) => {
   );
 };
 
-export default LoginView;
+export default SignupView;
