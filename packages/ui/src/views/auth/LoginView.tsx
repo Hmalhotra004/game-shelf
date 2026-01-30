@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@repo/schemas/schemas/auth.schema";
+import { LinkType } from "@repo/schemas/types/index";
+import AlertError from "@repo/ui/components/AlertError";
 import { FormInput, FormInputPassword } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
 import { FieldDescription, FieldGroup } from "@repo/ui/components/ui/field";
@@ -10,7 +12,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-import AlertError from "@repo/ui/components/AlertError";
 import {
   Card,
   CardContent,
@@ -22,9 +23,10 @@ type FormData = z.infer<typeof loginSchema>;
 
 interface Props {
   onSuccess: () => void;
+  Link: LinkType;
 }
 
-const LoginView = ({ onSuccess }: Props) => {
+const LoginView = ({ onSuccess, Link }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -60,7 +62,7 @@ const LoginView = ({ onSuccess }: Props) => {
   }
 
   return (
-    <Card className="w-full h-full md:w-121.5 max-sm:w-75">
+    <Card className="w-full h-full md:w-121.5 max-sm:w-85 sm:w-100">
       <CardHeader className="flex items-center justify-center text-center px-7 pt-1">
         <CardTitle className="text-2xl">Welcome back!</CardTitle>
       </CardHeader>
@@ -88,7 +90,7 @@ const LoginView = ({ onSuccess }: Props) => {
               disabled={pending}
               outerElement={
                 <FieldDescription>
-                  {/* <Link href={"/forgot-password"}>Forgot Password?</Link> */}
+                  <Link to="/forgot-password">Forgot Password?</Link>
                 </FieldDescription>
               }
             />
@@ -110,9 +112,9 @@ const LoginView = ({ onSuccess }: Props) => {
       <CardContent className="px-7 flex items-center justify-center">
         <p>
           Don&apos;t have an account?{" "}
-          {/* <Link href={`/sign-up`}>
+          <Link to="/sign-up">
             <span className="text-primary">Sign Up</span>
-          </Link> */}
+          </Link>
         </p>
       </CardContent>
     </Card>

@@ -1,5 +1,14 @@
+import Navbar from "@repo/ui/components/Navbar";
+import { authClient } from "@repo/ui/lib/authClient";
 import { verifySession } from "@repo/ui/lib/verifySession";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_mainLayout")({
   beforeLoad: async () => {
@@ -15,9 +24,23 @@ export const Route = createFileRoute("/_mainLayout")({
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    authClient.signOut({
+      fetchOptions: { onSuccess: () => navigate({ to: "/", replace: true }) },
+    });
+  };
+
   return (
-    <div>
-      <Outlet />
+    <div className="flex flex-col min-h-screen">
+      <Navbar
+        Link={Link}
+        onLogout={logout}
+      />
+      <main className="flex-1 p-4">
+        <Outlet />
+      </main>
     </div>
   );
 }
