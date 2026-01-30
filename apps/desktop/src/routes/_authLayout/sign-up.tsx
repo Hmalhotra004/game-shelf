@@ -1,5 +1,5 @@
 import { verifySession } from "@repo/ui/lib/verifySession";
-import LoginView from "@repo/ui/views/auth/LoginView";
+import SignupView from "@repo/ui/views/auth/SignupView";
 
 import {
   createFileRoute,
@@ -8,7 +8,7 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authLayout/login")({
+export const Route = createFileRoute("/_authLayout/sign-up")({
   beforeLoad: async () => {
     const session = await verifySession();
 
@@ -27,9 +27,9 @@ function RouteComponent() {
   };
 
   return (
-    <LoginView
-      onSuccess={onSuccess}
+    <SignupView
       Link={Link}
+      onSuccess={onSuccess}
     />
   );
 }

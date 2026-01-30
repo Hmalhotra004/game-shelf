@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
 import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
+import { Route as AuthLayoutSignUpRouteImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
 
 const MainLayoutRoute = MainLayoutRouteImport.update({
   id: '/_mainLayout',
@@ -27,37 +29,56 @@ const MainLayoutIndexRoute = MainLayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MainLayoutRoute,
 } as any)
+const AuthLayoutSignUpRoute = AuthLayoutSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
 const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutEmailVerificationRoute =
+  AuthLayoutEmailVerificationRouteImport.update({
+    id: '/email-verification',
+    path: '/email-verification',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
+  '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
+  '/sign-up': typeof AuthLayoutSignUpRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
+  '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
+  '/sign-up': typeof AuthLayoutSignUpRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authLayout': typeof AuthLayoutRouteWithChildren
   '/_mainLayout': typeof MainLayoutRouteWithChildren
+  '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
+  '/_authLayout/sign-up': typeof AuthLayoutSignUpRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/email-verification' | '/login' | '/sign-up'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
+  to: '/' | '/email-verification' | '/login' | '/sign-up'
   id:
     | '__root__'
     | '/_authLayout'
     | '/_mainLayout'
+    | '/_authLayout/email-verification'
     | '/_authLayout/login'
+    | '/_authLayout/sign-up'
     | '/_mainLayout/'
   fileRoutesById: FileRoutesById
 }
@@ -89,6 +110,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutIndexRouteImport
       parentRoute: typeof MainLayoutRoute
     }
+    '/_authLayout/sign-up': {
+      id: '/_authLayout/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof AuthLayoutSignUpRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_authLayout/login': {
       id: '/_authLayout/login'
       path: '/login'
@@ -96,15 +124,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutLoginRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_authLayout/email-verification': {
+      id: '/_authLayout/email-verification'
+      path: '/email-verification'
+      fullPath: '/email-verification'
+      preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
   }
 }
 
 interface AuthLayoutRouteChildren {
+  AuthLayoutEmailVerificationRoute: typeof AuthLayoutEmailVerificationRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
+  AuthLayoutSignUpRoute: typeof AuthLayoutSignUpRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLayoutEmailVerificationRoute: AuthLayoutEmailVerificationRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
+  AuthLayoutSignUpRoute: AuthLayoutSignUpRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
