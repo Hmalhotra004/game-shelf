@@ -1,21 +1,27 @@
 {
   "compilerOptions": {
-    "module": "ESNext", // Use ESNext for ESM
-    "target": "ES2020", // Target modern ECMAScript versions
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+
+    "types": ["node", "express"],
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "./dist", // Output directory for compiled files
-    "strict": true, // Enable strict type-checking options
-    "skipLibCheck": true, // Skip type checking of declaration files
-    "resolveJsonModule": true, // Include JSON imports
+
+    "outDir": "./dist",
+    "strict": true,
+    "noEmit": false,
+    "isolatedModules": true,
+
+    "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": false, // Allow emitting output
-    "isolatedModules": true, // Required for using ESM modules
-    "baseUrl": ".", // Allow absolute imports relative to project root
     "ignoreDeprecations": "6.0",
+
+    "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"],
       "@/*": ["./src/*"]
     }
   }

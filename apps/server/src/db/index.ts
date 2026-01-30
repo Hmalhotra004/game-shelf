@@ -1,5 +1,5 @@
-import * as relations from "@/db/relations";
-import * as schema from "@/db/schema";
+import * as relations from "@repo/schemas/db/relations";
+import * as schema from "@repo/schemas/db/schema";
 
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import { drizzle as drizzleNode } from "drizzle-orm/node-postgres";

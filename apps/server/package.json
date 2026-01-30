@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@repo/schemas": "workspace:*",
     "@neondatabase/serverless": "^1.0.2",
+    "@repo/schemas": "workspace:*",
     "better-auth": "^1.4.17",
     "body-parse": "^0.1.0",
     "compression": "^1.8.1",
@@ -42,6 +42,7 @@
     "@types/express": "^5.0.6",
     "@types/helmet": "^4.0.0",
     "@types/lodash": "^4.17.23",
+    "@types/node": "^25.1.0",
     "@types/nodemailer": "^7.0.9",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.8",
