@@ -8,6 +8,7 @@ import {
   Outlet,
   redirect,
   useNavigate,
+  useRouterState,
 } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_mainLayout")({
@@ -26,6 +27,10 @@ export const Route = createFileRoute("/_mainLayout")({
 function RouteComponent() {
   const navigate = useNavigate();
 
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+
   const logout = () => {
     authClient.signOut({
       fetchOptions: { onSuccess: () => navigate({ to: "/", replace: true }) },
@@ -37,7 +42,9 @@ function RouteComponent() {
       <Navbar
         Link={Link}
         onLogout={logout}
+        pathname={pathname}
       />
+
       <main className="flex-1 p-4">
         <Outlet />
       </main>

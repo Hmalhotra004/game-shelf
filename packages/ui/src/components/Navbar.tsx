@@ -8,9 +8,10 @@ import UserButton from "./UserButton";
 interface Props {
   Link: LinkType;
   onLogout: () => void;
+  pathname: string;
 }
 
-const Navbar = ({ Link, onLogout }: Props) => {
+const Navbar = ({ Link, onLogout, pathname }: Props) => {
   const navItems = [
     {
       label: "Home",
@@ -34,9 +35,6 @@ const Navbar = ({ Link, onLogout }: Props) => {
     },
   ];
 
-  // FIXME:do it later
-  // const pathname = usePathname();
-
   return (
     <nav className="border-b border-border bg-card sticky top-0 z-50">
       <div className="mx-auto px-4">
@@ -48,8 +46,8 @@ const Navbar = ({ Link, onLogout }: Props) => {
 
           <div className="flex gap-1">
             {navItems.map((item, idx) => {
-              // const isActive = pathname.endsWith(item.href);
-              const isActive = false;
+              const isActive =
+                pathname === item.href || pathname.startsWith(item.href + "/");
 
               return (
                 <Button
