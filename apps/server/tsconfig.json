@@ -16,6 +16,11 @@
     "noEmit": false,
     "isolatedModules": true,
 
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true,
+    "incremental": true,
+
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "ignoreDeprecations": "6.0",

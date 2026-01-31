@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
+    "start": "node dist/index.js",
     "inngest:dev": "pnpm dlx inngest-cli@latest dev",
     "db": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
