@@ -14,10 +14,17 @@ import {
 
 export const getMany = async (req: Request, res: Response) => {
   try {
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+    const offset = (page - 1) * limit;
+
     const userId = req.user!.id;
 
     const games = await db.query.collection.findMany({
       where: (c, { eq }) => eq(c.userId, userId),
+      orderBy: (c, { asc }) => asc(c.name),
+      limit,
+      offset,
       columns: {
         id: true,
         name: true,
@@ -34,9 +41,12 @@ export const getMany = async (req: Request, res: Response) => {
       },
     });
 
-    const needsSteamPlaytime = games.some(
-      (g) => g.provider === "Steam" && g.status === "Online" && g.steamAppId,
-    );
+    const [{ count }] = await db
+      .select({
+        count: sql<number>`count(*)`,
+      })
+      .from(collection)
+      .where(eq(collection.userId, userId));
 
     const lists = await db
       .select({
@@ -72,6 +82,10 @@ export const getMany = async (req: Request, res: Response) => {
       .groupBy(collection.id);
 
     // online games
+    const needsSteamPlaytime = games.some(
+      (g) => g.provider === "Steam" && g.status === "Online" && g.steamAppId,
+    );
+
     let steamPlaytimeByAppId: Record<number, number> = {};
     if (needsSteamPlaytime && req.user?.steamId) {
       const response = await axios.get<GetOwnedGamesSteamType>(
@@ -121,7 +135,13 @@ export const getMany = async (req: Request, res: Response) => {
       };
     });
 
-    return res.status(200).json(result);
+    return res.status(200).json({
+      page,
+      limit,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      items: result,
+    });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: "Internal Server Error" });
