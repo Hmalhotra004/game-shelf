@@ -6,7 +6,7 @@ import { db } from "../db/index";
 import { sendEmail } from "./sendEmail";
 
 export const auth = betterAuth({
-  baseURL:"http://localhost:8080",
+  baseURL:process.env.BETTER_AUTH_URL!,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
