@@ -1,4 +1,4 @@
-import { CollectionStatusType } from "@repo/schemas/types/collection";
+import type { CollectionStatusType } from "@repo/schemas/types/collection";
 import { clsx, type ClassValue } from "clsx";
 import { format, formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { otpSchema } from "@repo/schemas/schemas/auth.schema";
+import { otpSchema } from "@repo/schemas/schemas/auth";
 import AlertError from "@repo/ui/components/AlertError";
 import { Button } from "@repo/ui/components/ui/button";
 import { FieldError } from "@repo/ui/components/ui/field";

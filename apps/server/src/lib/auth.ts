@@ -1,8 +1,8 @@
-import { db } from "@/db";
 import * as schema from "@repo/schemas/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP } from "better-auth/plugins";
+import { db } from "../db/index";
 import { sendEmail } from "./sendEmail";
 
 export const auth = betterAuth({

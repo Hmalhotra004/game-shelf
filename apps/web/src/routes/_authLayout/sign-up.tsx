@@ -2,8 +2,8 @@ import { verifySession } from "@repo/ui/lib/verifySession";
 import SignupView from "@repo/ui/views/auth/SignupView";
 
 import {
-  createFileRoute,
   Link,
+  createFileRoute,
   redirect,
   useNavigate,
 } from "@tanstack/react-router";

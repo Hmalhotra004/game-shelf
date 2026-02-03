@@ -1,5 +1,5 @@
 "use client";
-import { LinkType } from "@repo/schemas/types/index";
+import type { LinkType } from "@repo/schemas/types/index";
 import { cn } from "@repo/ui/lib/utils";
 import { Gamepad2Icon, HomeIcon, LibraryIcon, TrophyIcon } from "lucide-react";
 import { Button } from "./ui/button";

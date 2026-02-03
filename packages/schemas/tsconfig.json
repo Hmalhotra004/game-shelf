@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": ["./src/*"]
+      "@repo/schemas/*": ["./src/*"]
     }
   },
   "include": ["src"],

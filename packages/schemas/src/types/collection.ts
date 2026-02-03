@@ -5,7 +5,7 @@ import {
   providerSchema,
   PSVersionSchema,
   statusSchema,
-} from "@/schemas/collection.schema";
+} from "@repo/schemas/schemas/collection";
 
 export type PlatformType = z.infer<typeof platformSchema>;
 export type ProviderType = z.infer<typeof providerSchema>;

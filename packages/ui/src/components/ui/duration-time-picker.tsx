@@ -2,7 +2,7 @@
 
 import { Input } from "@repo/ui/components/ui/input";
 import { cn } from "@repo/ui/lib/utils";
-import { ClassValue } from "clsx";
+import type { ClassValue } from "clsx";
 
 interface Props {
   value: number;

@@ -1,17 +1,13 @@
 "use client";
 
+import { GameStatusSelect } from "@repo/ui/components/form/FormSelects";
 import { Button } from "@repo/ui/components/ui/button";
 import { InputGroup, InputGroupInput } from "@repo/ui/components/ui/input-group";
 import { useCollectionFilters } from "@repo/ui/hooks/useCollectionFilters";
-import { useQuery, useSuspenseQuery, } from "@tanstack/react-query";
-import { GameStatusSelect } from "@repo/ui/components/form/formSelects";
 
 import {
   FilterIcon,
-  LayoutGridIcon,
-  ListIcon,
-  TableIcon,
-  X,
+  X
 } from "lucide-react";
 
 import {
@@ -27,7 +23,7 @@ const Filters = () => {
 
   // const { data: lists } = useQuery({queryKey:["list"],queryFn:async });
 
-  const { list, platform, search, view, status } = filters;
+  const {  platform, search,  status } = filters;
 
   const hasSearch = !!search;
 

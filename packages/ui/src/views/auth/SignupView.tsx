@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupSchema } from "@repo/schemas/schemas/auth.schema";
-import { LinkType } from "@repo/schemas/types/index";
+import { signupSchema } from "@repo/schemas/schemas/auth";
+import type { LinkType } from "@repo/schemas/types/index";
 import AlertError from "@repo/ui/components/AlertError";
 import { FormInput, FormInputPassword } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";

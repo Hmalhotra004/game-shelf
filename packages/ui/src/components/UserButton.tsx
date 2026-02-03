@@ -1,6 +1,6 @@
 "use client";
 
-import { LinkType } from "@repo/schemas/types/index";
+import type { LinkType } from "@repo/schemas/types/index";
 import { authClient } from "@repo/ui/lib/authClient";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Separator } from "./ui/separator";

@@ -1,4 +1,4 @@
-import { PlatformType, ProviderType } from "@/types/collection";
+import { PlatformType, ProviderType } from "@repo/schemas/types/collection";
 import z from "zod";
 
 import {
@@ -7,7 +7,7 @@ import {
   provider,
   PSVersion,
   status,
-} from "@/db/schema";
+} from "@repo/schemas/db/schema";
 
 export const platformSchema = z.enum(platform.enumValues, {
   error: "Platform is requried",
