@@ -15,7 +15,11 @@ const port = Number(process.env.PORT) || 8000;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:1420","https://game-shelf-web-iota.vercel.app"],
+    origin: [
+      "http://localhost:3000", 
+      "http://localhost:1420",
+      "https://game-shelf-web-iota.vercel.app"
+    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   }),
