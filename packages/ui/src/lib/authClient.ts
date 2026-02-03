@@ -7,7 +7,7 @@ import {
 } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:8080",
+  baseURL: process.env.BETTER_AUTH_URL,
   fetchOptions: {
     credentials: "include",
   },
