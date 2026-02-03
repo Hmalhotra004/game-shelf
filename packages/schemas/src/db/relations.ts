@@ -5,12 +5,13 @@ import {
   collection,
   completion,
   dlc,
+  gameRecord,
   list,
   listItem,
-  platinumList,
   playthrough,
   playthroughSession,
   session,
+  syncStatus,
   user,
   verification,
 } from "./schema";
@@ -28,7 +29,8 @@ export const userRelations = relations(user, ({ many }) => ({
   completions: many(completion),
 
   lists: many(list),
-  platinumGames: many(platinumList),
+  gameRecords: many(gameRecord),
+  syncStatuses: many(syncStatus),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -58,7 +60,7 @@ export const collectionRelations = relations(collection, ({ one, many }) => ({
   completions: many(completion),
 
   listItems: many(listItem),
-  platinumEntry: one(platinumList),
+  gameRecords: many(gameRecord),
 }));
 
 export const dlcRelations = relations(dlc, ({ one, many }) => ({
@@ -148,14 +150,14 @@ export const listItemRelations = relations(listItem, ({ one }) => ({
   }),
 }));
 
-export const platinumListRelations = relations(platinumList, ({ one }) => ({
+export const gameRecordRelations = relations(gameRecord, ({ one }) => ({
   user: one(user, {
-    fields: [platinumList.userId],
+    fields: [gameRecord.userId],
     references: [user.id],
   }),
 
   collection: one(collection, {
-    fields: [platinumList.collectionId],
+    fields: [gameRecord.collectionId],
     references: [collection.id],
   }),
 }));

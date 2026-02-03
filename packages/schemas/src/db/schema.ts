@@ -6,6 +6,7 @@ import {
   check,
   index,
   integer,
+  numeric,
   pgEnum,
   pgTable,
   text,
@@ -66,10 +67,16 @@ export const completionStyle = pgEnum("completion_style", [
 
 export const userAccount = pgEnum("UserAccount", ["User", "Admin"]);
 
+export const gameRecordType = pgEnum("game_record_type", [
+  "PLATINUM",
+  "MASTERED",
+]);
+
 export const syncType = pgEnum("sync_type", [
   "MASTERED_GAMES",
   "PLATINUMED_GAMES",
 ]);
+
 export const syncTypeStatus = pgEnum("sync_type_status", [
   "Failed",
   "Running",
@@ -158,7 +165,7 @@ export const collection = pgTable(
 
     name: text("name").notNull(),
     dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }).notNull(),
-    amount: integer("amount").notNull().default(0),
+    amount: numeric("amount", { precision: 10, scale: 2 }).default("0.00"),
     image: text("image"),
     customImage: text("custom_image"),
     coverImage: text("cover_image"),
@@ -226,7 +233,7 @@ export const dlc = pgTable(
 
     name: text("name").notNull(),
     dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }).notNull(),
-    amount: integer("amount").notNull().default(0),
+    amount: numeric("amount", { precision: 10, scale: 2 }).default("0.00"),
     image: text("image"),
     coverImage: text("cover_image"),
     completions: integer("completions").notNull().default(0),
@@ -292,6 +299,15 @@ export const playthrough = pgTable(
     index("playthrough_user_idx").on(table.userId),
     index("playthrough_collection_idx").on(table.collectionId),
     index("playthrough_status_idx").on(table.status),
+
+    check(
+      "playthrough_game_or_dlc_check",
+      sql`
+    (${table.gameType} = 'Game' AND ${table.collectionId} IS NOT NULL AND ${table.dlcId} IS NULL)
+    OR
+    (${table.gameType} = 'DLC' AND ${table.dlcId} IS NOT NULL AND ${table.collectionId} IS NULL)
+  `,
+    ),
   ],
 );
 
@@ -413,12 +429,14 @@ export const listItem = pgTable(
   ],
 );
 
-export const platinumList = pgTable(
-  "platinum_list",
+export const gameRecord = pgTable(
+  "game_record",
   {
     id: text("id")
       .primaryKey()
       .$defaultFn(() => nanoid()),
+
+    type: gameRecordType("type").notNull(),
 
     dateUnlocked: timestamp("date_unlocked", {
       mode: "date",
@@ -434,64 +452,23 @@ export const platinumList = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
   },
   (table) => [
-    /** Fast lookups */
-    index("platinum_user_idx").on(table.userId),
-    index("platinum_collection_idx").on(table.collectionId),
+    index("game_record_user_idx").on(table.userId),
+    index("game_record_collection_idx").on(table.collectionId),
 
-    /** A user can platinum a game only once */
-    unique("platinum_user_collection_unique").on(
+    unique("game_record_unique").on(
       table.userId,
       table.collectionId,
+      table.type,
     ),
 
-    /** Prevent negative hours */
-    check("platinum_hours_non_negative", sql`${table.hoursSpent} >= 0`),
-  ],
-);
-
-export const masteredGames = pgTable(
-  "mastered_games",
-  {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => nanoid()),
-
-    dateUnlocked: timestamp("date_unlocked", {
-      mode: "date",
-    }).notNull(),
-
-    hoursSpent: integer("hours_spent").notNull().default(0),
-
-    collectionId: text("collection_id")
-      .notNull()
-      .references(() => collection.id, { onDelete: "cascade" }),
-
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-
-    createdAt: timestamp("created_at").notNull().defaultNow(),
-
-    updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  },
-  (table) => [
-    /** Fast lookups */
-    index("mastered_user_idx").on(table.userId),
-    index("mastered_collection_idx").on(table.collectionId),
-
-    /** A user can platinum a game only once */
-    unique("mastered_user_collection_unique").on(
-      table.userId,
-      table.collectionId,
-    ),
-
-    /** Prevent negative hours */
-    check("mastered_hours_non_negative", sql`${table.hoursSpent} >= 0`),
+    check("game_record_hours_non_negative", sql`${table.hoursSpent} >= 0`),
   ],
 );
 
