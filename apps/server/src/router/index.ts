@@ -1,9 +1,10 @@
 import { Router } from "express";
+import collection from "./collection";
 
 const router = Router();
 
 export default (): Router => {
-  // auth("/auth", router);
+  collection("/collection", router);
 
   return router;
 };

@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const server = http.createServer(app);
 
-app.use("/", router());
+app.use("/api", router());
 
 server.listen(port, () => {
   console.log(`Example app listening on http://localhost:${port}`);
