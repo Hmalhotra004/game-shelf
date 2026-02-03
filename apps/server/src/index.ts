@@ -11,21 +11,19 @@ import { auth } from "./lib/auth";
 import router from "./router";
 
 const app = express();
-const port = Number(process.env.PORT) || 8000;
+const PORT = Number(process.env.PORT) || 8080;
 
 app.use(
   cors({
     origin: [
-      "http://localhost:3000", 
+      "http://localhost:3000",
       "http://localhost:1420",
-      "https://game-shelf-web-iota.vercel.app"
+      "https://game-shelf-web-iota.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   }),
 );
-
-app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(helmet());
 app.use(compression());
@@ -33,15 +31,30 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-(async () => {
-  await db.execute(sql`SELECT 1`);
-  console.log("database connected");
-})();
+app.all("/api/auth/*splat", toNodeHandler(auth));
+app.use("/api", router());
 
 const server = http.createServer(app);
 
-app.use("/api", router());
+async function start() {
+  await db.execute(sql`SELECT 1`);
+  console.log("database connected");
 
-server.listen(port, () => {
-  console.log(`Example app listening on http://localhost:${port}`);
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+start().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
 });
+
+// (async () => {
+//   await db.execute(sql`SELECT 1`);
+//   console.log("database connected");
+// })();
+
+// server.listen(port, () => {
+//   console.log(`Example app listening on http://localhost:${port}`);
+// });
