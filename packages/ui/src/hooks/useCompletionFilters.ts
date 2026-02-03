@@ -1,4 +1,4 @@
-import { completionStyle, platform } from "@repo/schemas/db/schema";
+import { completionStyle, platform } from "@repo/schemas/db/front";
 import { parseAsString, parseAsStringLiteral, useQueryStates } from "nuqs";
 
 export const useCompletionFilters = () => {

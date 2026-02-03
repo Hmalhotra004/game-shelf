@@ -1,4 +1,4 @@
-import { platform, playthroughStatus } from "@repo/schemas/db/schema";
+import { platform, playthroughStatus } from "@repo/schemas/db/front";
 import { parseAsStringLiteral, useQueryStates } from "nuqs";
 
 export const usePlaythroughFilters = () => {

@@ -3,14 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-     "./db/schema": {
-    "types": "./dist/db/schema.d.ts",
-    "default": "./dist/db/schema.js"
-  },
-  "./db/relations": {
-    "types": "./dist/db/relations.d.ts",
-    "default": "./dist/db/relations.js"
-  },
+    "./db/schema": {
+      "types": "./dist/db/schema.d.ts",
+      "default": "./dist/db/schema.js"
+    },
+    "./db/relations": {
+      "types": "./dist/db/relations.d.ts",
+      "default": "./dist/db/relations.js"
+    },
+    "./db/front": "./src/db/schema.ts",
     "./schemas/*": "./src/schemas/*.ts",
     "./types/*": "./src/types/*.ts"
   },

@@ -1,4 +1,4 @@
-import { platform, status } from "@repo/schemas/db/schema";
+import { platform, status } from "@repo/schemas/db/front";
 import { parseAsString, parseAsStringLiteral, useQueryStates } from "nuqs";
 
 export const useCollectionFilters = () => {
