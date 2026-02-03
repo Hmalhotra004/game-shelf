@@ -2,10 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "tsx --env-file=.env src/index.ts",
     "inngest:dev": "pnpm dlx inngest-cli@latest dev",
     "db": "drizzle-kit studio",
     "db:push": "drizzle-kit push",

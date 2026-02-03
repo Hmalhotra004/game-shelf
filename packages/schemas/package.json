@@ -3,13 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./db/*": "./src/db/*.ts",
+     "./db/schema": {
+    "types": "./dist/db/schema.d.ts",
+    "default": "./dist/db/schema.js"
+  },
+  "./db/relations": {
+    "types": "./dist/db/relations.d.ts",
+    "default": "./dist/db/relations.js"
+  },
     "./schemas/*": "./src/schemas/*.ts",
     "./types/*": "./src/types/*.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "build": "tsc"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
