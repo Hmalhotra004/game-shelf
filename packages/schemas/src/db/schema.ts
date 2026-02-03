@@ -165,7 +165,9 @@ export const collection = pgTable(
 
     name: text("name").notNull(),
     dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }).notNull(),
-    amount: numeric("amount", { precision: 10, scale: 2 }).default("0.00"),
+    amount: numeric("amount", { precision: 10, scale: 2 })
+      .notNull()
+      .default("0.00"),
     image: text("image"),
     customImage: text("custom_image"),
     coverImage: text("cover_image"),
@@ -233,7 +235,9 @@ export const dlc = pgTable(
 
     name: text("name").notNull(),
     dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }).notNull(),
-    amount: numeric("amount", { precision: 10, scale: 2 }).default("0.00"),
+    amount: numeric("amount", { precision: 10, scale: 2 })
+      .notNull()
+      .default("0.00"),
     image: text("image"),
     coverImage: text("cover_image"),
     completions: integer("completions").notNull().default(0),

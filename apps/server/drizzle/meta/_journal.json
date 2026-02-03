@@ -225,6 +225,13 @@
       "when": 1770100517656,
       "tag": "0031_amount_default",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1770105263669,
+      "tag": "0032_amt_notnull",
+      "breakpoints": true
     }
   ]
 }
