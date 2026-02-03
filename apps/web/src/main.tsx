@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@repo/ui/components/ThemeProvider";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
@@ -38,14 +39,16 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ThemeProvider
-        defaultTheme="dark"
-        storageKey="ui-theme"
-      >
-        <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-          <RouterProvider router={router} />
-        </TanStackQueryProvider.Provider>
-      </ThemeProvider>
+      <NuqsAdapter>
+        <ThemeProvider
+          defaultTheme="dark"
+          storageKey="ui-theme"
+        >
+          <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+            <RouterProvider router={router} />
+          </TanStackQueryProvider.Provider>
+        </ThemeProvider>
+      </NuqsAdapter>
     </StrictMode>,
   );
 }

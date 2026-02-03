@@ -3,9 +3,9 @@ import { authClient } from "@repo/ui/lib/authClient";
 import { verifySession } from "@repo/ui/lib/verifySession";
 
 import {
-  createFileRoute,
   Link,
   Outlet,
+  createFileRoute,
   redirect,
   useNavigate,
   useRouterState,

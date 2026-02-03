@@ -13,6 +13,7 @@ import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
 import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
+import { Route as MainLayoutCollectionRouteImport } from './routes/_mainLayout/collection'
 import { Route as AuthLayoutSignUpRouteImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
@@ -34,6 +35,11 @@ const DemoTableRoute = DemoTableRouteImport.update({
   id: '/demo/table',
   path: '/demo/table',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MainLayoutCollectionRoute = MainLayoutCollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
+  getParentRoute: () => MainLayoutRoute,
 } as any)
 const AuthLayoutSignUpRoute = AuthLayoutSignUpRouteImport.update({
   id: '/sign-up',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
+  '/collection': typeof MainLayoutCollectionRoute
   '/demo/table': typeof DemoTableRoute
 }
 export interface FileRoutesByTo {
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
+  '/collection': typeof MainLayoutCollectionRoute
   '/demo/table': typeof DemoTableRoute
 }
 export interface FileRoutesById {
@@ -73,14 +81,27 @@ export interface FileRoutesById {
   '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/sign-up': typeof AuthLayoutSignUpRoute
+  '/_mainLayout/collection': typeof MainLayoutCollectionRoute
   '/demo/table': typeof DemoTableRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/email-verification' | '/login' | '/sign-up' | '/demo/table'
+  fullPaths:
+    | '/'
+    | '/email-verification'
+    | '/login'
+    | '/sign-up'
+    | '/collection'
+    | '/demo/table'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/email-verification' | '/login' | '/sign-up' | '/demo/table'
+  to:
+    | '/'
+    | '/email-verification'
+    | '/login'
+    | '/sign-up'
+    | '/collection'
+    | '/demo/table'
   id:
     | '__root__'
     | '/_authLayout'
@@ -88,6 +109,7 @@ export interface FileRouteTypes {
     | '/_authLayout/email-verification'
     | '/_authLayout/login'
     | '/_authLayout/sign-up'
+    | '/_mainLayout/collection'
     | '/demo/table'
     | '/_mainLayout/'
   fileRoutesById: FileRoutesById
@@ -127,6 +149,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/table'
       preLoaderRoute: typeof DemoTableRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_mainLayout/collection': {
+      id: '/_mainLayout/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof MainLayoutCollectionRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
     '/_authLayout/sign-up': {
       id: '/_authLayout/sign-up'
@@ -169,10 +198,12 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 )
 
 interface MainLayoutRouteChildren {
+  MainLayoutCollectionRoute: typeof MainLayoutCollectionRoute
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
 }
 
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
+  MainLayoutCollectionRoute: MainLayoutCollectionRoute,
   MainLayoutIndexRoute: MainLayoutIndexRoute,
 }
 
