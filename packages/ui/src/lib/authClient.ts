@@ -1,10 +1,15 @@
-import { emailOTPClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { auth } from "../../../../apps/server/src/lib/auth";
+
+import {
+  emailOTPClient,
+  inferAdditionalFields,
+} from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
   baseURL: "http://localhost:8080",
   fetchOptions: {
     credentials: "include",
   },
-  plugins: [emailOTPClient()],
+  plugins: [emailOTPClient(), inferAdditionalFields<typeof auth>()],
 });

@@ -28,7 +28,7 @@ export const auth = betterAuth({
         required: false,
       },
       userAccountType: {
-        type: "string",
+        type: ["User", "Admin"],
         required: true,
         defaultValue: "User",
       },
