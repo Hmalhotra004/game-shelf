@@ -1,8 +1,8 @@
-import { db } from "@/db";
 import type { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
 import axios from "axios";
 import { eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
+import { db } from "../db";
 
 import {
   collection,

@@ -1,4 +1,3 @@
-import { db } from "@/db";
 import { toNodeHandler } from "better-auth/node";
 import compression from "compression";
 import cookieParser from "cookie-parser";
@@ -7,6 +6,7 @@ import { sql } from "drizzle-orm";
 import express from "express";
 import helmet from "helmet";
 import http from "node:http";
+import { db } from "./db";
 import { auth } from "./lib/auth";
 import router from "./router";
 
