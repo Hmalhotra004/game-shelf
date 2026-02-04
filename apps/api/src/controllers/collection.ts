@@ -1,7 +1,8 @@
 import { db } from "@/db";
-import type { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
 import axios from "axios";
 import { eq, sql } from "drizzle-orm";
+
+import type { GetOwnedGamesSteamType } from "@repo/schemas/types/server/steam";
 import type { Request, Response } from "express";
 
 import {
@@ -10,7 +11,7 @@ import {
   dlc,
   listItem,
   playthrough,
-} from "@repo/schemas/db/schema";
+} from "@/db/schema";
 
 export const getMany = async (req: Request, res: Response) => {
   try {

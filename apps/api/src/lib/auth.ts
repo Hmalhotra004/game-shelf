@@ -1,6 +1,6 @@
 import { ORIGINS } from "@/constants";
 import { db } from "@/db";
-import * as schema from "@repo/schemas/db/schema";
+import * as schema from "@/db/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP } from "better-auth/plugins";
