@@ -7,13 +7,13 @@ import { sendEmail } from "./sendEmail";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL!,
+  trustedOrigins: ORIGINS,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
       ...schema,
     },
   }),
-  trustedOrigins: ORIGINS,
   user: {
     additionalFields: {
       steamId: {
