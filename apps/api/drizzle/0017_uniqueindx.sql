@@ -1,0 +1,1 @@
+ALTER TABLE "collection" ADD CONSTRAINT "user_steam_game_unique" UNIQUE("user_id","steam_app_id","provider");
