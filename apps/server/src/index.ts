@@ -6,6 +6,7 @@ import { sql } from "drizzle-orm";
 import express from "express";
 import helmet from "helmet";
 import http from "node:http";
+import { ORIGINS } from "./constants";
 import { db } from "./db";
 import { auth } from "./lib/auth";
 import router from "./router";
