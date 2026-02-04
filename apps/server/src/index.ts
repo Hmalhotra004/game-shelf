@@ -18,6 +18,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:1420",
+      "http://localhost:4173/",
       "https://game-shelf-web-iota.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
@@ -49,12 +50,3 @@ start().catch((err) => {
   console.error("Failed to start server:", err);
   process.exit(1);
 });
-
-// (async () => {
-//   await db.execute(sql`SELECT 1`);
-//   console.log("database connected");
-// })();
-
-// server.listen(port, () => {
-//   console.log(`Example app listening on http://localhost:${port}`);
-// });
