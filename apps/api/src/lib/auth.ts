@@ -9,6 +9,12 @@ import { sendEmail } from "./sendEmail";
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL!,
   trustedOrigins: ORIGINS,
+  advanced: {
+    defaultCookieAttributes: {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    },
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
