@@ -16,18 +16,18 @@ export const Route = createFileRoute("/_mainLayout")({
     const session = await verifySession();
 
     if (!session) {
-      return redirect({ to: "/login", replace: true });
+      throw redirect({ to: "/login", replace: true });
     }
 
     if (!session.user.emailVerified) {
-      return redirect({
+      throw redirect({
         to: "/email-verification",
         search: { email: session.user.email },
         replace: true,
       });
     }
 
-    return session;
+    return session.user;
   },
   component: RouteComponent,
 });

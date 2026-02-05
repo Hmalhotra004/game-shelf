@@ -12,7 +12,8 @@
       "./src/hooks/*.tsx"
     ],
     "./views/*": "./src/views/*.tsx",
-    "./components/*": "./src/components/*.tsx"
+    "./components/*": "./src/components/*.tsx",
+    "./queries/*": "./src/queries/*.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

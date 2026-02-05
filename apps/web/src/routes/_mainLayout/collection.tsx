@@ -1,18 +1,19 @@
 import { Activity } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
 import { CollectionCard } from "@repo/ui/components/collection/CollectionCard";
 import Filters from "@repo/ui/components/collection/Filters";
 import { CollectionEmptyState } from "@repo/ui/components/emptyStates/CollectionEmptyState";
 import { useCollectionFilters } from "@repo/ui/hooks/useCollectionFilters";
-import { api } from "@repo/ui/lib/api";
+import { collectionGetManyQueryOptions } from "@repo/ui/queries/collection.queries";
 import { useCardVariantStore } from "@repo/ui/store/useCardVariantStore";
 
-import type { CollectionGetMany } from "@repo/schemas/types/collection";
-
 export const Route = createFileRoute("/_mainLayout/collection")({
+  loader: async ({ context }) => {
+    await context.queryClient.prefetchQuery(collectionGetManyQueryOptions());
+  },
   component: App,
 });
 
@@ -22,17 +23,11 @@ function App() {
 
   const { platform, view, search, status } = filters;
 
-  const { data: games, isLoading } = useQuery({
-    queryKey: ["collection", "getMany"],
-    queryFn: async () => {
-      const response =
-        await api.get<Array<CollectionGetMany>>(`/collection/getMany`);
+  const { data: games, isLoading } = useSuspenseQuery(
+    collectionGetManyQueryOptions(),
+  );
 
-      return response.data;
-    },
-  });
-
-  if (isLoading || !games) return <div>Loading…</div>;
+  // if (isLoading || !games) return <div>Loading…</div>;
 
   const filteredGames = games
     .filter(
