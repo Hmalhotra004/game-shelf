@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./enums/*": "./src/enums/*.ts",
     "./schemas/*": "./src/schemas/*.ts",
     "./types/*": "./src/types/*.ts"
   },
@@ -21,9 +22,6 @@
     "typescript": "5.9.2"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.1",
-    "drizzle-zod": "^0.8.3",
-    "nanoid": "^5.1.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "zod": "^4.3.6"

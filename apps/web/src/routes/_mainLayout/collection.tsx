@@ -1,6 +1,6 @@
-import { Activity, useEffect, useRef } from "react";
+import { Activity } from "react";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
 import { CollectionCard } from "@repo/ui/components/collection/CollectionCard";
@@ -10,7 +10,7 @@ import { useCollectionFilters } from "@repo/ui/hooks/useCollectionFilters";
 import { api } from "@repo/ui/lib/api";
 import { useCardVariantStore } from "@repo/ui/store/useCardVariantStore";
 
-import type { CollectionGetManyResponse } from "@repo/schemas/types/collection";
+import type { CollectionGetMany } from "@repo/schemas/types/collection";
 
 export const Route = createFileRoute("/_mainLayout/collection")({
   component: App,
@@ -22,57 +22,17 @@ function App() {
 
   const { platform, view, search, status } = filters;
 
-  const limit = 10;
+  const { data: games, isLoading } = useQuery({
+    queryKey: ["collection", "getMany"],
+    queryFn: async () => {
+      const response =
+        await api.get<Array<CollectionGetMany>>(`/collection/getMany`);
 
-  async function fetchCollections({
-    pageParam = 1,
-    limit,
-  }: {
-    pageParam?: number;
-    limit: number;
-  }) {
-    const res = await api.get<CollectionGetManyResponse>(
-      `/collection/getMany?page=${pageParam}&limit=${limit}`,
-    );
+      return response.data;
+    },
+  });
 
-    return res.data;
-  }
-
-  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["collections", limit],
-      queryFn: ({ pageParam }) => fetchCollections({ pageParam, limit }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.items.length < limit) return undefined;
-        return allPages.length + 1;
-      },
-    });
-
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!loadMoreRef.current || !hasNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        rootMargin: "200px",
-      },
-    );
-
-    observer.observe(loadMoreRef.current);
-
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  if (isLoading || !data) return <div>Loading…</div>;
-
-  const games = data.pages.flatMap((p) => p.items);
+  if (isLoading || !games) return <div>Loading…</div>;
 
   const filteredGames = games
     .filter(
@@ -136,18 +96,6 @@ function App() {
               );
             })}
           </div>
-
-          {/* loader */}
-          <div
-            ref={loadMoreRef}
-            className="h-1"
-          />
-
-          {isFetchingNextPage && (
-            <div className="text-center text-sm text-muted-foreground">
-              Loading more…
-            </div>
-          )}
         </div>
       </Activity>
 

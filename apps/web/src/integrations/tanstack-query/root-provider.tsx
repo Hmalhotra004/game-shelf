@@ -5,7 +5,7 @@ export function getContext() {
     defaultOptions: {
       queries: {
         staleTime: 1000 * 60 * 15, // 5 minutes
-        gcTime: 1000 * 60 * 60 * 24, // 24 hours
+        gcTime: 1000 * 60 * 60 * 15, // 24 hours
         retry: 1,
         refetchOnWindowFocus: false,
       },

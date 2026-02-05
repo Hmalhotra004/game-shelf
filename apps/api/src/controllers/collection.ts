@@ -2,7 +2,7 @@ import { db } from "@/db";
 import axios from "axios";
 import { eq, sql } from "drizzle-orm";
 
-import type { GetOwnedGamesSteamType } from "@repo/schemas/types/server/steam";
+import type { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
 import type { Request, Response } from "express";
 
 import {

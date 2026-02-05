@@ -2,13 +2,13 @@
 
 import { GameStatusSelect } from "@repo/ui/components/form/FormSelects";
 import { Button } from "@repo/ui/components/ui/button";
-import { InputGroup, InputGroupInput } from "@repo/ui/components/ui/input-group";
+import {
+  InputGroup,
+  InputGroupInput,
+} from "@repo/ui/components/ui/input-group";
 import { useCollectionFilters } from "@repo/ui/hooks/useCollectionFilters";
 
-import {
-  FilterIcon,
-  X
-} from "lucide-react";
+import { FilterIcon, X } from "lucide-react";
 
 import {
   Select,
@@ -23,7 +23,7 @@ const Filters = () => {
 
   // const { data: lists } = useQuery({queryKey:["list"],queryFn:async });
 
-  const {  platform, search,  status } = filters;
+  const { platform, search, status } = filters;
 
   const hasSearch = !!search;
 

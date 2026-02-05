@@ -1,37 +1,53 @@
-// import z from "zod";
-// import type { PlatformType, ProviderType } from "../types/collection";
+import z from "zod";
+import { PlatformEnum } from "../enums";
 
-// import {
-//   ownershipType,
-//   platform,
-//   provider,
-//   PSVersion,
-//   status,
-// } from "../db/schema";
+import type {
+  PlatformType,
+  ProviderType,
+} from "@repo/schemas/types/collection";
 
-// export const platformSchema = z.enum(platform.enumValues, {
-//   error: "Platform is requried",
-// });
+export const platformSchema = z.enum(
+  Object.values(PlatformEnum) as [PlatformEnum, ...PlatformEnum[]],
+  {
+    error: "Platform is requried",
+  },
+);
 
-// export const providerSchema = z.enum(provider.enumValues, {
-//   error: "Provider is requried",
-// });
+export const providerSchema = z.enum(["PSN", "Physical", "Steam", "Epic"], {
+  error: "Provider is requried",
+});
 
-// export const statusSchema = z.enum(status.enumValues, {
-//   error: "Status is required",
-// });
+export const statusSchema = z.enum(
+  [
+    "Online",
+    "Backlog",
+    "Playing",
+    "On Hold",
+    "Dropped",
+    "Story Completed",
+    "Platinum",
+    "Platinum+",
+    "100% Completed",
+  ],
+  {
+    error: "Status is required",
+  },
+);
 
-// export const ownershipTypeSchema = z.enum(ownershipType.enumValues, {
-//   error: "OwnerShip is required",
-// });
+export const ownershipTypeSchema = z.enum(
+  ["Free", "Gift", "Bought", "Rented", "PS+", "Steam Family", "Game Pass"],
+  {
+    error: "OwnerShip is required",
+  },
+);
 
-// export const PSVersionSchema = z.enum(PSVersion.enumValues, {
-//   error: "PS Version is required when platform is PS",
-// });
+export const PSVersionSchema = z.enum(["PS4", "PS5"], {
+  error: "PS Version is required when platform is PS",
+});
 
-// export const providerPlatformRefine = (obj: {
-//   platform: PlatformType;
-//   provider: ProviderType;
-// }) =>
-//   (obj.platform === "PS" && ["PSN", "Physical"].includes(obj.provider)) ||
-//   (obj.platform === "PC" && ["Steam", "Epic"].includes(obj.provider));
+export const providerPlatformRefine = (obj: {
+  platform: PlatformType;
+  provider: ProviderType;
+}) =>
+  (obj.platform === "PS" && ["PSN", "Physical"].includes(obj.provider)) ||
+  (obj.platform === "PC" && ["Steam", "Epic"].includes(obj.provider));

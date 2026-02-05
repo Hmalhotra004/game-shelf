@@ -1,6 +1,6 @@
 "use client";
 
-import { CollectionGetManyItem } from "@repo/schemas/types/collection";
+import { CollectionGetMany } from "@repo/schemas/types/collection";
 import { LinkType } from "@repo/schemas/types/index";
 import { Badge } from "@repo/ui/components/ui/badge";
 import { betterTimeText, cn, statusColorMap } from "@repo/ui/lib/utils";
@@ -36,7 +36,7 @@ const cardVariants = cva(
 
 interface Props extends VariantProps<typeof cardVariants> {
   Link: LinkType;
-  game: CollectionGetManyItem;
+  game: CollectionGetMany;
   showcase?: boolean;
 }
 
@@ -123,7 +123,7 @@ export const CollectionCard = ({
 function CompactContent({
   game,
   playTime,
-}: Readonly<{ game: CollectionGetManyItem; playTime: string }>) {
+}: Readonly<{ game: CollectionGetMany; playTime: string }>) {
   return (
     <div className="flex flex-col p-3 gap-2 flex-1">
       <Title name={game.name} />
@@ -141,7 +141,7 @@ function CompactContent({
 function OverlayContent({
   game,
   playTime,
-}: Readonly<{ game: CollectionGetManyItem; playTime: string }>) {
+}: Readonly<{ game: CollectionGetMany; playTime: string }>) {
   return (
     <>
       <div className="absolute inset-0 bg-linear-to-t from-background via-background/30 to-transparent" />
@@ -163,7 +163,7 @@ function OverlayContent({
 function SlideUpContent({
   game,
   playTime,
-}: Readonly<{ game: CollectionGetManyItem; playTime: string }>) {
+}: Readonly<{ game: CollectionGetMany; playTime: string }>) {
   return (
     <div className="absolute bottom-0 left-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-200 bg-card p-3 flex flex-col gap-2">
       <Title name={game.name} />
@@ -189,7 +189,7 @@ function Title({ name }: Readonly<{ name: string }>) {
 function MetaRow({
   game,
   playTime,
-}: Readonly<{ game: CollectionGetManyItem; playTime: string }>) {
+}: Readonly<{ game: CollectionGetMany; playTime: string }>) {
   return (
     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
       <span className="flex items-center gap-1">
@@ -218,7 +218,7 @@ function MetaRow({
   );
 }
 
-function Footer({ game }: Readonly<{ game: CollectionGetManyItem }>) {
+function Footer({ game }: Readonly<{ game: CollectionGetMany }>) {
   return (
     <div className="flex items-center justify-between mt-auto">
       <Badge
