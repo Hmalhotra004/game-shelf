@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./server/schemas/*": "./dist/schemas/*.js",
     "./enums/*": "./src/enums/*.ts",
     "./schemas/*": "./src/schemas/*.ts",
     "./types/*": "./src/types/*.ts"

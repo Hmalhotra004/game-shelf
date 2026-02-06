@@ -1,17 +1,35 @@
 import z from "zod";
 
 export const loginSchema = z.object({
-  email: z.email().min(1, { error: "Email is required" }).max(50),
-  password: z.string().min(6, { error: "Minimum 6 Characters" }).max(50),
+  email: z
+    .email({ error: "Email is required" })
+    .min(1, { error: "Email is required" })
+    .max(50),
+
+  password: z
+    .string({ error: "Password is required" })
+    .min(6, { error: "Minimum 6 Characters" })
+    .max(50),
 });
 
 export const signupSchema = z
   .object({
-    name: z.string().min(1, { error: "name is required" }),
-    email: z.email().min(1, { error: "Email is required" }).max(50),
-    password: z.string().min(6, { error: "Minimum 6 Characters" }).max(50),
+    name: z
+      .string({ error: "Name is required" })
+      .min(1, { error: "name is required" }),
+
+    email: z
+      .email({ error: "Email is required" })
+      .min(1, { error: "Email is required" })
+      .max(50),
+
+    password: z
+      .string({ error: "Password is required" })
+      .min(6, { error: "Minimum 6 Characters" })
+      .max(50),
+
     confirmPassword: z
-      .string()
+      .string({ error: "Confirm Password is required" })
       .min(6, { error: "Minimum 6 Characters" })
       .max(50),
   })
@@ -21,7 +39,7 @@ export const signupSchema = z
   });
 
 export const otpSchema = z.object({
-  pin: z.string().min(6, {
+  pin: z.string({ error: "OTP is required" }).min(6, {
     message: "Your one-time password must be 6 characters.",
   }),
 });
