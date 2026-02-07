@@ -65,18 +65,15 @@ export const CollectionCard = ({
         {game.platform}
       </Badge>
 
-      <div
+      <img
+        src={game.customImage ?? game.image!}
+        alt={game.name}
         className={cn(
-          "relative overflow-hidden",
+          "object-cover relative overflow-hidden",
           variant === "compact" ? "h-64" : "h-full",
+          variant === "compact" && "object-top",
         )}
-      >
-        <img
-          src={game.customImage ?? game.image!}
-          alt={game.name}
-          className={cn("object-cover", variant === "compact" && "object-top")}
-        />
-      </div>
+      />
 
       {variant === "compact" && (
         <CompactContent

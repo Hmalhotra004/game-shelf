@@ -9,6 +9,7 @@ import {
   collection,
   completion,
   dlc,
+  list,
   listItem,
   playthrough,
 } from "@/db/schema";
@@ -39,13 +40,13 @@ export const getMany = async (req: Request, res: Response) => {
     const lists = await db
       .select({
         collectionId: listItem.collectionId,
-        listIds: sql<string[]>`
-      array_agg(${listItem.listId})
+        name: sql<string[]>`
+      array_agg(${list.name})
     `,
       })
       .from(listItem)
-      .innerJoin(collection, eq(collection.id, listItem.collectionId))
-      .where(eq(collection.userId, userId))
+      .innerJoin(list, eq(list.id, listItem.listId))
+      .where(eq(list.userId, userId))
       .groupBy(listItem.collectionId);
 
     const totals = await db
@@ -102,7 +103,7 @@ export const getMany = async (req: Request, res: Response) => {
     );
 
     const listsByGameId = Object.fromEntries(
-      lists.map((l) => [l.collectionId, l.listIds ?? []]),
+      lists.map((l) => [l.collectionId, l.name ?? []]),
     );
 
     const result = games.map((g) => {

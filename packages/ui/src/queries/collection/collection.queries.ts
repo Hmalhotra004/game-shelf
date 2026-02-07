@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { api } from "../lib/api";
+import { api } from "../../lib/api";
 import { CollectionQueryKeys } from "./collection.keys";
 
 import {
@@ -23,8 +23,7 @@ export const collectionGetByIdQueryOptions = (id: string) =>
     queryKey: CollectionQueryKeys.getById(id),
     queryFn: async () => {
       const response = await api.get<Array<CollectionGetById>>(
-        `/collection/getById`,
-        { params: { id } },
+        `/collection/${id}`,
       );
 
       return response.data;

@@ -2,13 +2,16 @@
 
 import { GameStatusSelect } from "@repo/ui/components/form/FormSelects";
 import { Button } from "@repo/ui/components/ui/button";
+import { useCollectionFilters } from "@repo/ui/hooks/useCollectionFilters";
+import { listGetManyQueryOptions } from "@repo/ui/queries/list/list.queries";
+import { useQuery } from "@tanstack/react-query";
+
 import {
   InputGroup,
   InputGroupInput,
 } from "@repo/ui/components/ui/input-group";
-import { useCollectionFilters } from "@repo/ui/hooks/useCollectionFilters";
 
-import { FilterIcon, X } from "lucide-react";
+import { FilterIcon, ListIcon, X } from "lucide-react";
 
 import {
   Select,
@@ -21,9 +24,9 @@ import {
 const Filters = () => {
   const [filters, setFilters] = useCollectionFilters();
 
-  // const { data: lists } = useQuery({queryKey:["list"],queryFn:async });
+  const { data: lists, isLoading } = useQuery(listGetManyQueryOptions());
 
-  const { platform, search, status } = filters;
+  const { platform, search, status, list } = filters;
 
   const hasSearch = !!search;
 
@@ -50,26 +53,28 @@ const Filters = () => {
         )}
       </InputGroup>
 
-      {/* <Select
-        value={list}
-        onValueChange={(value) => setFilters({ list: value })}
-      >
-        <SelectTrigger className="w-fit">
-          <ListIcon className="size-4 mr-1" />
-          <SelectValue placeholder="Lists" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="All">All</SelectItem>
-          {lists.map((l) => (
-            <SelectItem
-              key={l.id}
-              value={l.name}
-            >
-              {l.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select> */}
+      {!isLoading && lists && lists.length > 0 && (
+        <Select
+          value={list}
+          onValueChange={(value) => setFilters({ list: value })}
+        >
+          <SelectTrigger className="w-fit">
+            <ListIcon className="size-4 mr-1" />
+            <SelectValue placeholder="Lists" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All</SelectItem>
+            {lists.map((l) => (
+              <SelectItem
+                key={l.id}
+                value={l.name}
+              >
+                {l.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
 
       <Select
         value={status}
