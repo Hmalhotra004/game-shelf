@@ -1,8 +1,9 @@
 import { db } from "@/db";
-import { list } from "@/db/schema";
+import { list, listItem } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 
 import type {
+  createListItemSchema,
   createListSchemaType,
   updateListSchemaType,
 } from "@repo/schemas/server/schemas/list";
@@ -32,11 +33,11 @@ export const getMany = async (req: Request, res: Response) => {
 export const getListItems = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const selectedList = req.list!;
+    const listId = req.list!.id;
 
     const listItems = await db.query.list.findMany({
       where: (list, { eq, and }) =>
-        and(eq(list.id, selectedList.id), eq(list.userId, userId)),
+        and(eq(list.id, listId), eq(list.userId, userId)),
       columns: { id: true, name: true },
       with: {
         items: {
@@ -87,10 +88,24 @@ export const addList = async (req: Request, res: Response) => {
   }
 };
 
-// TODO
 export const addListItem = async (req: Request, res: Response) => {
   try {
-    const userId = req.user!.id;
+    const listId = req.list!.id;
+    const { collectionId } = req.cleanBody as createListItemSchema;
+
+    const existing = await db.query.listItem.findFirst({
+      where: (item, { and, eq }) =>
+        and(eq(item.listId, listId), eq(item.collectionId, collectionId)),
+    });
+
+    if (existing) return res.sendStatus(204);
+
+    const [item] = await db
+      .insert(listItem)
+      .values({ listId, collectionId })
+      .returning();
+
+    return res.status(200).json(item);
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -101,8 +116,6 @@ export const updateList = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     const listToUpdate = req.list!;
-
-    console.log("here");
 
     const { name } = req.cleanBody as updateListSchemaType;
 
@@ -139,11 +152,11 @@ export const updateList = async (req: Request, res: Response) => {
 export const deleteList = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const listToDelete = req.list!;
+    const listId = req.list!.id;
 
     const [deleted] = await db
       .delete(list)
-      .where(and(eq(list.id, listToDelete.id), eq(list.userId, userId)))
+      .where(and(eq(list.id, listId), eq(list.userId, userId)))
       .returning();
 
     if (!deleted) return res.status(404).json({ error: "List not found" });
@@ -155,10 +168,16 @@ export const deleteList = async (req: Request, res: Response) => {
   }
 };
 
-// TODO
 export const deleteListItem = async (req: Request, res: Response) => {
   try {
-    const userId = req.user!.id;
+    const listId = req.list!.id;
+    const listItemId = req.listItem!.id;
+
+    await db
+      .delete(listItem)
+      .where(and(eq(listItem.id, listItemId), eq(listItem.listId, listId)));
+
+    return res.sendStatus(204);
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: "Internal Server Error" });

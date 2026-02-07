@@ -36,3 +36,41 @@ export async function verifyList(
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export async function verifyListItem(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    if (!req.list) return res.status(400).json({ error: "List is missing" });
+
+    const listItemId = req.params.listItemId as string;
+
+    if (!listItemId) {
+      return res.status(400).json({ error: "listItemId is required" });
+    }
+
+    const list = req.list;
+
+    const listItem = await db.query.listItem.findFirst({
+      where: (lt, { and, eq }) =>
+        and(eq(lt.id, listItemId), eq(lt.listId, list.id)),
+    });
+
+    if (!listItem) {
+      return res.status(404).json({ error: "ListItem not found" });
+    }
+
+    req.listItem = listItem;
+
+    next();
+  } catch (err) {
+    console.error("VerifyListItem middleware error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

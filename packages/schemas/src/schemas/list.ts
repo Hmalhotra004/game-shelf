@@ -14,6 +14,14 @@ export const updateListSchema = z.object({
     .min(1, { error: "Name cannot be empty" }),
 });
 
+export const createListItemSchema = z.object({
+  collectionId: z
+    .string({ error: "Game is requried" })
+    .trim()
+    .min(1, { error: "Game is requried" }),
+});
+
 // types
 export type createListSchemaType = z.infer<typeof createListSchema>;
 export type updateListSchemaType = z.infer<typeof updateListSchema>;
+export type createListItemSchema = z.infer<typeof createListItemSchema>;

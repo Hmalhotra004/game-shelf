@@ -1,16 +1,19 @@
 import { authenticateUser } from "@/middlewares/authMiddleware";
-import { verifyList } from "@/middlewares/listMiddleware";
+import { verifyList, verifyListItem } from "@/middlewares/listMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
 
 import {
+  createListItemSchema,
   createListSchema,
   updateListSchema,
 } from "@repo/schemas/server/schemas/list";
 
 import {
   addList,
+  addListItem,
   deleteList,
+  deleteListItem,
   getListItems,
   getMany,
   updateList,
@@ -35,6 +38,14 @@ export default (baseUrl: string, app: Router) => {
     addList,
   );
 
+  router.post(
+    "/:listId/addItem",
+    authenticateUser,
+    verifyList,
+    validateData(createListItemSchema),
+    addListItem,
+  );
+
   router.patch(
     "/:listId/update",
     authenticateUser,
@@ -44,6 +55,14 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.delete("/:listId/delete", authenticateUser, verifyList, deleteList);
+
+  router.delete(
+    "/:listId/:listItemId/delete",
+    authenticateUser,
+    verifyList,
+    verifyListItem,
+    deleteListItem,
+  );
 
   app.use(baseUrl, router);
 };
