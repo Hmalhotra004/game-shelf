@@ -1,10 +1,10 @@
 import { ContextMenu } from "@radix-ui/react-context-menu";
-import { CollectionGetManyItem } from "@repo/schemas/types/collection";
-import { useConfirm } from "@repo/ui/hooks/useConfirm";
+import { CollectionGetMany } from "@repo/schemas/types/collection";
+import { collectionDeleteMutationOptions } from "@repo/ui/queries/collection/collection.queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit2Icon, ImageIcon, TrashIcon } from "lucide-react";
 import { ReactNode } from "react";
-import { toast } from "sonner";
+import { useConfirm } from "../../hooks/useConfirm";
 
 import {
   ContextMenuContent,
@@ -15,24 +15,14 @@ import {
 
 interface Props {
   children: ReactNode;
-  data: CollectionGetManyItem;
+  data: CollectionGetMany;
 }
 
 const CardContextMenu = ({ children, data }: Props) => {
   const queryClient = useQueryClient();
 
   const deleteGame = useMutation(
-    trpc.collection.delete.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(
-          trpc.collection.getMany.queryOptions(),
-        );
-        await queryClient.invalidateQueries(trpc.stats.getStats.queryOptions());
-
-        toast.success("Game deleted successfully");
-      },
-      onError: (err) => toast.error(err.message),
-    }),
+    collectionDeleteMutationOptions(data.id, queryClient),
   );
 
   const [ConfirmDelete, confirm] = useConfirm(
@@ -46,7 +36,7 @@ const CardContextMenu = ({ children, data }: Props) => {
 
     if (!ok) return;
 
-    deleteGame.mutateAsync({ collectionId: data.id });
+    deleteGame.mutateAsync();
   }
 
   return (
@@ -57,15 +47,15 @@ const CardContextMenu = ({ children, data }: Props) => {
         <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem
-            onClick={() => router.push(`/collection/${data.id}/edit` as Route)}
+          // onClick={() => router.push(`/collection/${data.id}/edit` as Route)}
           >
             <Edit2Icon className="size-4" /> Edit
           </ContextMenuItem>
 
           <ContextMenuItem
-            onClick={() =>
-              router.push(`/collection/${data.id}/change-image` as Route)
-            }
+          // onClick={() =>
+          //   router.push(`/collection/${data.id}/change-image` as Route)
+          // }
           >
             <ImageIcon className="size-4" /> Change Images
           </ContextMenuItem>

@@ -6,6 +6,7 @@ import { Badge } from "@repo/ui/components/ui/badge";
 import { betterTimeText, cn, statusColorMap } from "@repo/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { format } from "date-fns";
+import CardContextMenu from "./CardContextMenu";
 
 import {
   CalendarIcon,
@@ -103,17 +104,17 @@ export const CollectionCard = ({
   }
 
   return (
-    // <CardContextMenu data={game}>
-    <Link
-      to={`/collection/${game.id}?provider=${game.provider}`}
-      className={cn(
-        "group focus:outline-none",
-        variant !== "compact" && "relative",
-      )}
-    >
-      {content}
-    </Link>
-    // </CardContextMenu>
+    <CardContextMenu data={game}>
+      <Link
+        to={`/collection/${game.id}?provider=${game.provider}`}
+        className={cn(
+          "group focus:outline-none",
+          variant !== "compact" && "relative",
+        )}
+      >
+        {content}
+      </Link>
+    </CardContextMenu>
   );
 };
 
