@@ -24,4 +24,4 @@ export const createListItemSchema = z.object({
 // types
 export type createListSchemaType = z.infer<typeof createListSchema>;
 export type updateListSchemaType = z.infer<typeof updateListSchema>;
-export type createListItemSchema = z.infer<typeof createListItemSchema>;
+export type createListItemSchemaType = z.infer<typeof createListItemSchema>;

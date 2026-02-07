@@ -3,7 +3,7 @@ import { list, listItem } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 
 import type {
-  createListItemSchema,
+  createListItemSchemaType,
   createListSchemaType,
   updateListSchemaType,
 } from "@repo/schemas/server/schemas/list";
@@ -91,7 +91,7 @@ export const addList = async (req: Request, res: Response) => {
 export const addListItem = async (req: Request, res: Response) => {
   try {
     const listId = req.list!.id;
-    const { collectionId } = req.cleanBody as createListItemSchema;
+    const { collectionId } = req.cleanBody as createListItemSchemaType;
 
     const existing = await db.query.listItem.findFirst({
       where: (item, { and, eq }) =>
