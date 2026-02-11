@@ -61,7 +61,7 @@ export const HomeView = () => {
       </div>
 
       <ScrollArea className="h-140">
-        <div className="flex items-center flex-wrap gap-4">
+        <div className="flex items-center justify-center flex-wrap gap-4">
           {data.statusDistribution.length > 0 && (
             <PieChartCard
               title="Status"

@@ -5,19 +5,13 @@ import { useBuildChart } from "@repo/ui/hooks/useBuildChart";
 import { Pie, PieChart } from "recharts";
 
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@repo/ui/components/ui/card";
-
-import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@repo/ui/components/ui/chart";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface Props<T extends string> {
   title: string;
@@ -33,16 +27,11 @@ const PieChartCard = <T extends string>({
   const { ChartConfig, chartData } = useBuildChart(data, colorMap);
 
   return (
-    <Card className="pb-3">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
+    <>
+      {/* <div className="flex flex-col h-full bg-card p-4 rounded-xl border-border border">
+        <h1 className="leading-none font-semibold mb-1">{title}</h1>
 
-      <CardContent className="flex-1 pb-0 px-0">
-        <ChartContainer
-          config={ChartConfig}
-          className="mx-auto h-80"
-        >
+        <ChartContainer config={ChartConfig}>
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie
@@ -53,12 +42,39 @@ const PieChartCard = <T extends string>({
             />
             <ChartLegend
               content={<ChartLegendContent nameKey="label" />}
-              className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+              className="-translate-y-2 flex-wrap gap-2 *:basis-1/3 *:justify-center"
             />
           </PieChart>
         </ChartContainer>
-      </CardContent>
-    </Card>
+      </div> */}
+
+      <Card className="pb-3">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+
+        <CardContent className="flex-1 pb-0 px-0">
+          <ChartContainer
+            config={ChartConfig}
+            className="mx-auto h-80"
+          >
+            <PieChart>
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Pie
+                data={chartData}
+                dataKey="value"
+                nameKey="label"
+                outerRadius={105}
+              />
+              <ChartLegend
+                content={<ChartLegendContent nameKey="label" />}
+                className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+              />
+            </PieChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
