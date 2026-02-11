@@ -1,5 +1,9 @@
-import { platformValues, statusValues } from "@repo/schemas/enums/index";
 import { parseAsString, parseAsStringLiteral, useQueryStates } from "nuqs";
+
+import {
+  collectionStatusValues,
+  platformValues,
+} from "@repo/schemas/enums/index";
 
 export const useCollectionFilters = () => {
   const [filters, setFilters] = useQueryStates({
@@ -8,9 +12,10 @@ export const useCollectionFilters = () => {
       ...platformValues,
     ] as const).withDefault("All"),
 
-    status: parseAsStringLiteral(["All", ...statusValues] as const).withDefault(
+    status: parseAsStringLiteral([
       "All",
-    ),
+      ...collectionStatusValues,
+    ] as const).withDefault("All"),
 
     view: parseAsStringLiteral(["TABLE", "GRID"] as const).withDefault("GRID"),
 

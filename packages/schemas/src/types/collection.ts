@@ -1,16 +1,4 @@
-import z from "zod";
-
-import {
-  platformSchema,
-  providerSchema,
-  PSVersionSchema,
-  statusSchema,
-} from "@repo/schemas/schemas/collection";
-
-export type PlatformType = z.infer<typeof platformSchema>;
-export type ProviderType = z.infer<typeof providerSchema>;
-export type CollectionStatusType = z.infer<typeof statusSchema>;
-export type PSVersionType = z.infer<typeof PSVersionSchema>;
+import { CollectionStatusType, PlatformType, ProviderType } from "./index";
 
 export type CollectionGetMany = {
   id: string;
