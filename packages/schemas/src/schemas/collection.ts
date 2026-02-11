@@ -1,47 +1,31 @@
 import z from "zod";
-import { PlatformEnum } from "../enums";
+import {
+  collectionStatusValues,
+  ownershipTypeValues,
+  platformValues,
+  providerValues,
+  psVersionValues,
+} from "../enums";
 
-import type {
-  PlatformType,
-  ProviderType,
-} from "@repo/schemas/types/collection";
+import type { PlatformType, ProviderType } from "@repo/schemas/types/index";
 
-export const platformSchema = z.enum(
-  Object.values(PlatformEnum) as [PlatformEnum, ...PlatformEnum[]],
-  {
-    error: "Platform is requried",
-  },
-);
+export const platformSchema = z.enum(platformValues, {
+  error: "Platform is requried",
+});
 
-export const providerSchema = z.enum(["PSN", "Physical", "Steam", "Epic"], {
+export const providerSchema = z.enum(providerValues, {
   error: "Provider is requried",
 });
 
-export const statusSchema = z.enum(
-  [
-    "Online",
-    "Backlog",
-    "Playing",
-    "On Hold",
-    "Dropped",
-    "Story Completed",
-    "Platinum",
-    "Platinum+",
-    "100% Completed",
-  ],
-  {
-    error: "Status is required",
-  },
-);
+export const statusSchema = z.enum(collectionStatusValues, {
+  error: "Status is required",
+});
 
-export const ownershipTypeSchema = z.enum(
-  ["Free", "Gift", "Bought", "Rented", "PS+", "Steam Family", "Game Pass"],
-  {
-    error: "OwnerShip is required",
-  },
-);
+export const ownershipTypeSchema = z.enum(ownershipTypeValues, {
+  error: "OwnerShip is required",
+});
 
-export const PSVersionSchema = z.enum(["PS4", "PS5"], {
+export const PSVersionSchema = z.enum(psVersionValues, {
   error: "PS Version is required when platform is PS",
 });
 
