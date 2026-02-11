@@ -11,12 +11,27 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
+import { Route as AdminLayoutRouteImport } from './routes/_adminLayout'
 import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
-import { Route as MainLayoutCollectionRouteImport } from './routes/_mainLayout/collection'
 import { Route as AuthLayoutSignUpRouteImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
+import { Route as AdminLayoutBackupRouteImport } from './routes/_adminLayout/backup'
+import { Route as MainLayoutPlaythroughsIndexRouteImport } from './routes/_mainLayout/playthroughs/index'
+import { Route as MainLayoutCompletionsIndexRouteImport } from './routes/_mainLayout/completions/index'
+import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
+import { Route as MainLayoutProfileSettingsRouteImport } from './routes/_mainLayout/profile/settings'
+import { Route as MainLayoutProfilePlatinumListRouteImport } from './routes/_mainLayout/profile/platinum-list'
+import { Route as MainLayoutProfileMasteredGamesRouteImport } from './routes/_mainLayout/profile/mastered-games'
+import { Route as MainLayoutProfileManageListsRouteImport } from './routes/_mainLayout/profile/manage-lists'
+import { Route as MainLayoutProfileConnectionsRouteImport } from './routes/_mainLayout/profile/connections'
+import { Route as MainLayoutCompletionsAddRouteImport } from './routes/_mainLayout/completions/add'
+import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
+import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
+import { Route as MainLayoutPlaythroughsPlaythroughIdFinishRouteImport } from './routes/_mainLayout/playthroughs/$playthroughId/finish'
+import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
+import { Route as MainLayoutCollectionCollectionIdChangeImagesRouteImport } from './routes/_mainLayout/collection/$collectionId/change-images'
 
 const MainLayoutRoute = MainLayoutRouteImport.update({
   id: '/_mainLayout',
@@ -24,6 +39,10 @@ const MainLayoutRoute = MainLayoutRouteImport.update({
 } as any)
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/_authLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLayoutRoute = AdminLayoutRouteImport.update({
+  id: '/_adminLayout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainLayoutIndexRoute = MainLayoutIndexRouteImport.update({
@@ -35,11 +54,6 @@ const DemoTableRoute = DemoTableRouteImport.update({
   id: '/demo/table',
   path: '/demo/table',
   getParentRoute: () => rootRouteImport,
-} as any)
-const MainLayoutCollectionRoute = MainLayoutCollectionRouteImport.update({
-  id: '/collection',
-  path: '/collection',
-  getParentRoute: () => MainLayoutRoute,
 } as any)
 const AuthLayoutSignUpRoute = AuthLayoutSignUpRouteImport.update({
   id: '/sign-up',
@@ -57,64 +71,239 @@ const AuthLayoutEmailVerificationRoute =
     path: '/email-verification',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const AdminLayoutBackupRoute = AdminLayoutBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => AdminLayoutRoute,
+} as any)
+const MainLayoutPlaythroughsIndexRoute =
+  MainLayoutPlaythroughsIndexRouteImport.update({
+    id: '/playthroughs/',
+    path: '/playthroughs/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCompletionsIndexRoute =
+  MainLayoutCompletionsIndexRouteImport.update({
+    id: '/completions/',
+    path: '/completions/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionIndexRoute =
+  MainLayoutCollectionIndexRouteImport.update({
+    id: '/collection/',
+    path: '/collection/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileSettingsRoute =
+  MainLayoutProfileSettingsRouteImport.update({
+    id: '/profile/settings',
+    path: '/profile/settings',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfilePlatinumListRoute =
+  MainLayoutProfilePlatinumListRouteImport.update({
+    id: '/profile/platinum-list',
+    path: '/profile/platinum-list',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileMasteredGamesRoute =
+  MainLayoutProfileMasteredGamesRouteImport.update({
+    id: '/profile/mastered-games',
+    path: '/profile/mastered-games',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileManageListsRoute =
+  MainLayoutProfileManageListsRouteImport.update({
+    id: '/profile/manage-lists',
+    path: '/profile/manage-lists',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileConnectionsRoute =
+  MainLayoutProfileConnectionsRouteImport.update({
+    id: '/profile/connections',
+    path: '/profile/connections',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCompletionsAddRoute =
+  MainLayoutCompletionsAddRouteImport.update({
+    id: '/completions/add',
+    path: '/completions/add',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
+  id: '/collection/add',
+  path: '/collection/add',
+  getParentRoute: () => MainLayoutRoute,
+} as any)
+const MainLayoutCollectionCollectionIdIndexRoute =
+  MainLayoutCollectionCollectionIdIndexRouteImport.update({
+    id: '/collection/$collectionId/',
+    path: '/collection/$collectionId/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutPlaythroughsPlaythroughIdFinishRoute =
+  MainLayoutPlaythroughsPlaythroughIdFinishRouteImport.update({
+    id: '/playthroughs/$playthroughId/finish',
+    path: '/playthroughs/$playthroughId/finish',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdEditRoute =
+  MainLayoutCollectionCollectionIdEditRouteImport.update({
+    id: '/collection/$collectionId/edit',
+    path: '/collection/$collectionId/edit',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdChangeImagesRoute =
+  MainLayoutCollectionCollectionIdChangeImagesRouteImport.update({
+    id: '/collection/$collectionId/change-images',
+    path: '/collection/$collectionId/change-images',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
+  '/backup': typeof AdminLayoutBackupRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
-  '/collection': typeof MainLayoutCollectionRoute
   '/demo/table': typeof DemoTableRoute
+  '/collection/add': typeof MainLayoutCollectionAddRoute
+  '/completions/add': typeof MainLayoutCompletionsAddRoute
+  '/profile/connections': typeof MainLayoutProfileConnectionsRoute
+  '/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
+  '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
+  '/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
+  '/profile/settings': typeof MainLayoutProfileSettingsRoute
+  '/collection/': typeof MainLayoutCollectionIndexRoute
+  '/completions/': typeof MainLayoutCompletionsIndexRoute
+  '/playthroughs/': typeof MainLayoutPlaythroughsIndexRoute
+  '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/playthroughs/$playthroughId/finish': typeof MainLayoutPlaythroughsPlaythroughIdFinishRoute
+  '/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
+  '/backup': typeof AdminLayoutBackupRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
-  '/collection': typeof MainLayoutCollectionRoute
   '/demo/table': typeof DemoTableRoute
+  '/collection/add': typeof MainLayoutCollectionAddRoute
+  '/completions/add': typeof MainLayoutCompletionsAddRoute
+  '/profile/connections': typeof MainLayoutProfileConnectionsRoute
+  '/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
+  '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
+  '/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
+  '/profile/settings': typeof MainLayoutProfileSettingsRoute
+  '/collection': typeof MainLayoutCollectionIndexRoute
+  '/completions': typeof MainLayoutCompletionsIndexRoute
+  '/playthroughs': typeof MainLayoutPlaythroughsIndexRoute
+  '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/playthroughs/$playthroughId/finish': typeof MainLayoutPlaythroughsPlaythroughIdFinishRoute
+  '/collection/$collectionId': typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_adminLayout': typeof AdminLayoutRouteWithChildren
   '/_authLayout': typeof AuthLayoutRouteWithChildren
   '/_mainLayout': typeof MainLayoutRouteWithChildren
+  '/_adminLayout/backup': typeof AdminLayoutBackupRoute
   '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/sign-up': typeof AuthLayoutSignUpRoute
-  '/_mainLayout/collection': typeof MainLayoutCollectionRoute
   '/demo/table': typeof DemoTableRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
+  '/_mainLayout/collection/add': typeof MainLayoutCollectionAddRoute
+  '/_mainLayout/completions/add': typeof MainLayoutCompletionsAddRoute
+  '/_mainLayout/profile/connections': typeof MainLayoutProfileConnectionsRoute
+  '/_mainLayout/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
+  '/_mainLayout/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
+  '/_mainLayout/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
+  '/_mainLayout/profile/settings': typeof MainLayoutProfileSettingsRoute
+  '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
+  '/_mainLayout/completions/': typeof MainLayoutCompletionsIndexRoute
+  '/_mainLayout/playthroughs/': typeof MainLayoutPlaythroughsIndexRoute
+  '/_mainLayout/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/_mainLayout/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/_mainLayout/playthroughs/$playthroughId/finish': typeof MainLayoutPlaythroughsPlaythroughIdFinishRoute
+  '/_mainLayout/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/backup'
     | '/email-verification'
     | '/login'
     | '/sign-up'
-    | '/collection'
     | '/demo/table'
+    | '/collection/add'
+    | '/completions/add'
+    | '/profile/connections'
+    | '/profile/manage-lists'
+    | '/profile/mastered-games'
+    | '/profile/platinum-list'
+    | '/profile/settings'
+    | '/collection/'
+    | '/completions/'
+    | '/playthroughs/'
+    | '/collection/$collectionId/change-images'
+    | '/collection/$collectionId/edit'
+    | '/playthroughs/$playthroughId/finish'
+    | '/collection/$collectionId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/backup'
     | '/email-verification'
     | '/login'
     | '/sign-up'
-    | '/collection'
     | '/demo/table'
+    | '/collection/add'
+    | '/completions/add'
+    | '/profile/connections'
+    | '/profile/manage-lists'
+    | '/profile/mastered-games'
+    | '/profile/platinum-list'
+    | '/profile/settings'
+    | '/collection'
+    | '/completions'
+    | '/playthroughs'
+    | '/collection/$collectionId/change-images'
+    | '/collection/$collectionId/edit'
+    | '/playthroughs/$playthroughId/finish'
+    | '/collection/$collectionId'
   id:
     | '__root__'
+    | '/_adminLayout'
     | '/_authLayout'
     | '/_mainLayout'
+    | '/_adminLayout/backup'
     | '/_authLayout/email-verification'
     | '/_authLayout/login'
     | '/_authLayout/sign-up'
-    | '/_mainLayout/collection'
     | '/demo/table'
     | '/_mainLayout/'
+    | '/_mainLayout/collection/add'
+    | '/_mainLayout/completions/add'
+    | '/_mainLayout/profile/connections'
+    | '/_mainLayout/profile/manage-lists'
+    | '/_mainLayout/profile/mastered-games'
+    | '/_mainLayout/profile/platinum-list'
+    | '/_mainLayout/profile/settings'
+    | '/_mainLayout/collection/'
+    | '/_mainLayout/completions/'
+    | '/_mainLayout/playthroughs/'
+    | '/_mainLayout/collection/$collectionId/change-images'
+    | '/_mainLayout/collection/$collectionId/edit'
+    | '/_mainLayout/playthroughs/$playthroughId/finish'
+    | '/_mainLayout/collection/$collectionId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
   AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
   MainLayoutRoute: typeof MainLayoutRouteWithChildren
   DemoTableRoute: typeof DemoTableRoute
@@ -136,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_adminLayout': {
+      id: '/_adminLayout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_mainLayout/': {
       id: '/_mainLayout/'
       path: '/'
@@ -149,13 +345,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/demo/table'
       preLoaderRoute: typeof DemoTableRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_mainLayout/collection': {
-      id: '/_mainLayout/collection'
-      path: '/collection'
-      fullPath: '/collection'
-      preLoaderRoute: typeof MainLayoutCollectionRouteImport
-      parentRoute: typeof MainLayoutRoute
     }
     '/_authLayout/sign-up': {
       id: '/_authLayout/sign-up'
@@ -178,8 +367,125 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_adminLayout/backup': {
+      id: '/_adminLayout/backup'
+      path: '/backup'
+      fullPath: '/backup'
+      preLoaderRoute: typeof AdminLayoutBackupRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/_mainLayout/playthroughs/': {
+      id: '/_mainLayout/playthroughs/'
+      path: '/playthroughs'
+      fullPath: '/playthroughs/'
+      preLoaderRoute: typeof MainLayoutPlaythroughsIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/completions/': {
+      id: '/_mainLayout/completions/'
+      path: '/completions'
+      fullPath: '/completions/'
+      preLoaderRoute: typeof MainLayoutCompletionsIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/': {
+      id: '/_mainLayout/collection/'
+      path: '/collection'
+      fullPath: '/collection/'
+      preLoaderRoute: typeof MainLayoutCollectionIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/settings': {
+      id: '/_mainLayout/profile/settings'
+      path: '/profile/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof MainLayoutProfileSettingsRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/platinum-list': {
+      id: '/_mainLayout/profile/platinum-list'
+      path: '/profile/platinum-list'
+      fullPath: '/profile/platinum-list'
+      preLoaderRoute: typeof MainLayoutProfilePlatinumListRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/mastered-games': {
+      id: '/_mainLayout/profile/mastered-games'
+      path: '/profile/mastered-games'
+      fullPath: '/profile/mastered-games'
+      preLoaderRoute: typeof MainLayoutProfileMasteredGamesRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/manage-lists': {
+      id: '/_mainLayout/profile/manage-lists'
+      path: '/profile/manage-lists'
+      fullPath: '/profile/manage-lists'
+      preLoaderRoute: typeof MainLayoutProfileManageListsRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/connections': {
+      id: '/_mainLayout/profile/connections'
+      path: '/profile/connections'
+      fullPath: '/profile/connections'
+      preLoaderRoute: typeof MainLayoutProfileConnectionsRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/completions/add': {
+      id: '/_mainLayout/completions/add'
+      path: '/completions/add'
+      fullPath: '/completions/add'
+      preLoaderRoute: typeof MainLayoutCompletionsAddRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/add': {
+      id: '/_mainLayout/collection/add'
+      path: '/collection/add'
+      fullPath: '/collection/add'
+      preLoaderRoute: typeof MainLayoutCollectionAddRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/': {
+      id: '/_mainLayout/collection/$collectionId/'
+      path: '/collection/$collectionId'
+      fullPath: '/collection/$collectionId/'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/playthroughs/$playthroughId/finish': {
+      id: '/_mainLayout/playthroughs/$playthroughId/finish'
+      path: '/playthroughs/$playthroughId/finish'
+      fullPath: '/playthroughs/$playthroughId/finish'
+      preLoaderRoute: typeof MainLayoutPlaythroughsPlaythroughIdFinishRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/edit': {
+      id: '/_mainLayout/collection/$collectionId/edit'
+      path: '/collection/$collectionId/edit'
+      fullPath: '/collection/$collectionId/edit'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdEditRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/change-images': {
+      id: '/_mainLayout/collection/$collectionId/change-images'
+      path: '/collection/$collectionId/change-images'
+      fullPath: '/collection/$collectionId/change-images'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
   }
 }
+
+interface AdminLayoutRouteChildren {
+  AdminLayoutBackupRoute: typeof AdminLayoutBackupRoute
+}
+
+const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminLayoutBackupRoute: AdminLayoutBackupRoute,
+}
+
+const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
+  AdminLayoutRouteChildren,
+)
 
 interface AuthLayoutRouteChildren {
   AuthLayoutEmailVerificationRoute: typeof AuthLayoutEmailVerificationRoute
@@ -198,13 +504,43 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 )
 
 interface MainLayoutRouteChildren {
-  MainLayoutCollectionRoute: typeof MainLayoutCollectionRoute
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
+  MainLayoutCollectionAddRoute: typeof MainLayoutCollectionAddRoute
+  MainLayoutCompletionsAddRoute: typeof MainLayoutCompletionsAddRoute
+  MainLayoutProfileConnectionsRoute: typeof MainLayoutProfileConnectionsRoute
+  MainLayoutProfileManageListsRoute: typeof MainLayoutProfileManageListsRoute
+  MainLayoutProfileMasteredGamesRoute: typeof MainLayoutProfileMasteredGamesRoute
+  MainLayoutProfilePlatinumListRoute: typeof MainLayoutProfilePlatinumListRoute
+  MainLayoutProfileSettingsRoute: typeof MainLayoutProfileSettingsRoute
+  MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
+  MainLayoutCompletionsIndexRoute: typeof MainLayoutCompletionsIndexRoute
+  MainLayoutPlaythroughsIndexRoute: typeof MainLayoutPlaythroughsIndexRoute
+  MainLayoutCollectionCollectionIdChangeImagesRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  MainLayoutCollectionCollectionIdEditRoute: typeof MainLayoutCollectionCollectionIdEditRoute
+  MainLayoutPlaythroughsPlaythroughIdFinishRoute: typeof MainLayoutPlaythroughsPlaythroughIdFinishRoute
+  MainLayoutCollectionCollectionIdIndexRoute: typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
-  MainLayoutCollectionRoute: MainLayoutCollectionRoute,
   MainLayoutIndexRoute: MainLayoutIndexRoute,
+  MainLayoutCollectionAddRoute: MainLayoutCollectionAddRoute,
+  MainLayoutCompletionsAddRoute: MainLayoutCompletionsAddRoute,
+  MainLayoutProfileConnectionsRoute: MainLayoutProfileConnectionsRoute,
+  MainLayoutProfileManageListsRoute: MainLayoutProfileManageListsRoute,
+  MainLayoutProfileMasteredGamesRoute: MainLayoutProfileMasteredGamesRoute,
+  MainLayoutProfilePlatinumListRoute: MainLayoutProfilePlatinumListRoute,
+  MainLayoutProfileSettingsRoute: MainLayoutProfileSettingsRoute,
+  MainLayoutCollectionIndexRoute: MainLayoutCollectionIndexRoute,
+  MainLayoutCompletionsIndexRoute: MainLayoutCompletionsIndexRoute,
+  MainLayoutPlaythroughsIndexRoute: MainLayoutPlaythroughsIndexRoute,
+  MainLayoutCollectionCollectionIdChangeImagesRoute:
+    MainLayoutCollectionCollectionIdChangeImagesRoute,
+  MainLayoutCollectionCollectionIdEditRoute:
+    MainLayoutCollectionCollectionIdEditRoute,
+  MainLayoutPlaythroughsPlaythroughIdFinishRoute:
+    MainLayoutPlaythroughsPlaythroughIdFinishRoute,
+  MainLayoutCollectionCollectionIdIndexRoute:
+    MainLayoutCollectionCollectionIdIndexRoute,
 }
 
 const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(
@@ -212,6 +548,7 @@ const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  AdminLayoutRoute: AdminLayoutRouteWithChildren,
   AuthLayoutRoute: AuthLayoutRouteWithChildren,
   MainLayoutRoute: MainLayoutRouteWithChildren,
   DemoTableRoute: DemoTableRoute,

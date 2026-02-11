@@ -100,7 +100,7 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/lists">
+          <Link to="/profile/manage-lists">
             <ListIcon className="size-4 mr-1" />
             Manage Lists
           </Link>
@@ -111,7 +111,7 @@ const UserButton = ({ Link, onLogout }: Props) => {
             className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
             asChild
           >
-            <Link to="/platinum-list">
+            <Link to="/profile/platinum-list">
               <ListIcon className="size-4 mr-1" />
               Platinum List
             </Link>
@@ -122,7 +122,7 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/mastered-games">
+          <Link to="/profile/mastered-games">
             <ListIcon className="size-4 mr-1" />
             Mastered Games
           </Link>
