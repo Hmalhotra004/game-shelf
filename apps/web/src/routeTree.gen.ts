@@ -27,6 +27,7 @@ import { Route as MainLayoutProfilePlatinumListRouteImport } from './routes/_mai
 import { Route as MainLayoutProfileMasteredGamesRouteImport } from './routes/_mainLayout/profile/mastered-games'
 import { Route as MainLayoutProfileManageListsRouteImport } from './routes/_mainLayout/profile/manage-lists'
 import { Route as MainLayoutProfileConnectionsRouteImport } from './routes/_mainLayout/profile/connections'
+import { Route as MainLayoutProfileChangeVariantRouteImport } from './routes/_mainLayout/profile/change-variant'
 import { Route as MainLayoutCompletionsAddRouteImport } from './routes/_mainLayout/completions/add'
 import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
 import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
@@ -131,6 +132,12 @@ const MainLayoutProfileConnectionsRoute =
     path: '/profile/connections',
     getParentRoute: () => MainLayoutRoute,
   } as any)
+const MainLayoutProfileChangeVariantRoute =
+  MainLayoutProfileChangeVariantRouteImport.update({
+    id: '/profile/change-variant',
+    path: '/profile/change-variant',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const MainLayoutCompletionsAddRoute =
   MainLayoutCompletionsAddRouteImport.update({
     id: '/completions/add',
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/demo/table': typeof DemoTableRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
   '/completions/add': typeof MainLayoutCompletionsAddRoute
+  '/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
   '/profile/connections': typeof MainLayoutProfileConnectionsRoute
   '/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
   '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
@@ -200,6 +208,7 @@ export interface FileRoutesByTo {
   '/demo/table': typeof DemoTableRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
   '/completions/add': typeof MainLayoutCompletionsAddRoute
+  '/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
   '/profile/connections': typeof MainLayoutProfileConnectionsRoute
   '/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
   '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
@@ -227,6 +236,7 @@ export interface FileRoutesById {
   '/_mainLayout/': typeof MainLayoutIndexRoute
   '/_mainLayout/collection/add': typeof MainLayoutCollectionAddRoute
   '/_mainLayout/completions/add': typeof MainLayoutCompletionsAddRoute
+  '/_mainLayout/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
   '/_mainLayout/profile/connections': typeof MainLayoutProfileConnectionsRoute
   '/_mainLayout/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
   '/_mainLayout/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/collection/add'
     | '/completions/add'
+    | '/profile/change-variant'
     | '/profile/connections'
     | '/profile/manage-lists'
     | '/profile/mastered-games'
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/collection/add'
     | '/completions/add'
+    | '/profile/change-variant'
     | '/profile/connections'
     | '/profile/manage-lists'
     | '/profile/mastered-games'
@@ -301,6 +313,7 @@ export interface FileRouteTypes {
     | '/_mainLayout/'
     | '/_mainLayout/collection/add'
     | '/_mainLayout/completions/add'
+    | '/_mainLayout/profile/change-variant'
     | '/_mainLayout/profile/connections'
     | '/_mainLayout/profile/manage-lists'
     | '/_mainLayout/profile/mastered-games'
@@ -450,6 +463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutProfileConnectionsRouteImport
       parentRoute: typeof MainLayoutRoute
     }
+    '/_mainLayout/profile/change-variant': {
+      id: '/_mainLayout/profile/change-variant'
+      path: '/profile/change-variant'
+      fullPath: '/profile/change-variant'
+      preLoaderRoute: typeof MainLayoutProfileChangeVariantRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_mainLayout/completions/add': {
       id: '/_mainLayout/completions/add'
       path: '/completions/add'
@@ -529,6 +549,7 @@ interface MainLayoutRouteChildren {
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
   MainLayoutCollectionAddRoute: typeof MainLayoutCollectionAddRoute
   MainLayoutCompletionsAddRoute: typeof MainLayoutCompletionsAddRoute
+  MainLayoutProfileChangeVariantRoute: typeof MainLayoutProfileChangeVariantRoute
   MainLayoutProfileConnectionsRoute: typeof MainLayoutProfileConnectionsRoute
   MainLayoutProfileManageListsRoute: typeof MainLayoutProfileManageListsRoute
   MainLayoutProfileMasteredGamesRoute: typeof MainLayoutProfileMasteredGamesRoute
@@ -547,6 +568,7 @@ const MainLayoutRouteChildren: MainLayoutRouteChildren = {
   MainLayoutIndexRoute: MainLayoutIndexRoute,
   MainLayoutCollectionAddRoute: MainLayoutCollectionAddRoute,
   MainLayoutCompletionsAddRoute: MainLayoutCompletionsAddRoute,
+  MainLayoutProfileChangeVariantRoute: MainLayoutProfileChangeVariantRoute,
   MainLayoutProfileConnectionsRoute: MainLayoutProfileConnectionsRoute,
   MainLayoutProfileManageListsRoute: MainLayoutProfileManageListsRoute,
   MainLayoutProfileMasteredGamesRoute: MainLayoutProfileMasteredGamesRoute,

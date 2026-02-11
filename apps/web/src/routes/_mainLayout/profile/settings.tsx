@@ -1,9 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { SettingsView } from "@repo/ui/views/profile/SettingsView";
+import { Link, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_mainLayout/profile/settings")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/_mainLayout/profile/settings"!</div>;
+  return (
+    <SettingsView
+      renderLink={(to, children) => <Link to={to}>{children}</Link>}
+    />
+  );
 }
