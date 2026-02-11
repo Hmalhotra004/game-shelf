@@ -1,6 +1,7 @@
 import {
   CollectionStatusType,
   CompletionStyleType,
+  PlatformType,
   PlaythroughStatusType,
   ProviderType,
 } from "@repo/schemas/types/index";
@@ -11,6 +12,11 @@ export const providerChartColorMap: Record<ProviderType, string> = {
   Steam: "oklch(27.9% 0.041 260.031)",
   Epic: "#000000",
   Physical: "#d97706",
+};
+
+export const platformChartColorMap: Record<PlatformType, string> = {
+  PS: "#1447e6",
+  PC: "oklch(27.9% 0.041 260.031)",
 };
 
 export const playthroughStatusChartColorMap: Record<

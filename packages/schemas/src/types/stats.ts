@@ -1,3 +1,5 @@
+import { DataType } from "./index";
+
 export type getStats = {
   overview: {
     totalGames: number;
@@ -8,34 +10,15 @@ export type getStats = {
     completedGames: number;
   };
 
-  statusDistribution: {
-    label: string;
-    value: string;
-  };
+  statusDistribution: DataType[];
 
-  platformDistribution: {
-    label: string;
-    value: string;
-  };
+  platformDistribution: DataType[];
 
-  providerDistribution: {
-    label: string;
-    value: string;
-  };
+  providerDistribution: DataType[];
 
-  completionStyleDistribution: {
-    label: string;
-    value: string;
-  }[];
+  completionStyleDistribution: DataType[];
 
-  playtimeByDate: {
-    date: string;
-    hours: string;
-  }[];
+  playtimeByDate: DataType[];
 
-  purchasesByMonth: {
-    month: string;
-    games: string;
-    amount: string;
-  }[];
+  purchasesByMonth: DataType[];
 };
