@@ -3,6 +3,7 @@
 import PieChartCard from "@repo/ui/components/charts/PieChartCard";
 import { useQuery } from "@tanstack/react-query";
 import { OverviewCard } from "../components/home/OverviewCard";
+import { ScrollArea, ScrollBar } from "../components/ui/scroll-area";
 import { getStatsQueryOptions } from "../queries/stats/stats.queries";
 
 import {
@@ -59,44 +60,48 @@ export const HomeView = () => {
         ))}
       </div>
 
-      <div className="flex items-center justify-center flex-wrap gap-4">
-        {data.statusDistribution.length > 0 && (
-          <PieChartCard
-            title="Status"
-            data={data.statusDistribution}
-            colorMap={statusChartColorMap}
-          />
-        )}
+      <ScrollArea className="h-140">
+        <div className="flex items-center flex-wrap gap-4">
+          {data.statusDistribution.length > 0 && (
+            <PieChartCard
+              title="Status"
+              data={data.statusDistribution}
+              colorMap={statusChartColorMap}
+            />
+          )}
 
-        {data.platformDistribution.length > 0 && (
-          <PieChartCard
-            title="Platform"
-            data={data.platformDistribution}
-            colorMap={platformChartColorMap}
-          />
-        )}
+          {data.platformDistribution.length > 0 && (
+            <PieChartCard
+              title="Platform"
+              data={data.platformDistribution}
+              colorMap={platformChartColorMap}
+            />
+          )}
 
-        {data.providerDistribution.length > 0 && (
-          <PieChartCard
-            title="Provider"
-            data={data.providerDistribution}
-            colorMap={providerChartColorMap}
-          />
-        )}
+          {data.providerDistribution.length > 0 && (
+            <PieChartCard
+              title="Provider"
+              data={data.providerDistribution}
+              colorMap={providerChartColorMap}
+            />
+          )}
 
-        {data.completionStyleDistribution.length > 0 && (
-          <PieChartCard
-            title="Completion Style"
-            data={data.completionStyleDistribution}
-            colorMap={completionStyleChartColorMap}
-          />
-        )}
-      </div>
+          {data.completionStyleDistribution.length > 0 && (
+            <PieChartCard
+              title="Completion Style"
+              data={data.completionStyleDistribution}
+              colorMap={completionStyleChartColorMap}
+            />
+          )}
+
+          <ScrollBar orientation="vertical" />
+        </div>
+      </ScrollArea>
 
       {/* <div className="flex gap-6">
         <PlaytimeLineChart data={data.playtimeByDate} />
         <PurchasesBarChart data={data.purchasesByMonth} />
-      </div> */}
+        </div> */}
     </div>
   );
 };
