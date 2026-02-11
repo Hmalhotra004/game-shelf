@@ -232,6 +232,13 @@
       "when": 1770105263669,
       "tag": "0032_amt_notnull",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1770793694602,
+      "tag": "0033_gameRecord_enum_to_sync_type",
+      "breakpoints": true
     }
   ]
 }

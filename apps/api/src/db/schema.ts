@@ -67,15 +67,7 @@ export const completionStyle = pgEnum("completion_style", [
 
 export const userAccount = pgEnum("UserAccount", ["User", "Admin"]);
 
-export const gameRecordType = pgEnum("game_record_type", [
-  "PLATINUM",
-  "MASTERED",
-]);
-
-export const syncType = pgEnum("sync_type", [
-  "MASTERED_GAMES",
-  "PLATINUMED_GAMES",
-]);
+export const syncType = pgEnum("sync_type", ["PLATINUM", "MASTERED"]);
 
 export const syncTypeStatus = pgEnum("sync_type_status", [
   "Failed",
@@ -440,7 +432,7 @@ export const gameRecord = pgTable(
       .primaryKey()
       .$defaultFn(() => nanoid()),
 
-    type: gameRecordType("type").notNull(),
+    type: syncType("type").notNull(),
 
     dateUnlocked: timestamp("date_unlocked", {
       mode: "date",
