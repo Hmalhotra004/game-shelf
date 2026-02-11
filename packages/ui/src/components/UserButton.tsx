@@ -7,7 +7,7 @@ import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
 
 import {
-  ImportIcon,
+  DownloadCloudIcon,
   KeyRoundIcon,
   ListIcon,
   LogOutIcon,
@@ -106,15 +106,17 @@ const UserButton = ({ Link, onLogout }: Props) => {
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/platinum-list">
-            <ListIcon className="size-4 mr-1" />
-            Platinum List
-          </Link>
-        </DropdownMenuItem>
+        {user.PSNAccountId && user.PSNAccountUserName && (
+          <DropdownMenuItem
+            className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
+            asChild
+          >
+            <Link to="/platinum-list">
+              <ListIcon className="size-4 mr-1" />
+              Platinum List
+            </Link>
+          </DropdownMenuItem>
+        )}
 
         <DropdownMenuItem
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
@@ -138,20 +140,9 @@ const UserButton = ({ Link, onLogout }: Props) => {
           </Link>
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/import-games">
-            <ImportIcon className="size-4 mr-1" />
-            Import Games
-          </Link>
-        </DropdownMenuItem>
-
         <Separator className="my-1" />
 
-        {/* FIXME:do it ater */}
-        {/* {!isLoading && isAdmin && (
+        {user.userAccountType === "Admin" && (
           <DropdownMenuItem
             className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
             asChild
@@ -161,7 +152,7 @@ const UserButton = ({ Link, onLogout }: Props) => {
               Backup Data
             </Link>
           </DropdownMenuItem>
-        )} */}
+        )}
 
         <DropdownMenuItem
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
