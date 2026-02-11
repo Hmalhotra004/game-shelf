@@ -1,11 +1,11 @@
 "use client";
 
 import { CollectionGetMany } from "@repo/schemas/types/collection";
-import { LinkType } from "@repo/schemas/types/index";
 import { Badge } from "@repo/ui/components/ui/badge";
 import { betterTimeText, cn, statusColorMap } from "@repo/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { format } from "date-fns";
+import { ReactNode } from "react";
 import CardContextMenu from "./CardContextMenu";
 
 import {
@@ -36,16 +36,21 @@ const cardVariants = cva(
 );
 
 interface Props extends VariantProps<typeof cardVariants> {
-  Link: LinkType;
   game: CollectionGetMany;
   showcase?: boolean;
+  renderLink?: (children: ReactNode, game: CollectionGetMany) => ReactNode;
+  renderContextMenuActions?: {
+    onEdit?: (game: CollectionGetMany) => void;
+    onChangeImages?: (game: CollectionGetMany) => void;
+  };
 }
 
 export const CollectionCard = ({
   game,
   variant,
   showcase = false,
-  Link,
+  renderLink,
+  renderContextMenuActions,
 }: Props) => {
   const getPlayTime = () => {
     if (game.status === "Online") return betterTimeText(game.onlinePlaySecs);
@@ -103,17 +108,22 @@ export const CollectionCard = ({
     return <div className="group">{content}</div>;
   }
 
+  const wrappedContent = renderLink ? renderLink(content, game) : content;
+
   return (
-    <CardContextMenu data={game}>
-      <Link
-        to={`/collection/${game.id}?provider=${game.provider}`}
+    <CardContextMenu
+      data={game}
+      onEdit={renderContextMenuActions?.onEdit}
+      onChangeImages={renderContextMenuActions?.onChangeImages}
+    >
+      <div
         className={cn(
           "group focus:outline-none",
           variant !== "compact" && "relative",
         )}
       >
-        {content}
-      </Link>
+        {wrappedContent}
+      </div>
     </CardContextMenu>
   );
 };

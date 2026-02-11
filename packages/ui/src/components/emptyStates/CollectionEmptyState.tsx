@@ -1,5 +1,3 @@
-import { LinkType } from "@repo/schemas/types/index";
-
 import {
   Empty,
   EmptyContent,
@@ -9,10 +7,16 @@ import {
 } from "@repo/ui/components/ui/empty";
 
 interface Props {
-  Link: LinkType;
+  renderLink?: (children: React.ReactNode) => React.ReactNode;
 }
 
-export const CollectionEmptyState = ({ Link }: Props) => {
+export const CollectionEmptyState = ({ renderLink }: Props) => {
+  const importLink = (
+    <span className="text-primary font-medium underline underline-offset-4 cursor-pointer">
+      Import Games
+    </span>
+  );
+
   return (
     <Empty className="border">
       <EmptyHeader>
@@ -23,12 +27,7 @@ export const CollectionEmptyState = ({ Link }: Props) => {
       </EmptyHeader>
 
       <EmptyContent>
-        <Link
-          to="/import-games"
-          className="text-primary font-medium underline underline-offset-4"
-        >
-          Import Games
-        </Link>
+        {renderLink ? renderLink(importLink) : importLink}
       </EmptyContent>
     </Empty>
   );

@@ -16,6 +16,7 @@ import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as AuthLayoutSignUpRouteImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as AuthLayoutForgotPasswordRouteImport } from './routes/_authLayout/forgot-password'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
 import { Route as AdminLayoutBackupRouteImport } from './routes/_adminLayout/backup'
 import { Route as MainLayoutPlaythroughsIndexRouteImport } from './routes/_mainLayout/playthroughs/index'
@@ -65,6 +66,12 @@ const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
+const AuthLayoutForgotPasswordRoute =
+  AuthLayoutForgotPasswordRouteImport.update({
+    id: '/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const AuthLayoutEmailVerificationRoute =
   AuthLayoutEmailVerificationRouteImport.update({
     id: '/email-verification',
@@ -164,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
   '/backup': typeof AdminLayoutBackupRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
   '/demo/table': typeof DemoTableRoute
@@ -186,6 +194,7 @@ export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
   '/backup': typeof AdminLayoutBackupRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
   '/demo/table': typeof DemoTableRoute
@@ -211,6 +220,7 @@ export interface FileRoutesById {
   '/_mainLayout': typeof MainLayoutRouteWithChildren
   '/_adminLayout/backup': typeof AdminLayoutBackupRoute
   '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
+  '/_authLayout/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/sign-up': typeof AuthLayoutSignUpRoute
   '/demo/table': typeof DemoTableRoute
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/'
     | '/backup'
     | '/email-verification'
+    | '/forgot-password'
     | '/login'
     | '/sign-up'
     | '/demo/table'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/'
     | '/backup'
     | '/email-verification'
+    | '/forgot-password'
     | '/login'
     | '/sign-up'
     | '/demo/table'
@@ -282,6 +294,7 @@ export interface FileRouteTypes {
     | '/_mainLayout'
     | '/_adminLayout/backup'
     | '/_authLayout/email-verification'
+    | '/_authLayout/forgot-password'
     | '/_authLayout/login'
     | '/_authLayout/sign-up'
     | '/demo/table'
@@ -358,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof AuthLayoutLoginRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/forgot-password': {
+      id: '/_authLayout/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
     '/_authLayout/email-verification': {
@@ -489,12 +509,14 @@ const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
 
 interface AuthLayoutRouteChildren {
   AuthLayoutEmailVerificationRoute: typeof AuthLayoutEmailVerificationRoute
+  AuthLayoutForgotPasswordRoute: typeof AuthLayoutForgotPasswordRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignUpRoute: typeof AuthLayoutSignUpRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutEmailVerificationRoute: AuthLayoutEmailVerificationRoute,
+  AuthLayoutForgotPasswordRoute: AuthLayoutForgotPasswordRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignUpRoute: AuthLayoutSignUpRoute,
 }

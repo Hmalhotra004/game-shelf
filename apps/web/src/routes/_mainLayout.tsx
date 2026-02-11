@@ -48,7 +48,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar
-        Link={Link}
+        renderLink={(to, children) => <Link to={to}>{children}</Link>}
         onLogout={logout}
         pathname={pathname}
       />

@@ -8,7 +8,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { collectionId } = useParams({
-    from: "/_mainLayout/collection/$collectionId/",
+    from: "/_mainLayout/collection/$collectionId/edit",
   });
 
   return <div>Hello "/_mainLayout/collection/$collectionId/edit"!</div>;

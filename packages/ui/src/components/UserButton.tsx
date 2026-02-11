@@ -1,6 +1,5 @@
 "use client";
 
-import type { LinkType } from "@repo/schemas/types/index";
 import { authClient } from "@repo/ui/lib/authClient";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Separator } from "./ui/separator";
@@ -22,11 +21,11 @@ import {
 } from "./ui/dropdown-menu";
 
 interface Props {
-  Link: LinkType;
+  renderLink: (to: string, children: React.ReactNode) => React.ReactNode;
   onLogout: () => void;
 }
 
-const UserButton = ({ Link, onLogout }: Props) => {
+const UserButton = ({ renderLink, onLogout }: Props) => {
   const { data, isPending } = authClient.useSession();
 
   const user = data?.user;
@@ -100,10 +99,13 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/profile/manage-lists">
-            <ListIcon className="size-4 mr-1" />
-            Manage Lists
-          </Link>
+          {renderLink(
+            "/profile/manage-lists",
+            <>
+              <ListIcon className="size-4 mr-1" />
+              Manage Lists
+            </>,
+          )}
         </DropdownMenuItem>
 
         {user.PSNAccountId && user.PSNAccountUserName && (
@@ -111,10 +113,13 @@ const UserButton = ({ Link, onLogout }: Props) => {
             className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
             asChild
           >
-            <Link to="/profile/platinum-list">
-              <ListIcon className="size-4 mr-1" />
-              Platinum List
-            </Link>
+            {renderLink(
+              "/profile/platinum-list",
+              <>
+                <ListIcon className="size-4 mr-1" />
+                Platinum List
+              </>,
+            )}
           </DropdownMenuItem>
         )}
 
@@ -122,10 +127,13 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/profile/mastered-games">
-            <ListIcon className="size-4 mr-1" />
-            Mastered Games
-          </Link>
+          {renderLink(
+            "/profile/mastered-games",
+            <>
+              <ListIcon className="size-4 mr-1" />
+              Mastered Games
+            </>,
+          )}
         </DropdownMenuItem>
 
         <Separator className="my-1" />
@@ -134,10 +142,13 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/profile/connections">
-            <KeyRoundIcon className="size-4 mr-1" />
-            Connections
-          </Link>
+          {renderLink(
+            "/profile/connections",
+            <>
+              <KeyRoundIcon className="size-4 mr-1" />
+              Connections
+            </>,
+          )}
         </DropdownMenuItem>
 
         <Separator className="my-1" />
@@ -147,10 +158,13 @@ const UserButton = ({ Link, onLogout }: Props) => {
             className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
             asChild
           >
-            <Link to="/backup">
-              <DownloadCloudIcon className="size-4 mr-1" />
-              Backup Data
-            </Link>
+            {renderLink(
+              "/backup",
+              <>
+                <DownloadCloudIcon className="size-4 mr-1" />
+                Backup Data
+              </>,
+            )}
           </DropdownMenuItem>
         )}
 
@@ -158,10 +172,13 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/profile/settings">
-            <SettingsIcon className="size-4 mr-1" />
-            Settings
-          </Link>
+          {renderLink(
+            "/profile/settings",
+            <>
+              <SettingsIcon className="size-4 mr-1" />
+              Settings
+            </>,
+          )}
         </DropdownMenuItem>
 
         <Separator className="my-1" />

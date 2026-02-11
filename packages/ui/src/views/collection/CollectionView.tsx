@@ -1,4 +1,4 @@
-import { LinkType } from "@repo/schemas/types/index";
+import { CollectionGetMany } from "@repo/schemas/types/collection";
 import { CollectionCard } from "@repo/ui/components/collection/CollectionCard";
 import Filters from "@repo/ui/components/collection/Filters";
 import { CollectionEmptyState } from "@repo/ui/components/emptyStates/CollectionEmptyState";
@@ -10,10 +10,22 @@ import { useQuery } from "@tanstack/react-query";
 import { Activity } from "react";
 
 interface Props {
-  Link: LinkType;
+  renderLink?: (
+    children: React.ReactNode,
+    game: CollectionGetMany,
+  ) => React.ReactNode;
+  renderImportLink?: (children: React.ReactNode) => React.ReactNode;
+  renderContextMenuActions?: {
+    onEdit?: (game: CollectionGetMany) => void;
+    onChangeImages?: (game: CollectionGetMany) => void;
+  };
 }
 
-export const CollectionView = ({ Link }: Props) => {
+export const CollectionView = ({
+  renderLink,
+  renderImportLink,
+  renderContextMenuActions,
+}: Props) => {
   const [filters] = useCollectionFilters();
   const variant = useCardVariantStore((s) => s.variant);
 
@@ -70,7 +82,9 @@ export const CollectionView = ({ Link }: Props) => {
         <CollectionLoading />
       ) : (
         <>
-          {games.length === 0 && <CollectionEmptyState Link={Link} />}
+          {games.length === 0 && (
+            <CollectionEmptyState renderLink={renderImportLink} />
+          )}
 
           <Activity
             name="GRID"
@@ -83,8 +97,9 @@ export const CollectionView = ({ Link }: Props) => {
                     <CollectionCard
                       key={g.id}
                       game={g}
-                      Link={Link}
+                      renderLink={renderLink}
                       variant={variant}
+                      renderContextMenuActions={renderContextMenuActions}
                     />
                   );
                 })}

@@ -2,8 +2,8 @@ import { verifySession } from "@repo/ui/lib/verifySession";
 import LoginView from "@repo/ui/views/auth/LoginView";
 
 import {
-  createFileRoute,
   Link,
+  createFileRoute,
   redirect,
   useNavigate,
 } from "@tanstack/react-router";
@@ -29,7 +29,10 @@ function RouteComponent() {
   return (
     <LoginView
       onSuccess={onSuccess}
-      Link={Link}
+      renderForgotLink={(children) => (
+        <Link to="/forgot-password">{children}</Link>
+      )}
+      rendersignLink={(children) => <Link to="/sign-up">{children}</Link>}
     />
   );
 }

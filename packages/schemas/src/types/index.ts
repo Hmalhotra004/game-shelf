@@ -1,4 +1,3 @@
-import type { ComponentType, ReactNode } from "react";
 import z from "zod";
 
 import {
@@ -21,11 +20,5 @@ export type GameType = z.infer<typeof GameTypeSchema>;
 export type CompletionStyleType = z.infer<typeof completionStyleSchema>;
 export type SyncType = z.infer<typeof SyncTypeSchema>;
 // export type UserAccountType = z.infer<typeof UserAccountSchema>;
-
-export type LinkType = ComponentType<{
-  to: string;
-  children: ReactNode;
-  className?: string;
-}>;
 
 export type DataType = { label: string; value: number };

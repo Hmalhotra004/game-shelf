@@ -28,7 +28,7 @@ function RouteComponent() {
 
   return (
     <SignupView
-      Link={Link}
+      renderLink={(children) => <Link to="/login">{children}</Link>}
       onSuccess={onSuccess}
     />
   );

@@ -16,9 +16,11 @@ import {
 interface Props {
   children: ReactNode;
   data: CollectionGetMany;
+  onEdit?: (game: CollectionGetMany) => void;
+  onChangeImages?: (game: CollectionGetMany) => void;
 }
 
-const CardContextMenu = ({ children, data }: Props) => {
+const CardContextMenu = ({ children, data, onChangeImages, onEdit }: Props) => {
   const queryClient = useQueryClient();
 
   const deleteGame = useMutation(
@@ -46,17 +48,11 @@ const CardContextMenu = ({ children, data }: Props) => {
       <ContextMenu>
         <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem
-          // onClick={() => router.push(`/collection/${data.id}/edit` as Route)}
-          >
+          <ContextMenuItem onClick={() => onEdit?.(data)}>
             <Edit2Icon className="size-4" /> Edit
           </ContextMenuItem>
 
-          <ContextMenuItem
-          // onClick={() =>
-          //   router.push(`/collection/${data.id}/change-image` as Route)
-          // }
-          >
+          <ContextMenuItem onClick={() => onChangeImages?.(data)}>
             <ImageIcon className="size-4" /> Change Images
           </ContextMenuItem>
 
