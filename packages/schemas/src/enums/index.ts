@@ -115,3 +115,7 @@ export const syncTypeValues = Object.values(
 export const syncTypeStatusValues = Object.values(
   SyncTypeStatusEnum,
 ) as readonly SyncTypeStatusEnum[];
+
+export const userAccountTypeValues = Object.values(
+  UserAccountEnum,
+) as readonly UserAccountEnum[];
