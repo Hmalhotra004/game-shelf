@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@faker-js/faker": "^10.0.0",
+    "@repo/client-db": "workspace:*",
     "@repo/schemas": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@sqlite.org/sqlite-wasm": "3.51.2-build6",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-devtools": "^0.7.0",
@@ -26,6 +28,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "axios": "^1.13.4",
     "better-auth": "^1.4.17",
+    "drizzle-orm": "^0.45.1",
     "idb": "^8.0.3",
     "lucide-react": "^0.545.0",
     "nuqs": "^2.8.8",
