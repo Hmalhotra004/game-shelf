@@ -57,4 +57,20 @@ export const emailSchema = z.object({
     .min(1, { error: "Email is required" }),
 });
 
+export const changePasswordSchema = z
+  .object({
+    password: z
+      .string({ error: "Password is required" })
+      .trim()
+      .min(6, { error: "Minimum 6 characters" }),
+    confirmPassword: z
+      .string({ error: "Confirm Password is required" })
+      .trim()
+      .min(6, { error: "Minimum 6 characters" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: "Password do not match",
+    path: ["confirmPassword"],
+  });
+
 export type EmailSchemaType = z.infer<typeof emailSchema>;

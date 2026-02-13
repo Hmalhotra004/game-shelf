@@ -16,12 +16,12 @@ import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as AuthLayoutSignUpRouteImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
-import { Route as AuthLayoutForgotPasswordRouteImport } from './routes/_authLayout/forgot-password'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
 import { Route as AdminLayoutBackupRouteImport } from './routes/_adminLayout/backup'
 import { Route as MainLayoutPlaythroughsIndexRouteImport } from './routes/_mainLayout/playthroughs/index'
 import { Route as MainLayoutCompletionsIndexRouteImport } from './routes/_mainLayout/completions/index'
 import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
+import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
 import { Route as MainLayoutProfileSettingsRouteImport } from './routes/_mainLayout/profile/settings'
 import { Route as MainLayoutProfilePlatinumListRouteImport } from './routes/_mainLayout/profile/platinum-list'
 import { Route as MainLayoutProfileMasteredGamesRouteImport } from './routes/_mainLayout/profile/mastered-games'
@@ -30,6 +30,8 @@ import { Route as MainLayoutProfileConnectionsRouteImport } from './routes/_main
 import { Route as MainLayoutProfileChangeVariantRouteImport } from './routes/_mainLayout/profile/change-variant'
 import { Route as MainLayoutCompletionsAddRouteImport } from './routes/_mainLayout/completions/add'
 import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
+import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
+import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
 import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
 import { Route as MainLayoutPlaythroughsPlaythroughIdFinishRouteImport } from './routes/_mainLayout/playthroughs/$playthroughId/finish'
 import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
@@ -67,12 +69,6 @@ const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
-const AuthLayoutForgotPasswordRoute =
-  AuthLayoutForgotPasswordRouteImport.update({
-    id: '/forgot-password',
-    path: '/forgot-password',
-    getParentRoute: () => AuthLayoutRoute,
-  } as any)
 const AuthLayoutEmailVerificationRoute =
   AuthLayoutEmailVerificationRouteImport.update({
     id: '/email-verification',
@@ -101,6 +97,12 @@ const MainLayoutCollectionIndexRoute =
     id: '/collection/',
     path: '/collection/',
     getParentRoute: () => MainLayoutRoute,
+  } as any)
+const AuthLayoutForgotPasswordIndexRoute =
+  AuthLayoutForgotPasswordIndexRouteImport.update({
+    id: '/forgot-password/',
+    path: '/forgot-password/',
+    getParentRoute: () => AuthLayoutRoute,
   } as any)
 const MainLayoutProfileSettingsRoute =
   MainLayoutProfileSettingsRouteImport.update({
@@ -149,6 +151,18 @@ const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
   path: '/collection/add',
   getParentRoute: () => MainLayoutRoute,
 } as any)
+const AuthLayoutForgotPasswordVerifyOtpRoute =
+  AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
+    id: '/forgot-password/verify-otp',
+    path: '/forgot-password/verify-otp',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutForgotPasswordChangePasswordRoute =
+  AuthLayoutForgotPasswordChangePasswordRouteImport.update({
+    id: '/forgot-password/change-password',
+    path: '/forgot-password/change-password',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const MainLayoutCollectionCollectionIdIndexRoute =
   MainLayoutCollectionCollectionIdIndexRouteImport.update({
     id: '/collection/$collectionId/',
@@ -178,10 +192,11 @@ export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
   '/backup': typeof AdminLayoutBackupRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
-  '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
   '/demo/table': typeof DemoTableRoute
+  '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
   '/completions/add': typeof MainLayoutCompletionsAddRoute
   '/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
@@ -190,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
   '/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
   '/profile/settings': typeof MainLayoutProfileSettingsRoute
+  '/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
   '/collection/': typeof MainLayoutCollectionIndexRoute
   '/completions/': typeof MainLayoutCompletionsIndexRoute
   '/playthroughs/': typeof MainLayoutPlaythroughsIndexRoute
@@ -202,10 +218,11 @@ export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
   '/backup': typeof AdminLayoutBackupRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
-  '/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/login': typeof AuthLayoutLoginRoute
   '/sign-up': typeof AuthLayoutSignUpRoute
   '/demo/table': typeof DemoTableRoute
+  '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
   '/completions/add': typeof MainLayoutCompletionsAddRoute
   '/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
@@ -214,6 +231,7 @@ export interface FileRoutesByTo {
   '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
   '/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
   '/profile/settings': typeof MainLayoutProfileSettingsRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordIndexRoute
   '/collection': typeof MainLayoutCollectionIndexRoute
   '/completions': typeof MainLayoutCompletionsIndexRoute
   '/playthroughs': typeof MainLayoutPlaythroughsIndexRoute
@@ -229,11 +247,12 @@ export interface FileRoutesById {
   '/_mainLayout': typeof MainLayoutRouteWithChildren
   '/_adminLayout/backup': typeof AdminLayoutBackupRoute
   '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
-  '/_authLayout/forgot-password': typeof AuthLayoutForgotPasswordRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/sign-up': typeof AuthLayoutSignUpRoute
   '/demo/table': typeof DemoTableRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
+  '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/_mainLayout/collection/add': typeof MainLayoutCollectionAddRoute
   '/_mainLayout/completions/add': typeof MainLayoutCompletionsAddRoute
   '/_mainLayout/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
@@ -242,6 +261,7 @@ export interface FileRoutesById {
   '/_mainLayout/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
   '/_mainLayout/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
   '/_mainLayout/profile/settings': typeof MainLayoutProfileSettingsRoute
+  '/_authLayout/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
   '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
   '/_mainLayout/completions/': typeof MainLayoutCompletionsIndexRoute
   '/_mainLayout/playthroughs/': typeof MainLayoutPlaythroughsIndexRoute
@@ -256,10 +276,11 @@ export interface FileRouteTypes {
     | '/'
     | '/backup'
     | '/email-verification'
-    | '/forgot-password'
     | '/login'
     | '/sign-up'
     | '/demo/table'
+    | '/forgot-password/change-password'
+    | '/forgot-password/verify-otp'
     | '/collection/add'
     | '/completions/add'
     | '/profile/change-variant'
@@ -268,6 +289,7 @@ export interface FileRouteTypes {
     | '/profile/mastered-games'
     | '/profile/platinum-list'
     | '/profile/settings'
+    | '/forgot-password/'
     | '/collection/'
     | '/completions/'
     | '/playthroughs/'
@@ -280,10 +302,11 @@ export interface FileRouteTypes {
     | '/'
     | '/backup'
     | '/email-verification'
-    | '/forgot-password'
     | '/login'
     | '/sign-up'
     | '/demo/table'
+    | '/forgot-password/change-password'
+    | '/forgot-password/verify-otp'
     | '/collection/add'
     | '/completions/add'
     | '/profile/change-variant'
@@ -292,6 +315,7 @@ export interface FileRouteTypes {
     | '/profile/mastered-games'
     | '/profile/platinum-list'
     | '/profile/settings'
+    | '/forgot-password'
     | '/collection'
     | '/completions'
     | '/playthroughs'
@@ -306,11 +330,12 @@ export interface FileRouteTypes {
     | '/_mainLayout'
     | '/_adminLayout/backup'
     | '/_authLayout/email-verification'
-    | '/_authLayout/forgot-password'
     | '/_authLayout/login'
     | '/_authLayout/sign-up'
     | '/demo/table'
     | '/_mainLayout/'
+    | '/_authLayout/forgot-password/change-password'
+    | '/_authLayout/forgot-password/verify-otp'
     | '/_mainLayout/collection/add'
     | '/_mainLayout/completions/add'
     | '/_mainLayout/profile/change-variant'
@@ -319,6 +344,7 @@ export interface FileRouteTypes {
     | '/_mainLayout/profile/mastered-games'
     | '/_mainLayout/profile/platinum-list'
     | '/_mainLayout/profile/settings'
+    | '/_authLayout/forgot-password/'
     | '/_mainLayout/collection/'
     | '/_mainLayout/completions/'
     | '/_mainLayout/playthroughs/'
@@ -386,13 +412,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutLoginRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
-    '/_authLayout/forgot-password': {
-      id: '/_authLayout/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof AuthLayoutForgotPasswordRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
     '/_authLayout/email-verification': {
       id: '/_authLayout/email-verification'
       path: '/email-verification'
@@ -427,6 +446,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/collection/'
       preLoaderRoute: typeof MainLayoutCollectionIndexRouteImport
       parentRoute: typeof MainLayoutRoute
+    }
+    '/_authLayout/forgot-password/': {
+      id: '/_authLayout/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password/'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
     '/_mainLayout/profile/settings': {
       id: '/_mainLayout/profile/settings'
@@ -484,6 +510,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutCollectionAddRouteImport
       parentRoute: typeof MainLayoutRoute
     }
+    '/_authLayout/forgot-password/verify-otp': {
+      id: '/_authLayout/forgot-password/verify-otp'
+      path: '/forgot-password/verify-otp'
+      fullPath: '/forgot-password/verify-otp'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordVerifyOtpRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/forgot-password/change-password': {
+      id: '/_authLayout/forgot-password/change-password'
+      path: '/forgot-password/change-password'
+      fullPath: '/forgot-password/change-password'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
     '/_mainLayout/collection/$collectionId/': {
       id: '/_mainLayout/collection/$collectionId/'
       path: '/collection/$collectionId'
@@ -529,16 +569,22 @@ const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
 
 interface AuthLayoutRouteChildren {
   AuthLayoutEmailVerificationRoute: typeof AuthLayoutEmailVerificationRoute
-  AuthLayoutForgotPasswordRoute: typeof AuthLayoutForgotPasswordRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignUpRoute: typeof AuthLayoutSignUpRoute
+  AuthLayoutForgotPasswordChangePasswordRoute: typeof AuthLayoutForgotPasswordChangePasswordRoute
+  AuthLayoutForgotPasswordVerifyOtpRoute: typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  AuthLayoutForgotPasswordIndexRoute: typeof AuthLayoutForgotPasswordIndexRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutEmailVerificationRoute: AuthLayoutEmailVerificationRoute,
-  AuthLayoutForgotPasswordRoute: AuthLayoutForgotPasswordRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignUpRoute: AuthLayoutSignUpRoute,
+  AuthLayoutForgotPasswordChangePasswordRoute:
+    AuthLayoutForgotPasswordChangePasswordRoute,
+  AuthLayoutForgotPasswordVerifyOtpRoute:
+    AuthLayoutForgotPasswordVerifyOtpRoute,
+  AuthLayoutForgotPasswordIndexRoute: AuthLayoutForgotPasswordIndexRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
