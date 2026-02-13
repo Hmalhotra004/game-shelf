@@ -26,6 +26,7 @@ import { Route as MainLayoutProfileSettingsRouteImport } from './routes/_mainLay
 import { Route as MainLayoutProfilePlatinumListRouteImport } from './routes/_mainLayout/profile/platinum-list'
 import { Route as MainLayoutProfileMasteredGamesRouteImport } from './routes/_mainLayout/profile/mastered-games'
 import { Route as MainLayoutProfileManageListsRouteImport } from './routes/_mainLayout/profile/manage-lists'
+import { Route as MainLayoutProfileDeleteAccountRouteImport } from './routes/_mainLayout/profile/delete-account'
 import { Route as MainLayoutProfileConnectionsRouteImport } from './routes/_mainLayout/profile/connections'
 import { Route as MainLayoutProfileChangeVariantRouteImport } from './routes/_mainLayout/profile/change-variant'
 import { Route as MainLayoutCompletionsAddRouteImport } from './routes/_mainLayout/completions/add'
@@ -128,6 +129,12 @@ const MainLayoutProfileManageListsRoute =
     path: '/profile/manage-lists',
     getParentRoute: () => MainLayoutRoute,
   } as any)
+const MainLayoutProfileDeleteAccountRoute =
+  MainLayoutProfileDeleteAccountRouteImport.update({
+    id: '/profile/delete-account',
+    path: '/profile/delete-account',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const MainLayoutProfileConnectionsRoute =
   MainLayoutProfileConnectionsRouteImport.update({
     id: '/profile/connections',
@@ -201,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/completions/add': typeof MainLayoutCompletionsAddRoute
   '/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
   '/profile/connections': typeof MainLayoutProfileConnectionsRoute
+  '/profile/delete-account': typeof MainLayoutProfileDeleteAccountRoute
   '/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
   '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
   '/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
@@ -227,6 +235,7 @@ export interface FileRoutesByTo {
   '/completions/add': typeof MainLayoutCompletionsAddRoute
   '/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
   '/profile/connections': typeof MainLayoutProfileConnectionsRoute
+  '/profile/delete-account': typeof MainLayoutProfileDeleteAccountRoute
   '/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
   '/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
   '/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
@@ -257,6 +266,7 @@ export interface FileRoutesById {
   '/_mainLayout/completions/add': typeof MainLayoutCompletionsAddRoute
   '/_mainLayout/profile/change-variant': typeof MainLayoutProfileChangeVariantRoute
   '/_mainLayout/profile/connections': typeof MainLayoutProfileConnectionsRoute
+  '/_mainLayout/profile/delete-account': typeof MainLayoutProfileDeleteAccountRoute
   '/_mainLayout/profile/manage-lists': typeof MainLayoutProfileManageListsRoute
   '/_mainLayout/profile/mastered-games': typeof MainLayoutProfileMasteredGamesRoute
   '/_mainLayout/profile/platinum-list': typeof MainLayoutProfilePlatinumListRoute
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/completions/add'
     | '/profile/change-variant'
     | '/profile/connections'
+    | '/profile/delete-account'
     | '/profile/manage-lists'
     | '/profile/mastered-games'
     | '/profile/platinum-list'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/completions/add'
     | '/profile/change-variant'
     | '/profile/connections'
+    | '/profile/delete-account'
     | '/profile/manage-lists'
     | '/profile/mastered-games'
     | '/profile/platinum-list'
@@ -340,6 +352,7 @@ export interface FileRouteTypes {
     | '/_mainLayout/completions/add'
     | '/_mainLayout/profile/change-variant'
     | '/_mainLayout/profile/connections'
+    | '/_mainLayout/profile/delete-account'
     | '/_mainLayout/profile/manage-lists'
     | '/_mainLayout/profile/mastered-games'
     | '/_mainLayout/profile/platinum-list'
@@ -482,6 +495,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutProfileManageListsRouteImport
       parentRoute: typeof MainLayoutRoute
     }
+    '/_mainLayout/profile/delete-account': {
+      id: '/_mainLayout/profile/delete-account'
+      path: '/profile/delete-account'
+      fullPath: '/profile/delete-account'
+      preLoaderRoute: typeof MainLayoutProfileDeleteAccountRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_mainLayout/profile/connections': {
       id: '/_mainLayout/profile/connections'
       path: '/profile/connections'
@@ -597,6 +617,7 @@ interface MainLayoutRouteChildren {
   MainLayoutCompletionsAddRoute: typeof MainLayoutCompletionsAddRoute
   MainLayoutProfileChangeVariantRoute: typeof MainLayoutProfileChangeVariantRoute
   MainLayoutProfileConnectionsRoute: typeof MainLayoutProfileConnectionsRoute
+  MainLayoutProfileDeleteAccountRoute: typeof MainLayoutProfileDeleteAccountRoute
   MainLayoutProfileManageListsRoute: typeof MainLayoutProfileManageListsRoute
   MainLayoutProfileMasteredGamesRoute: typeof MainLayoutProfileMasteredGamesRoute
   MainLayoutProfilePlatinumListRoute: typeof MainLayoutProfilePlatinumListRoute
@@ -616,6 +637,7 @@ const MainLayoutRouteChildren: MainLayoutRouteChildren = {
   MainLayoutCompletionsAddRoute: MainLayoutCompletionsAddRoute,
   MainLayoutProfileChangeVariantRoute: MainLayoutProfileChangeVariantRoute,
   MainLayoutProfileConnectionsRoute: MainLayoutProfileConnectionsRoute,
+  MainLayoutProfileDeleteAccountRoute: MainLayoutProfileDeleteAccountRoute,
   MainLayoutProfileManageListsRoute: MainLayoutProfileManageListsRoute,
   MainLayoutProfileMasteredGamesRoute: MainLayoutProfileMasteredGamesRoute,
   MainLayoutProfilePlatinumListRoute: MainLayoutProfilePlatinumListRoute,
