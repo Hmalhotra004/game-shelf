@@ -2,12 +2,13 @@ import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyCollection } from "@/middlewares/collectionMiddleware";
 import { Router } from "express";
 
-import { deleteCollection, getMany } from "@/controllers/collection";
+import { deleteCollection, getById, getMany } from "@/controllers/collection";
 
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
   router.get("/getMany", authenticateUser, getMany);
+  router.get("/:collectionId", authenticateUser, verifyCollection, getById);
 
   router.delete(
     "/:collectionId/delete",
