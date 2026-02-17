@@ -72,12 +72,39 @@ export const LinkGameModal = ({
         `/collection/${collectionId}/update/steamGridDB/${steamGridDBId}`,
       );
     },
+    // onMutate: async (steamGridDBId: string) => {
+    //   await queryClient.cancelQueries({
+    //     queryKey: CollectionQueryKeys.getById(collectionId),
+    //   });
+
+    //   const previous = queryClient.getQueryData(
+    //     CollectionQueryKeys.getById(collectionId),
+    //   );
+
+    //   queryClient.setQueryData(
+    //     CollectionQueryKeys.getById(collectionId),
+    //     (old: CollectionGetById) => (old ? { ...old, steamGridDBId } : old),
+    //   );
+
+    //   return { previous };
+    // },
     onSuccess: async () => {
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
+        queryKey: CollectionQueryKeys.getById(collectionId),
+      });
+      await queryClient.refetchQueries({
         queryKey: CollectionQueryKeys.getById(collectionId),
       });
       onOpenChange(false);
     },
+    // onError: (e, v, context: { previous: CollectionGetById } | undefined) => {
+    //   if (context?.previous) {
+    //     queryClient.setQueryData(
+    //       CollectionQueryKeys.getById(collectionId),
+    //       context.previous,
+    //     );
+    //   }
+    // },
   });
 
   const isPending = isLoading || isFetching || update.isPending;

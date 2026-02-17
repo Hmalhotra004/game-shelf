@@ -42,30 +42,6 @@ export const externalIdsSchema = z.object({
 });
 
 const steamGridDbImageUrl = (type: "grid" | "hero") =>
-  z.union([
-    z
-      .string()
-      .trim()
-      .url()
-      .refine(
-        (url) => {
-          const { protocol, hostname, pathname } = new URL(url);
-          return (
-            protocol === "https:" &&
-            hostname === "cdn2.steamgriddb.com" &&
-            new RegExp(
-              `^\\/${type}\\/[a-f0-9]{32}\\.(png|jpg|jpeg|webp)$`,
-            ).test(pathname)
-          );
-        },
-        {
-          message: `Only SteamGridDB ${type} images (png, jpg, jpeg, webp) are allowed`,
-        },
-      ),
-    z.null(),
-  ]);
-
-const steamGridDbImageUrl11 = (type: "grid" | "hero") =>
   z
     .string()
     .trim()

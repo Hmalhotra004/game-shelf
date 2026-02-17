@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateImagesSchema } from "@repo/schemas/schemas/collection";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
+import ChangeImageInstructionsModal from "@repo/ui/components/collection/ChangeImageInstructionsModal";
 import { HeroSection } from "@repo/ui/components/collection/HeroSection";
+import { LinkGameModal } from "@repo/ui/components/collection/LinkGameModal";
 import { FormInput } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
 import { Card, CardContent } from "@repo/ui/components/ui/card";
@@ -20,6 +22,13 @@ import {
   CollectionCard,
   CollectionCardVariant,
 } from "@repo/ui/components/collection/CollectionCard";
+
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@repo/ui/components/ui/tabs";
 
 interface Props {
   collectionId: string;
@@ -45,6 +54,7 @@ const CARD_VARIANTS: CollectionCardVariant[] = [
 ];
 
 export const ChangeImagesView = ({ collectionId }: Props) => {
+  const [link, setLink] = useState(false);
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -62,6 +72,9 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
 
   useEffect(() => {
     if (game) {
+      if (!game.steamAppId && !game.steamGridDBId) {
+        setLink(true);
+      }
       form.reset({
         customImage: game.customImage ?? null,
         customCoverImage: game.customCoverImage ?? null,
@@ -129,10 +142,20 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
 
   return (
     <>
-      {/* <ChangeImageInstructionsModal
+      <ChangeImageInstructionsModal
         open={open}
         setOpen={setOpen}
-      /> */}
+      />
+
+      <LinkGameModal
+        open={link}
+        onOpenChange={(value) => {
+          if (!game.steamAppId && !game.steamGridDBId) return;
+          setLink(value);
+        }}
+        name={game.name}
+        collectionId={collectionId}
+      />
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
@@ -178,49 +201,60 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
           </form>
         </div>
 
-        <Card>
-          <CardContent>
-            <FormInput
-              name="customImage"
-              control={form.control}
-              disabled={isPending}
-              type="text"
-              placeholder="Image"
-            />
+        <Tabs defaultValue="Grid">
+          <TabsList variant="line">
+            <TabsTrigger value="Grid">Grid</TabsTrigger>
+            <TabsTrigger value="Hero">Hero</TabsTrigger>
+          </TabsList>
 
-            <div className="flex items-center gap-8 justify-center mt-4">
-              {CARD_VARIANTS.map((variant, idx) => (
-                <CollectionCard
-                  key={`${idx}-${variant}`}
-                  game={cardData}
-                  variant={variant}
-                  showcase
+          <TabsContent value="Grid">
+            <Card>
+              <CardContent>
+                <FormInput
+                  name="customImage"
+                  control={form.control}
+                  disabled={isPending}
+                  type="text"
+                  placeholder="Image"
                 />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardContent className="space-y-4">
-            <FormInput
-              name="customCoverImage"
-              control={form.control}
-              disabled={isPending}
-              type="text"
-              placeholder="Hero Image"
-            />
+                <div className="flex items-center gap-8 justify-center mt-4">
+                  {CARD_VARIANTS.map((variant, idx) => (
+                    <CollectionCard
+                      key={`${idx}-${variant}`}
+                      game={cardData}
+                      variant={variant}
+                      showcase
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-            <HeroSection
-              game={{
-                ...game,
-                customCoverImage: previewCoverImage
-                  ? customCoverImage
-                  : game.coverImage,
-              }}
-            />
-          </CardContent>
-        </Card>
+          <TabsContent value="Hero">
+            <Card>
+              <CardContent className="space-y-4">
+                <FormInput
+                  name="customCoverImage"
+                  control={form.control}
+                  disabled={isPending}
+                  type="text"
+                  placeholder="Hero Image"
+                />
+
+                <HeroSection
+                  game={{
+                    ...game,
+                    customCoverImage: previewCoverImage
+                      ? customCoverImage
+                      : game.coverImage,
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

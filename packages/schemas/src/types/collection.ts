@@ -45,6 +45,7 @@ export type CollectionGetById = {
   edition: string;
   npCommunicationId: string | null;
   steamAppId: string | null;
+  steamGridDBId: string | null;
   lists: { id: string; name: string }[];
   dlcs: Dlc[];
   onlinePlaySecs: number;

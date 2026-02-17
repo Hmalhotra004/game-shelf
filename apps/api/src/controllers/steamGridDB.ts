@@ -15,7 +15,7 @@ export const linkGame = async (req: Request, res: Response) => {
 
     const games = await client.searchGame(name.toLowerCase());
 
-    res.status(200).json(games);  
+    res.status(200).json(games);
   } catch (e) {
     console.error(e);
     res.status(500).json({
