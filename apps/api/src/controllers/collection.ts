@@ -13,6 +13,10 @@ import {
   listItem,
   playthrough,
 } from "@/db/schema";
+import {
+  ExternalIdsSchemaType,
+  UpdateImagesSchemaType,
+} from "@repo/schemas/schemas/collection";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
@@ -286,6 +290,53 @@ export const getById = async (req: Request, res: Response) => {
       onlinePlaySecs,
       totalTime: gamePlaythroughTime + gameCompletionTime,
     });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const update = async (req: Request, res: Response) => {};
+
+export const updateExternalIds = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const collectionId = req.collection!.id;
+    const { npCommunicationId, steamAppId } =
+      req.cleanBody as ExternalIdsSchemaType;
+
+    await db
+      .update(collection)
+      .set({
+        npCommunicationId,
+        steamAppId,
+      })
+      .where(
+        and(eq(collection.id, collectionId), eq(collection.userId, userId)),
+      );
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const updateImages = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const collectionId = req.collection!.id;
+    const { customCoverImage, customImage } =
+      req.cleanBody as UpdateImagesSchemaType;
+
+    await db
+      .update(collection)
+      .set({ customImage, customCoverImage })
+      .where(
+        and(eq(collection.id, collectionId), eq(collection.userId, userId)),
+      );
+
+    return res.sendStatus(204);
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: "Something went wrong" });
