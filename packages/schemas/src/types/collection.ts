@@ -1,4 +1,10 @@
-import { CollectionStatusType, PlatformType, ProviderType } from "./index";
+import {
+  CollectionStatusType,
+  OwnershipType,
+  PlatformType,
+  ProviderType,
+  PSVersionType,
+} from "./index";
 
 export type CollectionGetMany = {
   id: string;
@@ -22,18 +28,41 @@ export type CollectionGetMany = {
 export type CollectionGetById = {
   id: string;
   name: string;
-  amount: string;
   dateOfPurchase: Date;
+  amount: string;
   image: string | null;
   customImage: string | null;
+  coverImage: string | null;
+  customCoverImage: string | null;
+  completions: number;
   platform: PlatformType;
   provider: ProviderType;
+  PSVersion: PSVersionType;
   status: CollectionStatusType;
-  completions: number;
   dlcCount: number;
-  listIds: string[];
+  ownershipType: OwnershipType;
+  hidden: boolean;
+  edition: string;
+  npCommunicationId: string | null;
   steamAppId: string | null;
-  totalAmount: number;
-  totalPlaytime: number;
+  lists: { id: string; name: string }[];
+  dlcs: Dlc[];
   onlinePlaySecs: number;
+  totalTime: string;
+};
+
+export type Dlc = {
+  id: string;
+  name: string;
+  dateOfPurchase: Date;
+  amount: string;
+  image: string | null;
+  coverImage: string | null;
+  completions: number;
+  status: CollectionStatusType;
+  ownershipType: OwnershipType;
+  npCommunicationId: string | null;
+  steamAppId: string | null;
+  collectionId: string;
+  totalTime: number;
 };

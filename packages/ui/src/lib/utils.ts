@@ -1,6 +1,8 @@
-import type { CollectionStatusType } from "@repo/schemas/types/collection";
+import type { CollectionStatusType } from "@repo/schemas/types/index";
+import { isAxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { format, formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -143,6 +145,14 @@ export const CHART_COLORS = [
   "hsl(var(--chart-4))",
   "hsl(var(--chart-5))",
 ];
+
+export function showError(e: Error) {
+  if (isAxiosError(e)) {
+    toast.error(e.response?.data.error ?? "An error occurred");
+  } else {
+    toast.error("Something went wrong");
+  }
+}
 
 // export function normalizeStoreItem(item: PSApiResType["links"][number]) {
 //   return {
