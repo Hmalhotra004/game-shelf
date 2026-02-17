@@ -156,7 +156,7 @@ export const getById = async (req: Request, res: Response) => {
     ] = await Promise.all([
       // -------- LISTS --------
       db
-        .select({ name: list.name })
+        .select({ id: list.id, name: list.name })
         .from(listItem)
         .innerJoin(list, eq(list.id, listItem.listId))
         .where(
@@ -165,7 +165,20 @@ export const getById = async (req: Request, res: Response) => {
 
       // -------- DLCs --------
       db
-        .select()
+        .select({
+          id: dlc.id,
+          name: dlc.name,
+          dateOfPurchase: dlc.dateOfPurchase,
+          amount: dlc.amount,
+          image: dlc.image,
+          coverImage: dlc.coverImage,
+          completions: dlc.completions,
+          status: dlc.status,
+          ownershipType: dlc.ownershipType,
+          npCommunicationId: dlc.npCommunicationId,
+          steamAppId: dlc.steamAppId,
+          collectionId: dlc.collectionId,
+        })
         .from(dlc)
         .where(and(eq(dlc.collectionId, collectionId), eq(dlc.userId, userId))),
 
@@ -279,14 +292,28 @@ export const getById = async (req: Request, res: Response) => {
     const gamePlaythroughTime = gamePlaythroughAgg[0].total;
     const gameCompletionTime = gameCompletionAgg[0].total;
 
-    // const totalAmount =
-    //   game.amount + dlcs.reduce((sum, d) => sum + Number(d.amount), 0);
-
     return res.status(200).json({
       ...game,
-      lists: listRows.map((r) => r.name),
+      id: game.id,
+      name: game.name,
+      edition: game.edition,
+      dateOfPurchase: game.dateOfPurchase,
+      amount: game.amount,
+      image: game.image,
+      customImage: game.customImage,
+      coverImage: game.coverImage,
+      customCoverImage: game.customCoverImage,
+      completions: game.completions,
+      platform: game.platform,
+      provider: game.provider,
+      PSVersion: game.PSVersion,
+      status: game.status,
+      ownershipType: game.ownershipType,
+      npCommunicationId: game.npCommunicationId,
+      steamAppId: game.steamAppId,
+      dlcCount: game.dlcCount,
+      lists: listRows,
       dlcs: dlcsWithTime,
-      // totalAmount,
       onlinePlaySecs,
       totalTime: gamePlaythroughTime + gameCompletionTime,
     });
