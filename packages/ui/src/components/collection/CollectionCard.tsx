@@ -24,7 +24,7 @@ const cardVariants = cva(
     variants: {
       variant: {
         compact:
-          "w-65 flex flex-col shadow-sm hover:shadow-md hover:border-primary",
+          "w-65 h-97.5 flex flex-col shadow-sm hover:shadow-md hover:border-primary",
         overlay: "w-65 h-97.5 shadow-lg group-hover:scale-[1.02]",
         slideUp: "w-65 h-97.5 shadow-lg",
       },
@@ -75,8 +75,8 @@ export const CollectionCard = ({
         src={game.customImage ?? game.image!}
         alt={game.name}
         className={cn(
-          "object-cover relative overflow-hidden",
-          variant === "compact" ? "h-64" : "h-full",
+          "object-cover relative overflow-hidden h-full",
+          // variant === "compact" ? "h-64" : "h-full",
           variant === "compact" && "object-top",
         )}
       />
