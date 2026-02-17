@@ -15,7 +15,7 @@ interface Props {
   game: CollectionGetById;
 }
 
-const HeroSection = ({ game }: Props) => {
+export const HeroSection = ({ game }: Props) => {
   const editonText = game.edition ? ` - ${game.edition}` : null;
 
   return (
@@ -102,5 +102,3 @@ const HeroSection = ({ game }: Props) => {
     </div>
   );
 };
-
-export default HeroSection;

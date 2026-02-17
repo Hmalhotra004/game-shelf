@@ -48,7 +48,7 @@ export type CollectionGetById = {
   lists: { id: string; name: string }[];
   dlcs: Dlc[];
   onlinePlaySecs: number;
-  totalTime: string;
+  totalTime: number;
 };
 
 export type Dlc = {

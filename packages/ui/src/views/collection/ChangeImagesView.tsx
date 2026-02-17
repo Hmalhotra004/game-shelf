@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateImagesSchema } from "@repo/schemas/schemas/collection";
-import HeroSection from "@repo/ui/components/collection/HeroSection";
+import { CollectionGetMany } from "@repo/schemas/types/collection";
+import { HeroSection } from "@repo/ui/components/collection/HeroSection";
 import { FormInput } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
 import { Card, CardContent } from "@repo/ui/components/ui/card";
@@ -10,7 +11,7 @@ import { CollectionQueryKeys } from "@repo/ui/queries/collection/collection.keys
 import { collectionGetByIdQueryOptions } from "@repo/ui/queries/collection/collection.queries";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HelpCircleIcon, MoveLeftIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -37,14 +38,36 @@ function isSteamGridDbImage(src?: string | null) {
 
 type FormData = z.infer<typeof updateImagesSchema>;
 
+const CARD_VARIANTS: CollectionCardVariant[] = [
+  "compact",
+  "overlay",
+  "slideUp",
+];
+
 export const ChangeImagesView = ({ collectionId }: Props) => {
   const [open, setOpen] = useState(false);
-
   const queryClient = useQueryClient();
 
   const { data: game, isLoading: isLoadingGame } = useQuery(
     collectionGetByIdQueryOptions(collectionId),
   );
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(updateImagesSchema),
+    defaultValues: {
+      customImage: null,
+      customCoverImage: null,
+    },
+  });
+
+  useEffect(() => {
+    if (game) {
+      form.reset({
+        customImage: game.customImage ?? null,
+        customCoverImage: game.customCoverImage ?? null,
+      });
+    }
+  }, [game, form]);
 
   const update = useMutation({
     mutationFn: async (values: FormData) => {
@@ -63,14 +86,6 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
       toast.success("Images updated");
     },
     onError: (e) => showError(e),
-  });
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(updateImagesSchema),
-    defaultValues: {
-      customImage: game?.customImage ?? null,
-      customCoverImage: game?.customCoverImage ?? null,
-    },
   });
 
   async function onSubmit(values: FormData) {
@@ -95,6 +110,22 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
   if (isLoadingGame || !game) {
     return null;
   }
+
+  const totalAmount =
+    Number(game.amount) +
+    game.dlcs.reduce((acc, dlc) => acc + Number(dlc.amount), 0);
+
+  const totalPlaytime =
+    Number(game.totalTime) +
+    game.dlcs.reduce((acc, dlc) => acc + Number(dlc.totalTime), 0);
+
+  const cardData: CollectionGetMany = {
+    ...game,
+    listIds: [],
+    totalAmount,
+    totalPlaytime,
+    customImage: previewImage ? customImage : game.image,
+  };
 
   return (
     <>
@@ -158,27 +189,11 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
             />
 
             <div className="flex items-center gap-8 justify-center mt-4">
-              {["compact", "overlay", "slideUp"].map((variant, idx) => (
+              {CARD_VARIANTS.map((variant, idx) => (
                 <CollectionCard
                   key={`${idx}-${variant}`}
-                  game={{
-                    ...game,
-                    listIds: [],
-                    totalAmount:
-                      Number(game.amount) +
-                      game.dlcs.reduce(
-                        (acc, dlc) => acc + Number(dlc.amount),
-                        0,
-                      ),
-                    totalPlaytime:
-                      Number(game.totalTime) +
-                      game.dlcs.reduce(
-                        (acc, dlc) => acc + Number(dlc.totalTime),
-                        0,
-                      ),
-                    customImage: previewImage ? customImage : game.image,
-                  }}
-                  variant={variant as CollectionCardVariant}
+                  game={cardData}
+                  variant={variant}
                   showcase
                 />
               ))}
