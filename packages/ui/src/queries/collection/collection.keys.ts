@@ -10,4 +10,11 @@ export const CollectionQueryKeys = {
     "currentUser",
     id,
   ],
+
+  linkSteamGrid: (name: string) => [
+    ...CollectionQueryKeys.all,
+    "linkSteamGrid",
+    "currentUser",
+    name,
+  ],
 };

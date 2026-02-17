@@ -176,6 +176,7 @@ export const collection = pgTable(
 
     npCommunicationId: text("np_communication_id"),
     steamAppId: text("steam_app_id"),
+    steamGridDBId: text("steam_grid_db_id"),
 
     userId: text("user_id")
       .notNull()

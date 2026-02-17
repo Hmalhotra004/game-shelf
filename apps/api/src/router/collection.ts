@@ -14,6 +14,7 @@ import {
   getMany,
   updateExternalIds,
   updateImages,
+  updateSteamGridDBId,
 } from "@/controllers/collection";
 
 export default (baseUrl: string, app: Router) => {
@@ -28,6 +29,13 @@ export default (baseUrl: string, app: Router) => {
     verifyCollection,
     validateData(externalIdsSchema),
     updateExternalIds,
+  );
+
+  router.patch(
+    "/:collectionId/update/steamGridDB/:steamGridDBId",
+    authenticateUser,
+    verifyCollection,
+    updateSteamGridDBId,
   );
 
   router.patch(

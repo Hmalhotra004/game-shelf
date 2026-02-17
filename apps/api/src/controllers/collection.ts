@@ -311,6 +311,7 @@ export const getById = async (req: Request, res: Response) => {
       ownershipType: game.ownershipType,
       npCommunicationId: game.npCommunicationId,
       steamAppId: game.steamAppId,
+      steamGridDBId: game.steamGridDBId,
       dlcCount: game.dlcCount,
       lists: listRows,
       dlcs: dlcsWithTime,
@@ -324,6 +325,29 @@ export const getById = async (req: Request, res: Response) => {
 };
 
 export const update = async (req: Request, res: Response) => {};
+
+export const updateSteamGridDBId = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const collectionId = req.collection!.id;
+    const steamGridDBId = req.params.steamGridDBId as string | null;
+
+    if (!steamGridDBId)
+      return res.status(400).json({ error: "steamGridDBId is required" });
+
+    await db
+      .update(collection)
+      .set({ steamGridDBId })
+      .where(
+        and(eq(collection.id, collectionId), eq(collection.userId, userId)),
+      );
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
 
 export const updateExternalIds = async (req: Request, res: Response) => {
   try {

@@ -3,6 +3,7 @@ import auth from "./auth";
 import collection from "./collection";
 import list from "./list";
 import stats from "./stats";
+import steamGridDB from "./steamGridDB";
 import user from "./user";
 
 const router = Router();
@@ -16,6 +17,8 @@ export default (): Router => {
 
   list("/list", router);
   stats("/stats", router);
+
+  steamGridDB("/steamGridDB", router);
 
   return router;
 };
