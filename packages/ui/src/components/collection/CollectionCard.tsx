@@ -18,6 +18,10 @@ import {
 
 export type CollectionCardVariant = "compact" | "overlay" | "slideUp";
 
+// default
+// cover
+// reveal
+
 const cardVariants = cva(
   "relative rounded-xl overflow-hidden bg-card transition border",
   {
