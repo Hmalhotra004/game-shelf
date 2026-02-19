@@ -1,4 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FormInput } from "@repo/ui/components/form/Form";
+import { Button } from "@repo/ui/components/ui/button";
+import ResponsiveDialog from "@repo/ui/components/ui/responsive-dialog";
+import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { api } from "@repo/ui/lib/api";
 import { cn } from "@repo/ui/lib/utils";
 import { CollectionQueryKeys } from "@repo/ui/queries/collection/collection.keys";
@@ -6,10 +10,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { FormInput } from "../../form/Form";
-import { Button } from "../../ui/button";
-import ResponsiveDialog from "../../ui/responsive-dialog";
-import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 
 interface Props {
   open: boolean;

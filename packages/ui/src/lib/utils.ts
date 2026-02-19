@@ -9,6 +9,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function isSteamGridDbImage(src?: string | null) {
+  if (!src) return false;
+
+  try {
+    const u = new URL(src);
+    return u.protocol === "https:" && u.hostname === "cdn2.steamgriddb.com";
+  } catch {
+    return false;
+  }
+}
+
 export const statusColorMap: Record<CollectionStatusType, string> = {
   Dropped: "border-red-500",
   Backlog: "border-yellow-500",
@@ -19,22 +30,6 @@ export const statusColorMap: Record<CollectionStatusType, string> = {
   Platinum: "border-purple-600",
   "Platinum+": "border-purple-700",
   "100% Completed": "border-emerald-600",
-};
-
-export function isSafeImageSrc(src?: string | null) {
-  if (!src) return false;
-  if (src.startsWith("/")) return true;
-
-  try {
-    const url = new URL(src);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-export const convertDateToSeconds = (date: Date) => {
-  return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
 };
 
 export function betterTimeText(seconds: number, withS?: boolean): string {
@@ -138,14 +133,6 @@ export const trophyTypeStyles = {
   },
 } as const;
 
-export const CHART_COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-];
-
 export function showError(e: Error) {
   if (isAxiosError(e)) {
     toast.error(e.response?.data.error ?? "An error occurred");
@@ -162,3 +149,19 @@ export function showError(e: Error) {
 //       item.images.find((i) => i.type === 12 || i.type === 13)?.url ?? null,
 //   };
 // }
+
+// export function isSafeImageSrc(src?: string | null) {
+//   if (!src) return false;
+//   if (src.startsWith("/")) return true;
+
+//   try {
+//     const url = new URL(src);
+//     return url.protocol === "http:" || url.protocol === "https:";
+//   } catch {
+//     return false;
+//   }
+// }
+
+// export const convertDateToSeconds = (date: Date) => {
+//   return date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds();
+// };
