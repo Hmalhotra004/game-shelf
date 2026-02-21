@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Request, Response } from "express";
 import SGDB from "steamgriddb";
 
@@ -26,19 +27,15 @@ export const linkGame = async (req: Request, res: Response) => {
 
 export const getGrids = async (req: Request, res: Response) => {
   try {
-    const { steamGridDBId, steamAppId } = req.query as {
+    const { steamGridDBId, steamAppId, page } = req.query as {
       steamAppId?: string;
       steamGridDBId?: string;
+      page?: string;
     };
 
     if (!steamAppId && !steamGridDBId) {
       return res.status(400).json({ error: "At least one ID is required" });
     }
-
-    const client = new SGDB({
-      key: process.env.STEAM_GRID_DB_API_KEY!,
-      baseURL: "https://www.steamgriddb.com/api/v2",
-    });
 
     let type: "steam" | "game";
     let id: number;
@@ -51,13 +48,26 @@ export const getGrids = async (req: Request, res: Response) => {
       id = Number(steamAppId);
     }
 
-    const grids = await client.getGrids({
-      type,
-      id,
-      dimensions: ["600x900"],
-    });
+    const currentPage = Number(page) || 0;
 
-    res.status(200).json(grids);
+    const response = await axios.get(
+      `https://www.steamgriddb.com/api/v2/grids/${type}/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.STEAM_GRID_DB_API_KEY}`,
+        },
+        params: {
+          page: currentPage,
+          dimensions: "600x900",
+          types: ["static", "animated"].join(","),
+          nsfw: false,
+          humor: "any",
+          epilepsy: "any",
+        },
+      },
+    );
+
+    res.status(200).json(response.data);
   } catch (e) {
     console.error(e);
     res.status(500).json({
@@ -68,19 +78,15 @@ export const getGrids = async (req: Request, res: Response) => {
 
 export const getHeros = async (req: Request, res: Response) => {
   try {
-    const { steamGridDBId, steamAppId } = req.query as {
+    const { steamGridDBId, steamAppId, page } = req.query as {
       steamAppId?: string;
       steamGridDBId?: string;
+      page?: string;
     };
 
     if (!steamAppId && !steamGridDBId) {
       return res.status(400).json({ error: "At least one ID is required" });
     }
-
-    const client = new SGDB({
-      key: process.env.STEAM_GRID_DB_API_KEY!,
-      baseURL: "https://www.steamgriddb.com/api/v2",
-    });
 
     let type: "steam" | "game";
     let id: number;
@@ -93,13 +99,25 @@ export const getHeros = async (req: Request, res: Response) => {
       id = Number(steamAppId);
     }
 
-    const heros = await client.getHeroes({
-      type,
-      id,
-      dimensions: ["1920x620", "3840x1240"],
-    });
+    const currentPage = Number(page) || 0;
 
-    res.status(200).json(heros);
+    const response = await axios.get(
+      `https://www.steamgriddb.com/api/v2/heroes/${type}/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.STEAM_GRID_DB_API_KEY}`,
+        },
+        params: {
+          page: currentPage,
+          types: ["static", "animated"].join(","),
+          nsfw: false,
+          humor: "any",
+          epilepsy: "any",
+        },
+      },
+    );
+
+    res.status(200).json(response.data);
   } catch (e) {
     console.error(e);
     res.status(500).json({
