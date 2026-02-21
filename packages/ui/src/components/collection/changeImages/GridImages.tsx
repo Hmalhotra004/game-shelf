@@ -34,7 +34,7 @@ export const GridImages = ({ game, isPending }: Props) => {
     useFormContext<z.infer<typeof updateImagesSchema>>();
 
   const [filters] = useChangeImageFilters();
-  const { cardType, directLink } = filters;
+  const { cardType, directLink, imageOnly } = filters;
 
   const externalId = game?.steamGridDBId ?? game?.steamAppId;
 
@@ -148,11 +148,19 @@ export const GridImages = ({ game, isPending }: Props) => {
                         : "border-border hover:border-primary/40 border-2",
                     )}
                   >
-                    <CollectionCard
-                      game={{ ...cardData, customImage: g.url }}
-                      variant={cardType}
-                      showcase
-                    />
+                    {imageOnly ? (
+                      <img
+                        src={g.url}
+                        alt="grid"
+                        className="object-cover relative overflow-hidden w-65 h-97.5"
+                      />
+                    ) : (
+                      <CollectionCard
+                        game={{ ...cardData, customImage: g.url }}
+                        variant={cardType}
+                        showcase
+                      />
+                    )}
                   </button>
                 );
               })}

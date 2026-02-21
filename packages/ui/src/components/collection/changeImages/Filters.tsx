@@ -12,7 +12,7 @@ import {
 export const Filters = () => {
   const [filters, setFilters] = useChangeImageFilters();
 
-  const { cardType, directLink } = filters;
+  const { cardType, directLink, imageOnly } = filters;
 
   return (
     <div className="flex items-center gap-4 mr-2">
@@ -32,11 +32,21 @@ export const Filters = () => {
         </SelectContent>
       </Select>
 
-      <p>Direct Link</p>
-      <Switch
-        checked={directLink}
-        onCheckedChange={(v) => setFilters({ directLink: v })}
-      />
+      <div className="flex items-center gap-2">
+        <p>Image Only</p>
+        <Switch
+          checked={imageOnly}
+          onCheckedChange={(v) => setFilters({ imageOnly: v })}
+        />
+      </div>
+
+      <div className="flex items-center gap-2">
+        <p>Direct Link</p>
+        <Switch
+          checked={directLink}
+          onCheckedChange={(v) => setFilters({ directLink: v })}
+        />
+      </div>
     </div>
   );
 };

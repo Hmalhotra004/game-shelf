@@ -28,7 +28,7 @@ export const HeroImages = ({ game, isPending }: Props) => {
   const externalId = game?.steamGridDBId ?? game?.steamAppId;
 
   const [filters] = useChangeImageFilters();
-  const { directLink } = filters;
+  const { directLink, imageOnly } = filters;
 
   const {
     data: heros,
@@ -100,13 +100,21 @@ export const HeroImages = ({ game, isPending }: Props) => {
                         : "border-border hover:border-primary/40 border-2",
                     )}
                   >
-                    <HeroSection
-                      key={h.id}
-                      game={{
-                        ...game,
-                        customCoverImage: h.url,
-                      }}
-                    />
+                    {imageOnly ? (
+                      <img
+                        src={h.url}
+                        alt="grid"
+                        className="rounded-xl overflow-hidden h-[60vh] object-cover object-top w-full"
+                      />
+                    ) : (
+                      <HeroSection
+                        key={h.id}
+                        game={{
+                          ...game,
+                          customCoverImage: h.url,
+                        }}
+                      />
+                    )}
                   </button>
                 );
               })}

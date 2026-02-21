@@ -1,4 +1,5 @@
 import { useCardVariantStore } from "@repo/ui/store/useCardVariantStore";
+
 import { parseAsBoolean, parseAsStringLiteral, useQueryStates } from "nuqs";
 
 export const useChangeImageFilters = () => {
@@ -12,6 +13,8 @@ export const useChangeImageFilters = () => {
       "overlay",
       "slideUp",
     ] as const).withDefault(v),
+
+    imageOnly: parseAsBoolean.withDefault(false),
   });
 
   return [filters, setFilters] as const;
