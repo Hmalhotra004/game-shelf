@@ -27,10 +27,11 @@ export const linkGame = async (req: Request, res: Response) => {
 
 export const getGrids = async (req: Request, res: Response) => {
   try {
-    const { steamGridDBId, steamAppId, page } = req.query as {
+    const { steamGridDBId, steamAppId, page, nsfw } = req.query as {
       steamAppId?: string;
       steamGridDBId?: string;
       page?: string;
+      nsfw?: boolean;
     };
 
     if (!steamAppId && !steamGridDBId) {
@@ -60,7 +61,7 @@ export const getGrids = async (req: Request, res: Response) => {
           page: currentPage,
           dimensions: "600x900",
           types: ["static", "animated"].join(","),
-          nsfw: false,
+          nsfw: nsfw ?? false,
           humor: "any",
           epilepsy: "any",
         },
@@ -78,10 +79,11 @@ export const getGrids = async (req: Request, res: Response) => {
 
 export const getHeros = async (req: Request, res: Response) => {
   try {
-    const { steamGridDBId, steamAppId, page } = req.query as {
+    const { steamGridDBId, steamAppId, page, nsfw } = req.query as {
       steamAppId?: string;
       steamGridDBId?: string;
       page?: string;
+      nsfw?: boolean;
     };
 
     if (!steamAppId && !steamGridDBId) {
@@ -110,7 +112,7 @@ export const getHeros = async (req: Request, res: Response) => {
         params: {
           page: currentPage,
           types: ["static", "animated"].join(","),
-          nsfw: false,
+          nsfw: nsfw ?? false,
           humor: "any",
           epilepsy: "any",
         },

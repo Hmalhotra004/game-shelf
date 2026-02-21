@@ -12,7 +12,7 @@ import {
 export const Filters = () => {
   const [filters, setFilters] = useChangeImageFilters();
 
-  const { cardType, directLink, imageOnly } = filters;
+  const { cardType, directLink, imageOnly, nsfw } = filters;
 
   return (
     <div className="flex items-center gap-4 mr-2">
@@ -31,6 +31,14 @@ export const Filters = () => {
           <SelectItem value="slideUp">SlideUp</SelectItem>
         </SelectContent>
       </Select>
+
+      <div className="flex items-center gap-2">
+        <p>NSFW Only</p>
+        <Switch
+          checked={nsfw}
+          onCheckedChange={(v) => setFilters({ nsfw: v })}
+        />
+      </div>
 
       <div className="flex items-center gap-2">
         <p>Image Only</p>

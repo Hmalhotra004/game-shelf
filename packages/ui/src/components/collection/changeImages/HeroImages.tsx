@@ -2,6 +2,7 @@ import { updateImagesSchema } from "@repo/schemas/schemas/collection";
 import { CollectionGetById } from "@repo/schemas/types/collection";
 import AlertError from "@repo/ui/components/AlertError";
 import { HeroSection } from "@repo/ui/components/collection/HeroSection";
+import { ChangeImagesEmptyState } from "@repo/ui/components/emptyStates/ChangeImagesEmptyState";
 import { FormInput } from "@repo/ui/components/form/Form";
 import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
@@ -28,7 +29,7 @@ export const HeroImages = ({ game, isPending }: Props) => {
   const externalId = game?.steamGridDBId ?? game?.steamAppId;
 
   const [filters] = useChangeImageFilters();
-  const { directLink, imageOnly } = filters;
+  const { directLink, imageOnly, nsfw } = filters;
 
   const {
     data: heros,
@@ -36,13 +37,14 @@ export const HeroImages = ({ game, isPending }: Props) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["HERO", game?.id, externalId, page],
+    queryKey: ["HERO", game?.id, externalId, page, nsfw],
     queryFn: async () => {
       const response = await api.get<ResponseType>(`/steamGridDB/getHeros`, {
         params: {
           steamGridDBId: game?.steamGridDBId,
           steamAppId: game?.steamAppId,
           page,
+          nsfw,
         },
       });
 
@@ -72,6 +74,10 @@ export const HeroImages = ({ game, isPending }: Props) => {
   }
 
   const image = previewCoverImage ? customCoverImage : game.coverImage!;
+
+  if (!isLoadingHero && heros && !directLink && heros.total === 0) {
+    return <ChangeImagesEmptyState />;
+  }
 
   return (
     <div className="bg-card border-border border-2 rounded-xl p-3">

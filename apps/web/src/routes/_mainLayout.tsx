@@ -53,7 +53,7 @@ function RouteComponent() {
         pathname={pathname}
       />
 
-      <main className="flex-1 p-4">
+      <main className="flex flex-col flex-1 p-4 h-full">
         <Outlet />
       </main>
     </div>

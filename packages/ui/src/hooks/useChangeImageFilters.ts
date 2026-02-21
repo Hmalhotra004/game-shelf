@@ -6,8 +6,6 @@ export const useChangeImageFilters = () => {
   const v = useCardVariantStore((s) => s.variant);
 
   const [filters, setFilters] = useQueryStates({
-    directLink: parseAsBoolean.withDefault(false),
-
     cardType: parseAsStringLiteral([
       "compact",
       "overlay",
@@ -15,6 +13,8 @@ export const useChangeImageFilters = () => {
     ] as const).withDefault(v),
 
     imageOnly: parseAsBoolean.withDefault(false),
+    nsfw: parseAsBoolean.withDefault(false),
+    directLink: parseAsBoolean.withDefault(false),
   });
 
   return [filters, setFilters] as const;

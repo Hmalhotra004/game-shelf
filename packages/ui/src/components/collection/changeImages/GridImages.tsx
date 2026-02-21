@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import z from "zod";
+import { ChangeImagesEmptyState } from "@repo/ui/components/emptyStates/ChangeImagesEmptyState";
 
 import {
   CollectionCard,
@@ -21,6 +22,7 @@ import {
   CollectionGetById,
   CollectionGetMany,
 } from "@repo/schemas/types/collection";
+
 
 interface Props {
   game: CollectionGetById;
@@ -34,7 +36,7 @@ export const GridImages = ({ game, isPending }: Props) => {
     useFormContext<z.infer<typeof updateImagesSchema>>();
 
   const [filters] = useChangeImageFilters();
-  const { cardType, directLink, imageOnly } = filters;
+  const { cardType, directLink, imageOnly, nsfw } = filters;
 
   const externalId = game?.steamGridDBId ?? game?.steamAppId;
 
@@ -44,13 +46,14 @@ export const GridImages = ({ game, isPending }: Props) => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["GRID", game?.id, externalId, page],
+    queryKey: ["GRID", game?.id, externalId, page, nsfw],
     queryFn: async () => {
       const response = await api.get<ResponseType>(`/steamGridDB/getGrids`, {
         params: {
           steamGridDBId: game?.steamGridDBId,
           steamAppId: game?.steamAppId,
           page,
+          nsfw,
         },
       });
 
@@ -102,6 +105,10 @@ export const GridImages = ({ game, isPending }: Props) => {
 
   if (isError) {
     return <AlertError error={error.message} />;
+  }
+
+  if (!isLoadingGrid && grids && !directLink && grids.total === 0) {
+    return <ChangeImagesEmptyState />;
   }
 
   return (

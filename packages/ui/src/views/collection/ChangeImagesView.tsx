@@ -120,7 +120,7 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
   }
 
   return (
-    <>
+    <div className="flex flex-col flex-1">
       <InstructionsModal
         open={open}
         setOpen={setOpen}
@@ -187,6 +187,6 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
           </FormProvider>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 };
