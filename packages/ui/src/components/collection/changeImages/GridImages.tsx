@@ -4,7 +4,7 @@ import { FormInput } from "@repo/ui/components/form/Form";
 import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { useChangeImageFilters } from "@repo/ui/hooks/useChangeImageFilters";
 import { api } from "@repo/ui/lib/api";
-import { isSteamGridDbImage } from "@repo/ui/lib/utils";
+import { cn, isSteamGridDbImage } from "@repo/ui/lib/utils";
 import { ResponseType } from "@repo/ui/views/collection/ChangeImagesView";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const GridImages = ({ game, isPending }: Props) => {
-  const { control, watch, formState } =
+  const { control, watch, formState, setValue } =
     useFormContext<z.infer<typeof updateImagesSchema>>();
 
   const [filters] = useChangeImageFilters();
@@ -85,6 +85,16 @@ export const GridImages = ({ game, isPending }: Props) => {
     customImage: previewImage ? customImage : game.image,
   };
 
+  const sortedGrids = useMemo(() => {
+    if (!grids) return [];
+
+    return [...grids].sort((a, b) => {
+      if (a.url === customImage) return -1;
+      if (b.url === customImage) return 1;
+      return 0;
+    });
+  }, [grids, customImage]);
+
   if (!externalId) {
     return null;
   }
@@ -101,14 +111,35 @@ export const GridImages = ({ game, isPending }: Props) => {
       {!isLoadingGrid && grids && !directLink && (
         <ScrollArea className="h-140">
           <div className="flex flex-wrap items-center gap-6 justify-center">
-            {grids.map((g) => (
-              <CollectionCard
-                key={g.id}
-                game={{ ...cardData, customImage: g.url }}
-                variant={cardType}
-                showcase
-              />
-            ))}
+            {grids.map((g) => {
+              const isSelected = customImage === g.url;
+
+              return (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() =>
+                    setValue("customImage", g.url, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                      shouldValidate: true,
+                    })
+                  }
+                  className={cn(
+                    "rounded-xl overflow-hidden transition-all duration-200 cursor-pointer",
+                    isSelected
+                      ? "border-green-700 border-2"
+                      : "border-border hover:border-primary/40 border-2",
+                  )}
+                >
+                  <CollectionCard
+                    game={{ ...cardData, customImage: g.url }}
+                    variant={cardType}
+                    showcase
+                  />
+                </button>
+              );
+            })}
           </div>
           <ScrollBar orientation="vertical" />
         </ScrollArea>
