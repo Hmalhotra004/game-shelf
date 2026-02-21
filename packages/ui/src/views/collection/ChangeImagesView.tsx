@@ -31,7 +31,15 @@ interface Props {
 
 type FormData = z.infer<typeof updateImagesSchema>;
 
-export type ResponseType = { id: string; url: string };
+export type ResponseType = {
+  page: number;
+  total: number;
+  limit: number;
+  data: {
+    id: string;
+    url: string;
+  }[];
+};
 
 export const ChangeImagesView = ({ collectionId }: Props) => {
   const [link, setLink] = useState(false);
@@ -88,7 +96,11 @@ export const ChangeImagesView = ({ collectionId }: Props) => {
   const isPending = update.isPending;
 
   if (isLoadingGame || !game) {
-    return <Spinner />;
+    return (
+      <div className="flex flex-col mt-24 h-full items-center justify-center">
+        <Spinner className="size-6" />
+      </div>
+    );
   }
 
   const externalId = game.steamGridDBId ?? game.steamAppId;
