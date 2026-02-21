@@ -1,6 +1,7 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Analytics } from "@vercel/analytics/next";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
