@@ -1,4 +1,5 @@
 import { updateImagesSchema } from "@repo/schemas/schemas/collection";
+import AlertError from "@repo/ui/components/AlertError";
 import { CollectionLoading } from "@repo/ui/components/fallbacks/CollectionLoading";
 import { FormInput } from "@repo/ui/components/form/Form";
 import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
@@ -7,7 +8,7 @@ import { api } from "@repo/ui/lib/api";
 import { cn, isSteamGridDbImage } from "@repo/ui/lib/utils";
 import { ResponseType } from "@repo/ui/views/collection/ChangeImagesView";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import z from "zod";
 
@@ -27,6 +28,8 @@ interface Props {
 }
 
 export const GridImages = ({ game, isPending }: Props) => {
+  const [page, setPage] = useState(0);
+
   const { control, watch, formState, setValue } =
     useFormContext<z.infer<typeof updateImagesSchema>>();
 
@@ -35,18 +38,21 @@ export const GridImages = ({ game, isPending }: Props) => {
 
   const externalId = game?.steamGridDBId ?? game?.steamAppId;
 
-  const { data: grids, isLoading: isLoadingGrid } = useQuery({
-    queryKey: ["GRID", game?.id, externalId],
+  const {
+    data: grids,
+    isLoading: isLoadingGrid,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["GRID", game?.id, externalId, page],
     queryFn: async () => {
-      const response = await api.get<Array<ResponseType>>(
-        `/steamGridDB/getGrids`,
-        {
-          params: {
-            steamGridDBId: game?.steamGridDBId,
-            steamAppId: game?.steamAppId,
-          },
+      const response = await api.get<ResponseType>(`/steamGridDB/getGrids`, {
+        params: {
+          steamGridDBId: game?.steamGridDBId,
+          steamAppId: game?.steamAppId,
+          page,
         },
-      );
+      });
 
       return response.data;
     },
@@ -85,18 +91,27 @@ export const GridImages = ({ game, isPending }: Props) => {
     customImage: previewImage ? customImage : game.image,
   };
 
-  const sortedGrids = useMemo(() => {
-    if (!grids) return [];
+  const totalPages = useMemo(() => {
+    if (!grids) return 0;
+    return Math.ceil(grids.total / grids.limit);
+  }, [grids]);
 
-    return [...grids].sort((a, b) => {
-      if (a.url === customImage) return -1;
-      if (b.url === customImage) return 1;
-      return 0;
-    });
-  }, [grids, customImage]);
+  // const sortedGrids = useMemo(() => {
+  //   if (!grids) return [];
+
+  //   return [...grids.data].sort((a, b) => {
+  //     if (a.url === customImage) return -1;
+  //     if (b.url === customImage) return 1;
+  //     return 0;
+  //   });
+  // }, [grids, customImage]);
 
   if (!externalId) {
     return null;
+  }
+
+  if (isError) {
+    return <AlertError error={error.message} />;
   }
 
   return (
@@ -109,40 +124,62 @@ export const GridImages = ({ game, isPending }: Props) => {
       )}
 
       {!isLoadingGrid && grids && !directLink && (
-        <ScrollArea className="h-140">
-          <div className="flex flex-wrap items-center gap-6 justify-center">
-            {grids.map((g) => {
-              const isSelected = customImage === g.url;
+        <div>
+          <ScrollArea className="h-135">
+            <div className="flex flex-wrap items-center gap-6 justify-center">
+              {grids.data.map((g) => {
+                const isSelected = customImage === g.url;
 
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() =>
+                      setValue("customImage", g.url, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true,
+                      })
+                    }
+                    className={cn(
+                      "rounded-xl overflow-hidden transition-all duration-200 cursor-pointer",
+                      isSelected
+                        ? "border-green-700 border-2"
+                        : "border-border hover:border-primary/40 border-2",
+                    )}
+                  >
+                    <CollectionCard
+                      game={{ ...cardData, customImage: g.url }}
+                      variant={cardType}
+                      showcase
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+
+          <div className="flex items-center gap-2 mt-4 justify-center">
+            {Array.from({ length: totalPages }).map((_, i) => {
               return (
                 <button
-                  key={g.id}
-                  type="button"
-                  onClick={() =>
-                    setValue("customImage", g.url, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                      shouldValidate: true,
-                    })
-                  }
+                  key={i + 1}
+                  onClick={() => setPage(i)}
                   className={cn(
-                    "rounded-xl overflow-hidden transition-all duration-200 cursor-pointer",
-                    isSelected
-                      ? "border-green-700 border-2"
-                      : "border-border hover:border-primary/40 border-2",
+                    "px-3 py-1 rounded-md text-sm",
+                    page === i
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted hover:bg-muted/70",
                   )}
                 >
-                  <CollectionCard
-                    game={{ ...cardData, customImage: g.url }}
-                    variant={cardType}
-                    showcase
-                  />
+                  {i + 1}
                 </button>
               );
             })}
           </div>
-          <ScrollBar orientation="vertical" />
-        </ScrollArea>
+        </div>
       )}
 
       {!isLoadingGrid && (!grids || directLink) && (

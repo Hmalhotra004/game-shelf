@@ -1,14 +1,16 @@
 import { updateImagesSchema } from "@repo/schemas/schemas/collection";
 import { CollectionGetById } from "@repo/schemas/types/collection";
+import AlertError from "@repo/ui/components/AlertError";
 import { HeroSection } from "@repo/ui/components/collection/HeroSection";
 import { FormInput } from "@repo/ui/components/form/Form";
-import { ScrollArea } from "@repo/ui/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
 import { useChangeImageFilters } from "@repo/ui/hooks/useChangeImageFilters";
 import { api } from "@repo/ui/lib/api";
-import { isSteamGridDbImage } from "@repo/ui/lib/utils";
+import { cn, isSteamGridDbImage } from "@repo/ui/lib/utils";
 import { ResponseType } from "@repo/ui/views/collection/ChangeImagesView";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import z from "zod";
 
@@ -18,7 +20,9 @@ interface Props {
 }
 
 export const HeroImages = ({ game, isPending }: Props) => {
-  const { control, formState, watch } =
+  const [page, setPage] = useState(0);
+
+  const { control, formState, watch, setValue } =
     useFormContext<z.infer<typeof updateImagesSchema>>();
 
   const externalId = game?.steamGridDBId ?? game?.steamAppId;
@@ -26,18 +30,21 @@ export const HeroImages = ({ game, isPending }: Props) => {
   const [filters] = useChangeImageFilters();
   const { directLink } = filters;
 
-  const { data: heros, isLoading: isLoadingHero } = useQuery({
-    queryKey: ["HERO", game?.id, externalId],
+  const {
+    data: heros,
+    isLoading: isLoadingHero,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["HERO", game?.id, externalId, page],
     queryFn: async () => {
-      const response = await api.get<Array<ResponseType>>(
-        `/steamGridDB/getHeros`,
-        {
-          params: {
-            steamGridDBId: game?.steamGridDBId,
-            steamAppId: game?.steamAppId,
-          },
+      const response = await api.get<ResponseType>(`/steamGridDB/getHeros`, {
+        params: {
+          steamGridDBId: game?.steamGridDBId,
+          steamAppId: game?.steamAppId,
+          page,
         },
-      );
+      });
 
       return response.data;
     },
@@ -51,24 +58,82 @@ export const HeroImages = ({ game, isPending }: Props) => {
     !formState.errors.customCoverImage &&
     isSteamGridDbImage(customCoverImage);
 
+  const totalPages = useMemo(() => {
+    if (!heros) return 0;
+    return Math.ceil(heros.total / heros.limit);
+  }, [heros]);
+
+  if (!externalId) {
+    return null;
+  }
+
+  if (isError) {
+    return <AlertError error={error.message} />;
+  }
+
   return (
     <div className="bg-card border-border border-2 rounded-xl p-3">
       {isLoadingHero && <Skeleton className="h-[60vh]" />}
 
       {!isLoadingHero && heros && !directLink && (
-        <ScrollArea className="h-140">
-          <div className="flex flex-wrap items-center gap-6 justify-center">
-            {heros.map((h) => (
-              <HeroSection
-                key={h.id}
-                game={{
-                  ...game,
-                  customCoverImage: h.url,
-                }}
-              />
-            ))}
+        <div>
+          <ScrollArea className="h-135">
+            <div className="flex flex-wrap items-center gap-6 justify-center">
+              {heros.data.map((h) => {
+                const isSelected = customCoverImage === h.url;
+
+                return (
+                  <button
+                    key={h.id}
+                    type="button"
+                    onClick={() =>
+                      setValue("customCoverImage", h.url, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true,
+                      })
+                    }
+                    className={cn(
+                      "rounded-xl overflow-hidden transition-all duration-200 cursor-pointer",
+                      isSelected
+                        ? "border-green-700 border-2"
+                        : "border-border hover:border-primary/40 border-2",
+                    )}
+                  >
+                    <HeroSection
+                      key={h.id}
+                      game={{
+                        ...game,
+                        customCoverImage: h.url,
+                      }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+
+          <div className="flex items-center gap-2 mt-4 justify-center">
+            {Array.from({ length: totalPages }).map((_, i) => {
+              return (
+                <button
+                  key={i + 1}
+                  onClick={() => setPage(i)}
+                  className={cn(
+                    "px-3 py-1 rounded-md text-sm",
+                    page === i
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted hover:bg-muted/70",
+                  )}
+                >
+                  {i + 1}
+                </button>
+              );
+            })}
           </div>
-        </ScrollArea>
+        </div>
       )}
 
       {!isLoadingHero && (!heros || directLink) && (
