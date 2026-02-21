@@ -35,3 +35,45 @@ export const providerPlatformRefine = (obj: {
 }) =>
   (obj.platform === "PS" && ["PSN", "Physical"].includes(obj.provider)) ||
   (obj.platform === "PC" && ["Steam", "Epic"].includes(obj.provider));
+
+export const externalIdsSchema = z.object({
+  steamAppId: z.string().nullable().optional(),
+  npCommunicationId: z.string().nullable().optional(),
+});
+
+const steamGridDbImageUrl = (type: "grid" | "hero") =>
+  z
+    .string()
+    .trim()
+    .transform((val) => (val === "" ? null : val))
+    .refine(
+      (url) => {
+        if (!url) return true;
+        try {
+          const { protocol, hostname, pathname } = new URL(url);
+          return (
+            protocol === "https:" &&
+            hostname === "cdn2.steamgriddb.com" &&
+            new RegExp(
+              `^\\/${type}\\/[a-f0-9]{32}\\.(png|jpg|jpeg|webp)$`,
+            ).test(pathname)
+          );
+        } catch {
+          return false;
+        }
+      },
+      {
+        message: `Only SteamGridDB ${type} images (png, jpg, jpeg, webp) are allowed`,
+      },
+    )
+    .nullable()
+    .optional();
+
+export const updateImagesSchema = z.object({
+  customImage: steamGridDbImageUrl("grid"),
+  customCoverImage: steamGridDbImageUrl("hero"),
+});
+
+// types
+export type ExternalIdsSchemaType = z.infer<typeof externalIdsSchema>;
+export type UpdateImagesSchemaType = z.infer<typeof updateImagesSchema>;

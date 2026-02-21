@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "@repo/schemas/schemas/auth";
-import type { LinkType } from "@repo/schemas/types/index";
 import AlertError from "@repo/ui/components/AlertError";
 import { FormInput, FormInputPassword } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
@@ -23,10 +22,10 @@ type FormData = z.infer<typeof signupSchema>;
 
 interface Props {
   onSuccess: () => void;
-  Link: LinkType;
+  renderLink?: (children: React.ReactNode) => React.ReactNode;
 }
 
-const SignupView = ({ Link, onSuccess }: Props) => {
+const SignupView = ({ renderLink, onSuccess }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -123,9 +122,11 @@ const SignupView = ({ Link, onSuccess }: Props) => {
       <CardContent className="px-7 flex items-center justify-center">
         <p>
           Already have an account?{" "}
-          <Link to="/login">
+          {renderLink ? (
+            renderLink(<span className="text-primary">log In</span>)
+          ) : (
             <span className="text-primary">log In</span>
-          </Link>
+          )}
         </p>
       </CardContent>
     </Card>

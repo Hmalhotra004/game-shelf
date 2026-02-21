@@ -1,13 +1,12 @@
 "use client";
 
-import type { LinkType } from "@repo/schemas/types/index";
 import { authClient } from "@repo/ui/lib/authClient";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
 
 import {
-  ImportIcon,
+  DownloadCloudIcon,
   KeyRoundIcon,
   ListIcon,
   LogOutIcon,
@@ -22,11 +21,11 @@ import {
 } from "./ui/dropdown-menu";
 
 interface Props {
-  Link: LinkType;
+  renderLink: (to: string, children: React.ReactNode) => React.ReactNode;
   onLogout: () => void;
 }
 
-const UserButton = ({ Link, onLogout }: Props) => {
+const UserButton = ({ renderLink, onLogout }: Props) => {
   const { data, isPending } = authClient.useSession();
 
   const user = data?.user;
@@ -100,77 +99,86 @@ const UserButton = ({ Link, onLogout }: Props) => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/lists">
-            <ListIcon className="size-4 mr-1" />
-            Manage Lists
-          </Link>
+          {renderLink(
+            "/profile/manage-lists",
+            <>
+              <ListIcon className="size-4 mr-1" />
+              Manage Lists
+            </>,
+          )}
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/platinum-list">
-            <ListIcon className="size-4 mr-1" />
-            Platinum List
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/mastered-games">
-            <ListIcon className="size-4 mr-1" />
-            Mastered Games
-          </Link>
-        </DropdownMenuItem>
-
-        <Separator className="my-1" />
-
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/profile/connections">
-            <KeyRoundIcon className="size-4 mr-1" />
-            Connections
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/import-games">
-            <ImportIcon className="size-4 mr-1" />
-            Import Games
-          </Link>
-        </DropdownMenuItem>
-
-        <Separator className="my-1" />
-
-        {/* FIXME:do it ater */}
-        {/* {!isLoading && isAdmin && (
+        {user.PSNAccountId && user.PSNAccountUserName && (
           <DropdownMenuItem
             className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
             asChild
           >
-            <Link to="/backup">
-              <DownloadCloudIcon className="size-4 mr-1" />
-              Backup Data
-            </Link>
+            {renderLink(
+              "/profile/platinum-list",
+              <>
+                <ListIcon className="size-4 mr-1" />
+                Platinum List
+              </>,
+            )}
           </DropdownMenuItem>
-        )} */}
+        )}
 
         <DropdownMenuItem
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/profile/settings">
-            <SettingsIcon className="size-4 mr-1" />
-            Settings
-          </Link>
+          {renderLink(
+            "/profile/mastered-games",
+            <>
+              <ListIcon className="size-4 mr-1" />
+              Mastered Games
+            </>,
+          )}
+        </DropdownMenuItem>
+
+        <Separator className="my-1" />
+
+        <DropdownMenuItem
+          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
+          asChild
+        >
+          {renderLink(
+            "/profile/connections",
+            <>
+              <KeyRoundIcon className="size-4 mr-1" />
+              Connections
+            </>,
+          )}
+        </DropdownMenuItem>
+
+        <Separator className="my-1" />
+
+        {user.userAccountType === "Admin" && (
+          <DropdownMenuItem
+            className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
+            asChild
+          >
+            {renderLink(
+              "/backup",
+              <>
+                <DownloadCloudIcon className="size-4 mr-1" />
+                Backup Data
+              </>,
+            )}
+          </DropdownMenuItem>
+        )}
+
+        <DropdownMenuItem
+          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
+          asChild
+        >
+          {renderLink(
+            "/profile/settings",
+            <>
+              <SettingsIcon className="size-4 mr-1" />
+              Settings
+            </>,
+          )}
         </DropdownMenuItem>
 
         <Separator className="my-1" />

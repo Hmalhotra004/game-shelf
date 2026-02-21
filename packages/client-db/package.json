@@ -1,0 +1,30 @@
+{
+  "name": "@repo/client-db",
+  "version": "0.0.0",
+  "private": "true",
+  "exports": {
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "3.51.2-build6",
+    "better-sqlite3": "^12.6.2",
+    "drizzle-orm": "^0.45.1",
+    "drizzle-zod": "^0.8.3",
+    "nanoid": "^5.1.6",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.3",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "drizzle-kit": "^0.31.8",
+    "eslint": "^9.39.1",
+    "typescript": "5.9.2"
+  }
+}

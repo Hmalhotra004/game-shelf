@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@repo/schemas/schemas/auth";
-import type { LinkType } from "@repo/schemas/types/index";
 import AlertError from "@repo/ui/components/AlertError";
 import { FormInput, FormInputPassword } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
@@ -23,10 +22,11 @@ type FormData = z.infer<typeof loginSchema>;
 
 interface Props {
   onSuccess: () => void;
-  Link: LinkType;
+  renderForgotLink?: (children: React.ReactNode) => React.ReactNode;
+  rendersignLink?: (children: React.ReactNode) => React.ReactNode;
 }
 
-const LoginView = ({ onSuccess, Link }: Props) => {
+const LoginView = ({ onSuccess, renderForgotLink, rendersignLink }: Props) => {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -90,7 +90,11 @@ const LoginView = ({ onSuccess, Link }: Props) => {
               disabled={pending}
               outerElement={
                 <FieldDescription>
-                  <Link to="/forgot-password">Forgot Password?</Link>
+                  {renderForgotLink ? (
+                    renderForgotLink(<span>Forgot Password?</span>)
+                  ) : (
+                    <span>Forgot Password?</span>
+                  )}
                 </FieldDescription>
               }
             />
@@ -112,9 +116,11 @@ const LoginView = ({ onSuccess, Link }: Props) => {
       <CardContent className="px-7 flex items-center justify-center">
         <p>
           Don&apos;t have an account?{" "}
-          <Link to="/sign-up">
+          {rendersignLink ? (
+            rendersignLink(<span className="text-primary">Sign Up</span>)
+          ) : (
             <span className="text-primary">Sign Up</span>
-          </Link>
+          )}
         </p>
       </CardContent>
     </Card>

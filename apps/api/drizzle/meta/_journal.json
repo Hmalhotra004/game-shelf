@@ -239,6 +239,13 @@
       "when": 1770793694602,
       "tag": "0033_gameRecord_enum_to_sync_type",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1771329798841,
+      "tag": "0034_steamgridId",
+      "breakpoints": true
     }
   ]
 }

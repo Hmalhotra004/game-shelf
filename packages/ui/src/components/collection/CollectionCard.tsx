@@ -1,11 +1,11 @@
 "use client";
 
 import { CollectionGetMany } from "@repo/schemas/types/collection";
-import { LinkType } from "@repo/schemas/types/index";
 import { Badge } from "@repo/ui/components/ui/badge";
 import { betterTimeText, cn, statusColorMap } from "@repo/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { format } from "date-fns";
+import { ReactNode } from "react";
 import CardContextMenu from "./CardContextMenu";
 
 import {
@@ -18,13 +18,17 @@ import {
 
 export type CollectionCardVariant = "compact" | "overlay" | "slideUp";
 
+// default
+// cover
+// reveal
+
 const cardVariants = cva(
   "relative rounded-xl overflow-hidden bg-card transition border",
   {
     variants: {
       variant: {
         compact:
-          "w-65 flex flex-col shadow-sm hover:shadow-md hover:border-primary",
+          "w-65 h-97.5 flex flex-col shadow-sm hover:shadow-md hover:border-primary",
         overlay: "w-65 h-97.5 shadow-lg group-hover:scale-[1.02]",
         slideUp: "w-65 h-97.5 shadow-lg",
       },
@@ -36,16 +40,21 @@ const cardVariants = cva(
 );
 
 interface Props extends VariantProps<typeof cardVariants> {
-  Link: LinkType;
   game: CollectionGetMany;
   showcase?: boolean;
+  renderLink?: (children: ReactNode, game: CollectionGetMany) => ReactNode;
+  renderContextMenuActions?: {
+    onEdit?: (game: CollectionGetMany) => void;
+    onChangeImages?: (game: CollectionGetMany) => void;
+  };
 }
 
 export const CollectionCard = ({
   game,
   variant,
   showcase = false,
-  Link,
+  renderLink,
+  renderContextMenuActions,
 }: Props) => {
   const getPlayTime = () => {
     if (game.status === "Online") return betterTimeText(game.onlinePlaySecs);
@@ -70,8 +79,8 @@ export const CollectionCard = ({
         src={game.customImage ?? game.image!}
         alt={game.name}
         className={cn(
-          "object-cover relative overflow-hidden",
-          variant === "compact" ? "h-64" : "h-full",
+          "object-cover relative overflow-hidden h-full",
+          // variant === "compact" ? "h-64" : "h-full",
           variant === "compact" && "object-top",
         )}
       />
@@ -103,17 +112,22 @@ export const CollectionCard = ({
     return <div className="group">{content}</div>;
   }
 
+  const wrappedContent = renderLink ? renderLink(content, game) : content;
+
   return (
-    <CardContextMenu data={game}>
-      <Link
-        to={`/collection/${game.id}?provider=${game.provider}`}
+    <CardContextMenu
+      data={game}
+      onEdit={renderContextMenuActions?.onEdit}
+      onChangeImages={renderContextMenuActions?.onChangeImages}
+    >
+      <div
         className={cn(
           "group focus:outline-none",
           variant !== "compact" && "relative",
         )}
       >
-        {content}
-      </Link>
+        {wrappedContent}
+      </div>
     </CardContextMenu>
   );
 };

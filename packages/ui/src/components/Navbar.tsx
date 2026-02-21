@@ -1,17 +1,16 @@
 "use client";
-import type { LinkType } from "@repo/schemas/types/index";
 import { cn } from "@repo/ui/lib/utils";
 import { Gamepad2Icon, HomeIcon, LibraryIcon, TrophyIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import UserButton from "./UserButton";
 
 interface Props {
-  Link: LinkType;
+  renderLink: (to: string, children: React.ReactNode) => React.ReactNode;
   onLogout: () => void;
   pathname: string;
 }
 
-const Navbar = ({ Link, onLogout, pathname }: Props) => {
+const Navbar = ({ renderLink, onLogout, pathname }: Props) => {
   const navItems = [
     {
       label: "Home",
@@ -60,17 +59,20 @@ const Navbar = ({ Link, onLogout, pathname }: Props) => {
                   )}
                   asChild
                 >
-                  <Link to={item.href}>
-                    <item.icon className="size-4" />
-                    <span className="hidden sm:inline">{item.label} </span>
-                  </Link>
+                  {renderLink(
+                    item.href,
+                    <>
+                      <item.icon className="size-4" />
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </>,
+                  )}
                 </Button>
               );
             })}
           </div>
 
           <UserButton
-            Link={Link}
+            renderLink={renderLink}
             onLogout={onLogout}
           />
         </div>
