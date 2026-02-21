@@ -78,7 +78,7 @@ export const HeroImages = ({ game, isPending }: Props) => {
       {!isLoadingHero && heros && !directLink && (
         <div>
           <ScrollArea className="h-135">
-            <div className="flex flex-wrap items-center gap-6 justify-center">
+            <div className="flex flex-wrap items-center gap-6 justify-center px-0.5 mt-0.5">
               {heros.data.map((h) => {
                 const isSelected = customCoverImage === h.url;
 
@@ -93,28 +93,32 @@ export const HeroImages = ({ game, isPending }: Props) => {
                         shouldValidate: true,
                       })
                     }
-                    className={cn(
-                      "rounded-xl overflow-hidden transition-all duration-200 cursor-pointer",
-                      isSelected
-                        ? "border-green-700 border-2"
-                        : "border-border hover:border-primary/40 border-2",
-                    )}
+                    className="block w-full p-0 m-0 bg-transparent border-0 text-left"
                   >
-                    {imageOnly ? (
-                      <img
-                        src={h.url}
-                        alt="grid"
-                        className="rounded-xl overflow-hidden h-[60vh] object-cover object-top w-full"
-                      />
-                    ) : (
-                      <HeroSection
-                        key={h.id}
-                        game={{
-                          ...game,
-                          customCoverImage: h.url,
-                        }}
-                      />
-                    )}
+                    <div
+                      className={cn(
+                        "rounded-xl transition-all duration-200",
+                        isSelected
+                          ? "ring-2 ring-green-600"
+                          : "hover:ring-2 hover:ring-primary/40",
+                      )}
+                    >
+                      {imageOnly ? (
+                        <img
+                          src={h.url}
+                          alt="grid"
+                          className="rounded-xl h-[60vh] object-cover object-top w-full"
+                        />
+                      ) : (
+                        <HeroSection
+                          key={h.id}
+                          game={{
+                            ...game,
+                            customCoverImage: h.url,
+                          }}
+                        />
+                      )}
+                    </div>
                   </button>
                 );
               })}

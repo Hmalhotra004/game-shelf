@@ -126,7 +126,7 @@ export const GridImages = ({ game, isPending }: Props) => {
       {!isLoadingGrid && grids && !directLink && (
         <div>
           <ScrollArea className="h-135">
-            <div className="flex flex-wrap items-center gap-6 justify-center">
+            <div className="flex flex-wrap items-center gap-6 justify-center mt-0.5">
               {grids.data.map((g) => {
                 const isSelected = customImage === g.url;
 
@@ -141,26 +141,30 @@ export const GridImages = ({ game, isPending }: Props) => {
                         shouldValidate: true,
                       })
                     }
-                    className={cn(
-                      "rounded-xl overflow-hidden transition-all duration-200 cursor-pointer",
-                      isSelected
-                        ? "border-green-700 border-2"
-                        : "border-border hover:border-primary/40 border-2",
-                    )}
+                    className="bg-transparent p-0 border-none outline-none focus:outline-none text-left block"
                   >
-                    {imageOnly ? (
-                      <img
-                        src={g.url}
-                        alt="grid"
-                        className="object-cover relative overflow-hidden w-65 h-97.5"
-                      />
-                    ) : (
-                      <CollectionCard
-                        game={{ ...cardData, customImage: g.url }}
-                        variant={cardType}
-                        showcase
-                      />
-                    )}
+                    <div
+                      className={cn(
+                        "rounded-xl transition-all duration-200",
+                        isSelected
+                          ? "ring-2 ring-green-600"
+                          : "hover:ring-2 hover:ring-primary/40",
+                      )}
+                    >
+                      {imageOnly ? (
+                        <img
+                          src={g.url}
+                          alt="grid"
+                          className="object-cover w-65 h-97.5 rounded-xl"
+                        />
+                      ) : (
+                        <CollectionCard
+                          game={{ ...cardData, customImage: g.url }}
+                          variant={cardType}
+                          showcase
+                        />
+                      )}
+                    </div>
                   </button>
                 );
               })}
