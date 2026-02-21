@@ -41,7 +41,7 @@ export const Filters = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <p>Direct Link</p>
+        <p>Show Selected</p>
         <Switch
           checked={directLink}
           onCheckedChange={(v) => setFilters({ directLink: v })}

@@ -88,23 +88,13 @@ export const GridImages = ({ game, isPending }: Props) => {
     ...game,
     listIds: [],
     ...totals,
-    customImage: previewImage ? customImage : game.image,
+    customImage: previewImage ? customImage : game.image!,
   };
 
   const totalPages = useMemo(() => {
     if (!grids) return 0;
     return Math.ceil(grids.total / grids.limit);
   }, [grids]);
-
-  // const sortedGrids = useMemo(() => {
-  //   if (!grids) return [];
-
-  //   return [...grids.data].sort((a, b) => {
-  //     if (a.url === customImage) return -1;
-  //     if (b.url === customImage) return 1;
-  //     return 0;
-  //   });
-  // }, [grids, customImage]);
 
   if (!externalId) {
     return null;
@@ -205,14 +195,22 @@ export const GridImages = ({ game, isPending }: Props) => {
           />
 
           <div className="flex flex-wrap items-center gap-6 justify-center">
-            {CARD_VARIANTS.map((variant) => (
-              <CollectionCard
-                key={variant}
-                game={cardData}
-                variant={variant}
-                showcase
+            {imageOnly ? (
+              <img
+                src={cardData.customImage!}
+                alt="card"
+                className="object-cover w-65 h-97.5 rounded-xl"
               />
-            ))}
+            ) : (
+              CARD_VARIANTS.map((variant) => (
+                <CollectionCard
+                  key={variant}
+                  game={cardData}
+                  variant={variant}
+                  showcase
+                />
+              ))
+            )}
           </div>
         </div>
       )}

@@ -71,6 +71,8 @@ export const HeroImages = ({ game, isPending }: Props) => {
     return <AlertError error={error.message} />;
   }
 
+  const image = previewCoverImage ? customCoverImage : game.coverImage!;
+
   return (
     <div className="bg-card border-border border-2 rounded-xl p-3">
       {isLoadingHero && <Skeleton className="h-[60vh]" />}
@@ -158,14 +160,22 @@ export const HeroImages = ({ game, isPending }: Props) => {
             placeholder="Hero Image"
           />
 
-          <HeroSection
-            game={{
-              ...game,
-              customCoverImage: previewCoverImage
-                ? customCoverImage
-                : game.coverImage,
-            }}
-          />
+          {imageOnly ? (
+            <img
+              src={image}
+              alt="card"
+              className="rounded-xl h-[60vh] object-cover object-top w-full"
+            />
+          ) : (
+            <HeroSection
+              game={{
+                ...game,
+                customCoverImage: previewCoverImage
+                  ? customCoverImage
+                  : game.coverImage,
+              }}
+            />
+          )}
         </div>
       )}
     </div>
