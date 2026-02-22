@@ -141,6 +141,7 @@ export const user = pgTable("user", {
   PSNAccountUserName: text("psn_account_user_name"),
   PSNAccountId: text("psn_account_id"),
   userAccountType: userAccount("user_account").notNull().default("User"),
+  isAdult: boolean("is_adult").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

@@ -1,4 +1,5 @@
 import { useChangeImageFilters } from "@repo/ui/hooks/useChangeImageFilters";
+import { authClient } from "@repo/ui/lib/authClient";
 import { Switch } from "../../ui/switch";
 
 import {
@@ -11,6 +12,12 @@ import {
 
 export const Filters = () => {
   const [filters, setFilters] = useChangeImageFilters();
+
+  const { data, isPending } = authClient.useSession();
+
+  if (isPending || !data) {
+    return null;
+  }
 
   const { cardType, directLink, imageOnly, nsfw } = filters;
 
@@ -32,13 +39,15 @@ export const Filters = () => {
         </SelectContent>
       </Select>
 
-      <div className="flex items-center gap-2">
-        <p>NSFW Only</p>
-        <Switch
-          checked={nsfw}
-          onCheckedChange={(v) => setFilters({ nsfw: v })}
-        />
-      </div>
+      {data.user && data.user.isAdult && (
+        <div className="flex items-center gap-2">
+          <p>NSFW Only</p>
+          <Switch
+            checked={nsfw}
+            onCheckedChange={(v) => setFilters({ nsfw: v })}
+          />
+        </div>
+      )}
 
       <div className="flex items-center gap-2">
         <p>Image Only</p>

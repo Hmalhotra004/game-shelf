@@ -20,6 +20,7 @@ declare global {
         id: string;
         email: string;
         steamId?: string | null | undefined;
+        isAdult: boolean;
       };
       session?: {
         id: string;

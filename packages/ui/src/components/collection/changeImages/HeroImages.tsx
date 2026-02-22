@@ -8,6 +8,7 @@ import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
 import { useChangeImageFilters } from "@repo/ui/hooks/useChangeImageFilters";
 import { api } from "@repo/ui/lib/api";
+import { authClient } from "@repo/ui/lib/authClient";
 import { cn, isSteamGridDbImage } from "@repo/ui/lib/utils";
 import { ResponseType } from "@repo/ui/views/collection/ChangeImagesView";
 import { useQuery } from "@tanstack/react-query";
@@ -23,6 +24,8 @@ interface Props {
 export const HeroImages = ({ game, isPending }: Props) => {
   const [page, setPage] = useState(0);
 
+  const { data, isPending: isAuthLoading } = authClient.useSession();
+
   const { control, formState, watch, setValue } =
     useFormContext<z.infer<typeof updateImagesSchema>>();
 
@@ -33,7 +36,7 @@ export const HeroImages = ({ game, isPending }: Props) => {
 
   const {
     data: heros,
-    isLoading: isLoadingHero,
+    isLoading: isHeroLoading,
     isError,
     error,
   } = useQuery({
@@ -44,14 +47,20 @@ export const HeroImages = ({ game, isPending }: Props) => {
           steamGridDBId: game?.steamGridDBId,
           steamAppId: game?.steamAppId,
           page,
-          nsfw,
+          nsfw: data?.user.isAdult ? nsfw : false,
         },
       });
 
       return response.data;
     },
-    enabled: Boolean(externalId),
+    enabled: Boolean(externalId) && !!data,
   });
+
+  const isDataMissing = !data;
+  const hasHeros = !!heros?.data?.length;
+  const isLoading = isAuthLoading || isDataMissing || isHeroLoading;
+  const isEmpty = !isLoading && !hasHeros;
+  const isReady = !isLoading && hasHeros;
 
   const customCoverImage = watch("customCoverImage");
 
@@ -65,6 +74,8 @@ export const HeroImages = ({ game, isPending }: Props) => {
     return Math.ceil(heros.total / heros.limit);
   }, [heros]);
 
+  const image = previewCoverImage ? customCoverImage : game.coverImage!;
+
   if (!externalId) {
     return null;
   }
@@ -73,17 +84,15 @@ export const HeroImages = ({ game, isPending }: Props) => {
     return <AlertError error={error.message} />;
   }
 
-  const image = previewCoverImage ? customCoverImage : game.coverImage!;
-
-  if (!isLoadingHero && heros && !directLink && heros.total === 0) {
+  if (isEmpty) {
     return <ChangeImagesEmptyState />;
   }
 
   return (
     <div className="bg-card border-border border-2 rounded-xl p-3">
-      {isLoadingHero && <Skeleton className="h-[60vh]" />}
+      {isLoading && <Skeleton className="h-[60vh]" />}
 
-      {!isLoadingHero && heros && !directLink && (
+      {isReady && !directLink && (
         <div>
           <ScrollArea className="h-135">
             <div className="flex flex-wrap items-center gap-6 justify-center px-0.5 mt-0.5">
@@ -156,7 +165,7 @@ export const HeroImages = ({ game, isPending }: Props) => {
         </div>
       )}
 
-      {!isLoadingHero && (!heros || directLink) && (
+      {isReady && directLink && (
         <div className="flex flex-col gap-4">
           <FormInput
             name="customCoverImage"

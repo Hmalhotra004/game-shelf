@@ -1,17 +1,18 @@
 import { updateImagesSchema } from "@repo/schemas/schemas/collection";
 import AlertError from "@repo/ui/components/AlertError";
+import { ChangeImagesEmptyState } from "@repo/ui/components/emptyStates/ChangeImagesEmptyState";
 import { CollectionLoading } from "@repo/ui/components/fallbacks/CollectionLoading";
 import { FormInput } from "@repo/ui/components/form/Form";
 import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { useChangeImageFilters } from "@repo/ui/hooks/useChangeImageFilters";
 import { api } from "@repo/ui/lib/api";
+import { authClient } from "@repo/ui/lib/authClient";
 import { cn, isSteamGridDbImage } from "@repo/ui/lib/utils";
 import { ResponseType } from "@repo/ui/views/collection/ChangeImagesView";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import z from "zod";
-import { ChangeImagesEmptyState } from "@repo/ui/components/emptyStates/ChangeImagesEmptyState";
 
 import {
   CollectionCard,
@@ -23,7 +24,6 @@ import {
   CollectionGetMany,
 } from "@repo/schemas/types/collection";
 
-
 interface Props {
   game: CollectionGetById;
   isPending: boolean;
@@ -31,6 +31,8 @@ interface Props {
 
 export const GridImages = ({ game, isPending }: Props) => {
   const [page, setPage] = useState(0);
+
+  const { data, isPending: isAuthLoading } = authClient.useSession();
 
   const { control, watch, formState, setValue } =
     useFormContext<z.infer<typeof updateImagesSchema>>();
@@ -42,7 +44,7 @@ export const GridImages = ({ game, isPending }: Props) => {
 
   const {
     data: grids,
-    isLoading: isLoadingGrid,
+    isLoading: isGridLoading,
     isError,
     error,
   } = useQuery({
@@ -53,14 +55,20 @@ export const GridImages = ({ game, isPending }: Props) => {
           steamGridDBId: game?.steamGridDBId,
           steamAppId: game?.steamAppId,
           page,
-          nsfw,
+          nsfw: data?.user.isAdult ? nsfw : false,
         },
       });
 
       return response.data;
     },
-    enabled: Boolean(externalId),
+    enabled: Boolean(externalId) && !!data,
   });
+
+  const isDataMissing = !data;
+  const hasGrids = !!grids?.data?.length;
+  const isLoading = isAuthLoading || isDataMissing || isGridLoading;
+  const isEmpty = !isLoading && !hasGrids;
+  const isReady = !isLoading && hasGrids;
 
   const customImage = watch("customImage");
 
@@ -107,20 +115,20 @@ export const GridImages = ({ game, isPending }: Props) => {
     return <AlertError error={error.message} />;
   }
 
-  if (!isLoadingGrid && grids && !directLink && grids.total === 0) {
+  if (isEmpty) {
     return <ChangeImagesEmptyState />;
   }
 
   return (
     <div className="bg-card border-border border-2 rounded-xl p-3">
-      {isLoadingGrid && (
+      {isLoading && (
         <ScrollArea className="h-140">
           <CollectionLoading />
           <ScrollBar orientation="vertical" />
         </ScrollArea>
       )}
 
-      {!isLoadingGrid && grids && !directLink && (
+      {isReady && !directLink && (
         <div>
           <ScrollArea className="h-135">
             <div className="flex flex-wrap items-center gap-6 justify-center mt-0.5">
@@ -191,7 +199,7 @@ export const GridImages = ({ game, isPending }: Props) => {
         </div>
       )}
 
-      {!isLoadingGrid && (!grids || directLink) && (
+      {isReady && directLink && (
         <div className="flex flex-col gap-4">
           <FormInput
             name="customImage"

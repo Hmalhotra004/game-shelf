@@ -26,6 +26,11 @@ interface AdditionalFields {
         required: true;
         defaultValue: string;
       };
+      isAdult: {
+        type: "boolean";
+        required: true;
+        defaultValue: false;
+      };
     };
   };
 }

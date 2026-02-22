@@ -38,6 +38,8 @@ export const getGrids = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "At least one ID is required" });
     }
 
+    const isAdult = req.user!.isAdult;
+
     let type: "steam" | "game";
     let id: number;
 
@@ -61,7 +63,7 @@ export const getGrids = async (req: Request, res: Response) => {
           page: currentPage,
           dimensions: "600x900",
           types: ["static", "animated"].join(","),
-          nsfw: nsfw ?? false,
+          nsfw: isAdult ? nsfw : false,
           humor: "any",
           epilepsy: "any",
         },
@@ -90,6 +92,8 @@ export const getHeros = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "At least one ID is required" });
     }
 
+    const isAdult = req.user!.isAdult;
+
     let type: "steam" | "game";
     let id: number;
 
@@ -112,7 +116,7 @@ export const getHeros = async (req: Request, res: Response) => {
         params: {
           page: currentPage,
           types: ["static", "animated"].join(","),
-          nsfw: nsfw ?? false,
+          nsfw: isAdult ? nsfw : false,
           humor: "any",
           epilepsy: "any",
         },

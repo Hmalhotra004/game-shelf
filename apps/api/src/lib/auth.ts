@@ -40,6 +40,11 @@ export const auth = betterAuth({
         required: true,
         defaultValue: "User",
       },
+      isAdult: {
+        type: "boolean",
+        required: true,
+        defaultValue: false,
+      },
     },
   },
   emailAndPassword: {
