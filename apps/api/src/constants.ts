@@ -4,3 +4,5 @@ export const ORIGINS = [
   "http://localhost:4173",
   "https://game-shelf-web-tan.vercel.app",
 ];
+
+export const GenericErrorMessage = "Something Went Wrong!";
