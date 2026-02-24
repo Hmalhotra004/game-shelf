@@ -1,7 +1,6 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { Analytics } from "@vercel/analytics/next";
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
@@ -16,14 +15,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
       <Outlet />
-      {process.env.NODE_ENV === "development" && (
-        <ReactQueryDevtools
-          initialIsOpen={false}
-          buttonPosition="bottom-right"
-        />
-      )}
-      {process.env.NODE_ENV === "development" && (
+      {/* {process.env.NODE_ENV === "development" && (
         <TanStackDevtools
+          config={{ position: "top-left" }}
           plugins={[
             {
               name: "Tanstack Router",
@@ -31,6 +25,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
             },
             TanStackQueryDevtools,
           ]}
+        />
+      )} */}
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition="bottom-left"
         />
       )}
     </>
