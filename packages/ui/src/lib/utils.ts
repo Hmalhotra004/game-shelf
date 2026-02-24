@@ -1,4 +1,7 @@
-import type { CollectionStatusType } from "@repo/schemas/types/index";
+import type {
+  CollectionStatusType,
+  PlaythroughStatusType,
+} from "@repo/schemas/types/index";
 import { isAxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { format, formatDistanceToNow } from "date-fns";
@@ -31,6 +34,17 @@ export const statusColorMap: Record<CollectionStatusType, string> = {
   "Platinum+": "border-purple-700",
   "100% Completed": "border-emerald-600",
 };
+
+export function getBorderColor(status: PlaythroughStatusType) {
+  switch (status) {
+    case "Active":
+      return "border-emerald-600";
+    case "On Hold":
+      return "border-amber-500";
+    case "Archived":
+      return "border-rose-600";
+  }
+}
 
 export function betterTimeText(seconds: number, withS?: boolean): string {
   const h = Math.floor(seconds / 3600);

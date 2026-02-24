@@ -120,6 +120,8 @@ export const getMany = async (req: Request, res: Response) => {
         name: isDLC ? pt.dlcName : pt.gameName,
         image: isDLC ? pt.dlcImage : pt.gameImage,
         customImage: isDLC ? pt.dlcImage : pt.gameCustomImage,
+        coverImage: isDLC ? pt.dlcImage : pt.gameCoverImage,
+        customCoverImage: isDLC ? pt.dlcImage : pt.gameCustomCoverImage,
 
         platform: isDLC ? parentPlatform : pt.gamePlatform,
         provider: isDLC ? parentProvider : pt.gameProvider,
