@@ -1,11 +1,20 @@
+import { AddButton } from "@repo/ui/components/AddButton";
+import AlertError from "@repo/ui/components/AlertError";
 import { PlaythroughLoading } from "@repo/ui/components/fallbacks/PlaythroughLoading";
+import AddPlaythoughModal from "@repo/ui/components/playthroughs/AddPlaythoughModal";
 import Filters from "@repo/ui/components/playthroughs/Filters";
-import { PlaythroughCard } from "@repo/ui/components/playthroughs/PlaythroughCard";
+import { PlaythroughCard2 } from "@repo/ui/components/playthroughs/PlaythroughCard2";
+import { ScrollArea, ScrollBar } from "@repo/ui/components/ui/scroll-area";
 import { usePlaythroughFilters } from "@repo/ui/hooks/usePlaythroughFilters";
 import { playthroughGetManyQueryOptions } from "@repo/ui/queries/playthrough/queries";
+import { getGamesQueryOptions } from "@repo/ui/queries/user/queries";
 import { useQuery } from "@tanstack/react-query";
 
-export const PlaythroughView = () => {
+interface Props {
+  onFinish: (playthroughId: string) => void;
+}
+
+export const PlaythroughView = ({ onFinish }: Props) => {
   const [filters] = usePlaythroughFilters();
 
   const { platform, status } = filters;
@@ -17,21 +26,21 @@ export const PlaythroughView = () => {
     error,
   } = useQuery(playthroughGetManyQueryOptions());
 
+  const { data: games, isLoading: isGamesLoading } = useQuery(
+    getGamesQueryOptions(),
+  );
+
   const filteredData = playthroughs
     ? playthroughs
         .filter((p) => {
-          // Platform filter
           if (platform !== "All" && p.platform !== platform) return false;
 
-          // Status filter
           if (status === "Archived") {
             return p.status === "Archived";
           }
 
-          // For ALL and other statuses, exclude archived
           if (p.status === "Archived") return false;
 
-          // Match selected status
           if (status !== "All" && p.status !== status) return false;
 
           return true;
@@ -46,16 +55,23 @@ export const PlaythroughView = () => {
     return "Active";
   }
 
+  if (isError) {
+    return <AlertError error={error.message} />;
+  }
+
   return (
-    <div className="flex flex-col justify-center gap-6">
-      {/* <AddButton
-        renderContent={({ open, setOpen }) => (
-          <AddPlaythoughModal
-            open={open}
-            setOpen={setOpen}
-          />
-        )}
-      /> */}
+    <div className="flex flex-col justify-center gap-4">
+      {!isGamesLoading && games && (
+        <AddButton
+          renderContent={({ open, setOpen }) => (
+            <AddPlaythoughModal
+              open={open}
+              setOpen={setOpen}
+              data={games}
+            />
+          )}
+        />
+      )}
 
       {/* header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -76,16 +92,20 @@ export const PlaythroughView = () => {
       {!isLoading &&
         playthroughs &&
         (filteredData.length > 0 ? (
-          <div className="flex flex-wrap gap-4">
-            {filteredData.map((game) => {
-              return (
-                <PlaythroughCard
-                  data={game}
-                  key={game.id}
-                />
-              );
-            })}
-          </div>
+          <ScrollArea className="h-145">
+            <div className="flex flex-wrap gap-4">
+              {filteredData.map((game) => {
+                return (
+                  <PlaythroughCard2
+                    data={game}
+                    key={game.id}
+                    onFinish={onFinish}
+                  />
+                );
+              })}
+            </div>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         ) : (
           <div className="flex items-center justify-center">
             <p className="text-muted-foreground font-medium">

@@ -8,5 +8,14 @@ export const Route = createFileRoute("/_mainLayout/playthroughs/")({
 function RouteComponent() {
   const navigate = useNavigate();
 
-  return <PlaythroughView />;
+  return (
+    <PlaythroughView
+      onFinish={(playthroughId) =>
+        navigate({
+          to: "/playthroughs/$playthroughId/finish",
+          params: { playthroughId },
+        })
+      }
+    />
+  );
 }
