@@ -119,3 +119,11 @@ export const syncTypeStatusValues = Object.values(
 export const userAccountTypeValues = Object.values(
   UserAccountEnum,
 ) as readonly UserAccountEnum[];
+
+// filters
+export const playthroughStatusFilterValues = [
+  "Active",
+  "Archived",
+  "On Hold",
+  "All",
+] as const;
