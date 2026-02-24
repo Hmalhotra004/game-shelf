@@ -14,6 +14,8 @@ export type PlaythroughGetManyType = {
   name: string;
   image: string | null;
   customImage: string | null;
+  coverImage: string | null;
+  customCoverImage: string | null;
   platform: PlatformType;
   provider: ProviderType;
   sessions: Session[];
@@ -22,7 +24,7 @@ export type PlaythroughGetManyType = {
 export type Session = {
   id: string;
   playthroughId: string;
-  playData: string;
+  playDate: string;
   duration: number;
   userId: string;
 };

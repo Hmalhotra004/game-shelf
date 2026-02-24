@@ -1,31 +1,31 @@
 import z from "zod";
 import {
-  collectionStatusValues,
-  ownershipTypeValues,
-  platformValues,
-  providerValues,
-  psVersionValues,
+  CollectionStatusValues,
+  OwnershipTypeValues,
+  PlatformValues,
+  ProviderValues,
+  PSVersionValues,
 } from "../enums";
 
 import type { PlatformType, ProviderType } from "@repo/schemas/types/index";
 
-export const platformSchema = z.enum(platformValues, {
+export const platformSchema = z.enum(PlatformValues, {
   error: "Platform is requried",
 });
 
-export const providerSchema = z.enum(providerValues, {
+export const providerSchema = z.enum(ProviderValues, {
   error: "Provider is requried",
 });
 
-export const statusSchema = z.enum(collectionStatusValues, {
+export const statusSchema = z.enum(CollectionStatusValues, {
   error: "Status is required",
 });
 
-export const ownershipTypeSchema = z.enum(ownershipTypeValues, {
+export const ownershipTypeSchema = z.enum(OwnershipTypeValues, {
   error: "OwnerShip is required",
 });
 
-export const PSVersionSchema = z.enum(psVersionValues, {
+export const PSVersionSchema = z.enum(PSVersionValues, {
   error: "PS Version is required when platform is PS",
 });
 
