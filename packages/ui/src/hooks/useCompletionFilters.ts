@@ -1,16 +1,22 @@
-import { completionStyle, platform } from "@repo/schemas/db/front";
 import { parseAsString, parseAsStringLiteral, useQueryStates } from "nuqs";
+
+import {
+  CompletionStyleValues,
+  PlatformValues,
+} from "@repo/schemas/enums/index";
 
 export const useCompletionFilters = () => {
   const [filters, setFilters] = useQueryStates({
     platform: parseAsStringLiteral([
       "All",
-      ...platform.enumValues,
+      ...PlatformValues,
     ] as const).withDefault("All"),
+
     style: parseAsStringLiteral([
       "All",
-      ...completionStyle.enumValues,
+      ...CompletionStyleValues,
     ] as const).withDefault("All"),
+
     search: parseAsString.withDefault(""),
   });
 

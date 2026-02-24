@@ -21,6 +21,6 @@ export type PlaythroughStatusType = z.infer<typeof playthroughStatusSchema>;
 export type GameType = z.infer<typeof GameTypeSchema>;
 export type CompletionStyleType = z.infer<typeof completionStyleSchema>;
 export type SyncType = z.infer<typeof SyncTypeSchema>;
-// export type UserAccountType = z.infer<typeof UserAccountSchema>;
+// export type UserAccountType = z.infer<typeof UserAccountTySchema>;
 
 export type DataType = { label: string; value: number };

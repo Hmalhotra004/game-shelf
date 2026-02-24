@@ -1,10 +1,10 @@
 import z from "zod";
-import { gameTypeValues, syncTypeValues } from "../enums";
+import { GameTypeValues, SyncTypeValues } from "../enums";
 
-export const SyncTypeSchema = z.enum(syncTypeValues, {
+export const SyncTypeSchema = z.enum(SyncTypeValues, {
   error: "Sync Type is requried",
 });
 
-export const GameTypeSchema = z.enum(gameTypeValues, {
+export const GameTypeSchema = z.enum(GameTypeValues, {
   error: "GameType is requried",
 });
