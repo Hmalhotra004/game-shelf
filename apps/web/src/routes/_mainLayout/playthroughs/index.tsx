@@ -1,9 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { PlaythroughView } from "@repo/ui/views/playthroughs/PlaythroughView";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_mainLayout/playthroughs/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/_mainLayout/playthrough/"!</div>;
+  const navigate = useNavigate();
+
+  return <PlaythroughView />;
 }
