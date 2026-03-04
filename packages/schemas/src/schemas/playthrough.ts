@@ -18,7 +18,7 @@ export const createPlaythroughSchema = z
       return true;
     },
     {
-      message: "Game is required when gameType is Game",
+      message: "Game is required",
       path: ["collectionId"],
     },
   )
@@ -28,7 +28,7 @@ export const createPlaythroughSchema = z
       return true;
     },
     {
-      message: "DLC is required when gameType is DLC",
+      message: "DLC is required",
       path: ["dlcId"],
     },
   );
