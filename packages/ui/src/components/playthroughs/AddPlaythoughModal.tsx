@@ -5,6 +5,7 @@ import { Button } from "@repo/ui/components/ui/button";
 import { FieldGroup } from "@repo/ui/components/ui/field";
 import ResponsiveDialog from "@repo/ui/components/ui/responsive-dialog";
 import { SelectItem } from "@repo/ui/components/ui/select";
+import { startPlaythroughMutationOptions } from "@repo/ui/queries/playthrough/mutations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -23,24 +24,9 @@ interface Props {
 const AddPlaythoughModal = ({ open, setOpen, data }: Props) => {
   const queryClient = useQueryClient();
 
-  const startPlaythorugh = useMutation({});
-
-  // const startPlaythorugh = useMutation(
-  //   trpc.playthrough.addPlaythrough.mutationOptions({
-  //     onSuccess: async () => {
-  //       await queryClient.invalidateQueries(
-  //         trpc.playthrough.getMany.queryOptions()
-  //       );
-  //       await queryClient.invalidateQueries(trpc.stats.getStats.queryOptions());
-  //       toast.success("Playthough started");
-  //       form.reset();
-  //       setOpen(false);
-  //     },
-  //     onError: (err) => {
-  //       toast.error(err.message);
-  //     },
-  //   })
-  // );
+  const startPlaythorugh = useMutation(
+    startPlaythroughMutationOptions(queryClient, () => setOpen(false)),
+  );
 
   const form = useForm<CreatePlaythroughSchemaType>({
     resolver: zodResolver(createPlaythroughSchema),
@@ -51,8 +37,8 @@ const AddPlaythoughModal = ({ open, setOpen, data }: Props) => {
     },
   });
 
-  function onSubmit(values: CreatePlaythroughSchemaType) {
-    // startPlaythorugh.mutateAsync(values);
+  async function onSubmit(values: CreatePlaythroughSchemaType) {
+    await startPlaythorugh.mutateAsync(values);
   }
 
   const gameType = useWatch({
