@@ -136,3 +136,11 @@ export const getMany = async (req: Request, res: Response) => {
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
+
+export const add = async (req: Request, res: Response) => {
+  try {
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
