@@ -139,6 +139,7 @@ export const getMany = async (req: Request, res: Response) => {
 
 export const add = async (req: Request, res: Response) => {
   try {
+    const userId = req.user!.id;
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: GenericErrorMessage });
