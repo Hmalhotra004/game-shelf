@@ -3,6 +3,7 @@ import auth from "./auth";
 import collection from "./collection";
 import list from "./list";
 import playthrough from "./playthrough";
+import psn from "./psn";
 import stats from "./stats";
 import steamGridDB from "./steamGridDB";
 import user from "./user";
@@ -21,6 +22,7 @@ export default (): Router => {
   stats("/stats", router);
 
   steamGridDB("/steamGridDB", router);
+  psn("/PSN", router);
 
   return router;
 };
