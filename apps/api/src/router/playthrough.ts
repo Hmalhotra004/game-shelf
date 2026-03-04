@@ -1,9 +1,20 @@
-import { add, getMany } from "@/controllers/playthrough";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
 
+import {
+  add,
+  deletePlaythrough,
+  deletePlaythroughSession,
+  getMany,
+} from "@/controllers/playthrough";
+
 import { createPlaythroughSchema } from "@repo/schemas/server/schemas/playthrough";
+
+import {
+  verifyPlaythrough,
+  verifyPlaythroughSession,
+} from "@/middlewares/playthroughMiddleware";
 
 export default (baseUrl: string, app: Router) => {
   const router = Router();
@@ -15,6 +26,21 @@ export default (baseUrl: string, app: Router) => {
     authenticateUser,
     validateData(createPlaythroughSchema),
     add,
+  );
+
+  router.delete(
+    "/:playthroughId/delete",
+    authenticateUser,
+    verifyPlaythrough,
+    deletePlaythrough,
+  );
+
+  router.delete(
+    "/:playthroughId/:playthroughSessionId/delete",
+    authenticateUser,
+    verifyPlaythrough,
+    verifyPlaythroughSession,
+    deletePlaythroughSession,
   );
 
   app.use(baseUrl, router);
