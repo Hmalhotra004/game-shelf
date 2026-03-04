@@ -1,7 +1,10 @@
 import { Router } from "express";
 import auth from "./auth";
 import collection from "./collection";
+import completion from "./completion";
 import list from "./list";
+import playthrough from "./playthrough";
+import psn from "./psn";
 import stats from "./stats";
 import steamGridDB from "./steamGridDB";
 import user from "./user";
@@ -14,11 +17,14 @@ export default (): Router => {
   user("/user", router);
 
   collection("/collection", router);
+  playthrough("/playthrough", router);
+  completion("/completion", router);
 
   list("/list", router);
   stats("/stats", router);
 
   steamGridDB("/steamGridDB", router);
+  psn("/PSN", router);
 
   return router;
 };

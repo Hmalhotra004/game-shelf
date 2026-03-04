@@ -1,13 +1,10 @@
 import z from "zod";
-import { completionStyleValues } from "../enums";
+import { CompletionStatusValues, CompletionStyleValues } from "../enums";
 
-export const completionStyleSchema = z.enum(completionStyleValues, {
+export const completionStyleSchema = z.enum(CompletionStyleValues, {
   error: "Completion style is requried",
 });
 
-export const completionStatusSchema = z.enum([
-  "Story Completed",
-  "Platinum",
-  "Platinum+",
-  "100% Completed",
-] as const);
+export const completionStatusSchema = z.enum(CompletionStatusValues, {
+  error: "Status is required",
+});

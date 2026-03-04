@@ -20,6 +20,9 @@ declare global {
         id: string;
         email: string;
         steamId?: string | null | undefined;
+        PSNAccountUserName?: string | null | undefined;
+        PSNAccountId?: string | null | undefined;
+        userAccountType: "User" | "Admin";
         isAdult: boolean;
       };
       session?: {

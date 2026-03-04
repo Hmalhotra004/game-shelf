@@ -1,10 +1,18 @@
 import { parseAsStringLiteral, useQueryStates } from "nuqs";
 
+import {
+  PlatformValues,
+  PlaythroughStatusValues,
+} from "@repo/schemas/enums/index";
+
 export const usePlaythroughFilters = () => {
   const [filters, setFilters] = useQueryStates({
-    platform: parseAsStringLiteral([PlatformType, "All"]).withDefault("All"),
+    platform: parseAsStringLiteral([...PlatformValues, "All"]).withDefault(
+      "All",
+    ),
+
     status: parseAsStringLiteral([
-      ...playthroughStatus.enumValues,
+      ...PlaythroughStatusValues,
       "All",
     ]).withDefault("Active"),
   });
