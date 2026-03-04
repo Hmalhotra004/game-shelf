@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@repo/ui/components/ThemeProvider";
+import { AppToaster } from "@repo/ui/components/ui/toaster";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
 import { StrictMode } from "react";
@@ -45,6 +46,7 @@ if (rootElement && !rootElement.innerHTML) {
           storageKey="ui-theme"
         >
           <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+            <AppToaster />
             <RouterProvider router={router} />
           </TanStackQueryProvider.Provider>
         </ThemeProvider>
