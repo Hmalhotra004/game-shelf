@@ -4,12 +4,16 @@ import { Router } from "express";
 
 import {
   add,
+  addTime,
   deletePlaythrough,
   deletePlaythroughSession,
   getMany,
 } from "@/controllers/playthrough";
 
-import { createPlaythroughSchema } from "@repo/schemas/server/schemas/playthrough";
+import {
+  createPlaythroughSchema,
+  createPlaythroughSessionSchema,
+} from "@repo/schemas/server/schemas/playthrough";
 
 import {
   verifyPlaythrough,
@@ -26,6 +30,14 @@ export default (baseUrl: string, app: Router) => {
     authenticateUser,
     validateData(createPlaythroughSchema),
     add,
+  );
+
+  router.post(
+    "/:playthroughId/addTime",
+    authenticateUser,
+    verifyPlaythrough,
+    validateData(createPlaythroughSessionSchema),
+    addTime,
   );
 
   router.delete(

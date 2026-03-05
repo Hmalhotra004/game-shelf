@@ -2,10 +2,14 @@ import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { collection, dlc, playthrough, playthroughSession } from "@/db/schema";
 import { and, desc, eq, getTableColumns, inArray, sql } from "drizzle-orm";
+import lodash from "lodash";
 
 import type { Request, Response } from "express";
 
-import { CreatePlaythroughSchemaType } from "@repo/schemas/schemas/playthrough";
+import {
+  CreatePlaythroughSchemaType,
+  CreatePlaythroughSessionSchemaType,
+} from "@repo/schemas/schemas/playthrough";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
@@ -208,6 +212,54 @@ export const add = async (req: Request, res: Response) => {
       }
     }
 
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const addTime = async (req: Request, res: Response) => {
+  try {
+    const { playDate: date, secondsPlayed } =
+      req.body as CreatePlaythroughSessionSchemaType;
+
+    if (secondsPlayed <= 0) {
+      return res.status(400).json({ error: "Invalid playtime" });
+    }
+
+    const playDate = date ? new Date(date) : new Date();
+
+    if (lodash.isNaN(playDate.getTime())) {
+      return res.status(400).json({ error: "Invalid date" });
+    }
+
+    const userId = req.user!.id;
+    const playthroughId = req.playthrough!.id;
+
+    await db.transaction(async (tx) => {
+      await tx.insert(playthroughSession).values({
+        playDate,
+        playthroughId,
+        secondsPlayed,
+        userId,
+      });
+
+      await tx
+        .update(playthrough)
+        .set({
+          finishedAt: playDate,
+          totalSeconds: sql`${playthrough.totalSeconds} + ${secondsPlayed}`,
+          status: "Active",
+        })
+        .where(
+          and(
+            eq(playthrough.id, playthroughId),
+            eq(playthrough.userId, userId),
+          ),
+        );
+    });
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
