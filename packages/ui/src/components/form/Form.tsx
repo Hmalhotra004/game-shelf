@@ -229,13 +229,20 @@ export const FormTextarea: FormControlFunc<{
 export const FormDatePicker: FormControlFunc = ({ disabled, ...props }) => {
   return (
     <FormBase {...props}>
-      {(field) => (
-        <DateTimePicker
-          disabled={disabled}
-          granularity="day"
-          {...field}
-        />
-      )}
+      {(field) => {
+        const value = field.value ? new Date(field.value) : undefined;
+
+        return (
+          <DateTimePicker
+            disabled={disabled}
+            granularity="day"
+            value={value}
+            onChange={(d) => {
+              field.onChange(d ? d.toISOString() : new Date().toISOString());
+            }}
+          />
+        );
+      }}
     </FormBase>
   );
 };
