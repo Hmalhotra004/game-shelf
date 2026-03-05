@@ -26,8 +26,6 @@
     "@tanstack/router-plugin": "^1.132.0",
     "@vercel/analytics": "^1.6.1",
     "axios": "^1.13.4",
-    "better-auth": "^1.4.17",
-    "idb": "^8.0.3",
     "lucide-react": "^0.545.0",
     "nuqs": "^2.8.8",
     "react": "^19.2.0",
