@@ -12,6 +12,11 @@ import UpdatePlaythroughModal from "./UpdatePlaythroughModal";
 import UpdateSessionModal from "./UpdateSessionModal";
 
 import {
+  deletePlaythroughMutationOptions,
+  deletePlaythroughSessionMutationOptions,
+} from "@repo/ui/queries/playthrough/mutations";
+
+import {
   ArchiveIcon,
   ArchiveRestoreIcon,
   EditIcon,
@@ -38,39 +43,11 @@ export const PlaythroughCard2 = ({ data, onFinish }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const deletePlay = useMutation({});
+  const deletePlay = useMutation(deletePlaythroughMutationOptions(queryClient));
 
-  // const deletePlay = useMutation(
-  //   trpc.playthrough.deletePlaythrough.mutationOptions({
-  //     onSuccess: async () => {
-  //       await queryClient.invalidateQueries(
-  //         trpc.playthrough.getMany.queryOptions(),
-  //       );
-  //       await queryClient.invalidateQueries(trpc.stats.getStats.queryOptions());
-  //       toast.success("Playthrough Deleted");
-  //     },
-  //     onError: (err) => {
-  //       toast.error(err.message);
-  //     },
-  //   }),
-  // );
-
-  const deleteSession = useMutation({});
-
-  // const deleteSession = useMutation(
-  //   trpc.playthrough.deletePlaythroughTime.mutationOptions({
-  //     onSuccess: async () => {
-  //       await queryClient.invalidateQueries(
-  //         trpc.playthrough.getMany.queryOptions(),
-  //       );
-  //       await queryClient.invalidateQueries(trpc.stats.getStats.queryOptions());
-  //       toast.success("Session Deleted");
-  //     },
-  //     onError: (err) => {
-  //       toast.error(err.message);
-  //     },
-  //   }),
-  // );
+  const deleteSession = useMutation(
+    deletePlaythroughSessionMutationOptions(queryClient),
+  );
 
   function openModal(id: string, type: "Delete" | "Update") {
     setSelectedSessionId(id);
@@ -124,7 +101,7 @@ export const PlaythroughCard2 = ({ data, onFinish }: Props) => {
 
     if (!ok) return;
 
-    // deletePlay.mutateAsync({ playthroughId: data.id });
+    await deletePlay.mutateAsync({ playthroughId: data.id });
   }
 
   const [ConfirmDeleteSession, confirmSession] = useConfirm(
@@ -133,15 +110,16 @@ export const PlaythroughCard2 = ({ data, onFinish }: Props) => {
     "destructive",
   );
 
+  // FIXME: double confirm delete
   async function handleDeleteSession() {
     const ok = await confirmSession();
 
     if (!ok || !currentSession) return;
 
-    // deleteSession.mutateAsync({
-    //   playthroughId: data.id,
-    //   playthroughSessionId: currentSession.id,
-    // });
+    await deleteSession.mutateAsync({
+      playthroughId: data.id,
+      playthroughSessionId: currentSession.id,
+    });
   }
 
   const isArchived = data.status === "Archived";
