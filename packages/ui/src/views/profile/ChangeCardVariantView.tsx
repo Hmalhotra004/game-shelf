@@ -6,9 +6,9 @@ import { useCardVariantStore } from "@repo/ui/store/useCardVariantStore";
 import { CheckIcon } from "lucide-react";
 
 import {
-  CollectionStatusEnum,
-  PlatformEnum,
-  ProviderEnum,
+  CollectionStatusValues,
+  PlatformValues,
+  ProviderValues,
 } from "@repo/schemas/enums/index";
 
 export const CARD_VARIANTS = [
@@ -38,9 +38,9 @@ const mockGame: CollectionGetMany = {
   steamAppId: "",
   onlinePlaySecs: 0,
   totalPlaytime: 2000,
-  status: CollectionStatusEnum.Playing,
-  platform: PlatformEnum.PC,
-  provider: ProviderEnum.Steam,
+  status: CollectionStatusValues[2],
+  platform: PlatformValues[0],
+  provider: ProviderValues[2],
   dlcCount: 4,
   completions: 1,
   dateOfPurchase: new Date(),

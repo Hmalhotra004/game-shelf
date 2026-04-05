@@ -1,5 +1,5 @@
-export const keys = {
+export const playthroughKeys = {
   all: ["Playthroughs"] as const,
 
-  getMany: () => [...keys.all, "getMany", "currentUser"] as const,
+  getMany: () => [...playthroughKeys.all, "getMany", "currentUser"] as const,
 };

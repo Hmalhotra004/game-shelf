@@ -18,7 +18,7 @@ export const createPlaythroughSchema = z
       return true;
     },
     {
-      message: "Game is required when gameType is Game",
+      message: "Game is required",
       path: ["collectionId"],
     },
   )
@@ -28,7 +28,7 @@ export const createPlaythroughSchema = z
       return true;
     },
     {
-      message: "DLC is required when gameType is DLC",
+      message: "DLC is required",
       path: ["dlcId"],
     },
   );
@@ -38,7 +38,9 @@ export const createPlaythroughSessionSchema = z.object({
     .number({ error: "Time played is required" })
     .int({ message: "Invalid time format" })
     .positive({ message: "Time must be greater than 0 seconds" }),
-  playDate: z.date({ error: "Date is required" }),
+  playDate: z
+    .string({ error: "Date is required" })
+    .min(1, { error: "Date is required" }),
 });
 
 export const updatePlaythroughSchema = z.object({
@@ -58,7 +60,9 @@ export const updatePlaythroughSessionSchema = z.object({
     .number({ error: "Time played is required" })
     .int({ message: "Invalid time format" })
     .positive({ message: "Time must be greater than 0 seconds" }),
-  playDate: z.date({ error: "Date is required" }),
+  playDate: z
+    .string({ error: "Date is required" })
+    .min(1, { error: "Date is required" }),
 });
 
 // types

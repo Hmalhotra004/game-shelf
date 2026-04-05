@@ -4,6 +4,7 @@ import { FormDatePicker, FormTimePicker } from "@repo/ui/components/form/Form";
 import { Button } from "@repo/ui/components/ui/button";
 import { FieldGroup } from "@repo/ui/components/ui/field";
 import ResponsiveDialog from "@repo/ui/components/ui/responsive-dialog";
+import { addTimeMutationOptions } from "@repo/ui/queries/playthrough/mutations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
@@ -23,30 +24,20 @@ const AddSessionModal = ({ open, setOpen, playthroughId }: Props) => {
   const form = useForm<FormData>({
     resolver: zodResolver(createPlaythroughSessionSchema),
     defaultValues: {
-      playDate: new Date(),
+      playDate: new Date().toISOString(),
       secondsPlayed: 0,
     },
   });
 
-  const addSession = useMutation({});
-
-  // const addSession = useMutation(
-  //   trpc.playthrough.addPlaythroughTime.mutationOptions({
-  //     onSuccess: async () => {
-  //       await queryClient.invalidateQueries(
-  //         trpc.playthrough.getMany.queryOptions(),
-  //       );
-  //       toast.success("Session Added");
-  //       setOpen(false);
-  //     },
-  //     onError: (err) => {
-  //       toast.error(err.message);
-  //     },
-  //   }),
-  // );
+  const addSession = useMutation(
+    addTimeMutationOptions(queryClient, () => {
+      setOpen(false);
+      form.reset();
+    }),
+  );
 
   function onSubmit(values: FormData) {
-    // addSession.mutateAsync({ ...values, playthroughId });
+    addSession.mutateAsync({ ...values, playthroughId });
   }
 
   const isPending = addSession.isPending;

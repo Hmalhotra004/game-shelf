@@ -1,10 +1,15 @@
+import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
-import { and, desc, eq, getTableColumns, inArray } from "drizzle-orm";
+import { collection, dlc, playthrough, playthroughSession } from "@/db/schema";
+import { and, desc, eq, getTableColumns, inArray, sql } from "drizzle-orm";
+import lodash from "lodash";
 
 import type { Request, Response } from "express";
 
-import { GenericErrorMessage } from "@/constants";
-import { collection, dlc, playthrough, playthroughSession } from "@/db/schema";
+import {
+  CreatePlaythroughSchemaType,
+  CreatePlaythroughSessionSchemaType,
+} from "@repo/schemas/schemas/playthrough";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
@@ -133,6 +138,196 @@ export const getMany = async (req: Request, res: Response) => {
     return res.status(200).json(result);
   } catch (e) {
     console.error(e);
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const add = async (req: Request, res: Response) => {
+  try {
+    const { gameType, collectionId, dlcId } =
+      req.cleanBody as CreatePlaythroughSchemaType;
+
+    const userId = req.user!.id;
+
+    const id = gameType === "Game" ? collectionId : dlcId;
+
+    if (!id) {
+      return res.status(400).json({
+        error: `${gameType} is required`,
+      });
+    }
+
+    await db.transaction(async (tx) => {
+      if (gameType === "Game") {
+        const game = await tx.query.collection.findFirst({
+          where: (c, { and, eq }) => and(eq(c.id, id), eq(c.userId, userId)),
+          columns: { id: true },
+        });
+
+        if (!game) {
+          throw new Error("Game not found", { cause: 404 });
+        }
+
+        await tx.insert(playthrough).values({
+          userId,
+          gameType,
+          collectionId: id,
+        });
+
+        await tx
+          .update(collection)
+          .set({ status: "Playing" })
+          .where(and(eq(collection.id, id), eq(collection.userId, userId)));
+      }
+
+      if (gameType === "DLC") {
+        const dlcExists = await tx.query.dlc.findFirst({
+          where: (d, { and, eq }) => and(eq(d.id, id), eq(d.userId, userId)),
+          columns: { id: true },
+        });
+
+        if (!dlcExists) {
+          throw new Error("DLC not found", { cause: 404 });
+        }
+
+        await tx.insert(playthrough).values({
+          userId,
+          gameType,
+          dlcId: id,
+        });
+
+        await tx
+          .update(dlc)
+          .set({ status: "Playing" })
+          .where(and(eq(dlc.id, id), eq(dlc.userId, userId)));
+      }
+    });
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
+    if (e instanceof Error) {
+      if (e.cause === 404) {
+        return res.status(404).json({ error: e.message });
+      }
+    }
+
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const addTime = async (req: Request, res: Response) => {
+  try {
+    const { playDate: date, secondsPlayed } =
+      req.body as CreatePlaythroughSessionSchemaType;
+
+    if (secondsPlayed <= 0) {
+      return res.status(400).json({ error: "Invalid playtime" });
+    }
+
+    const playDate = date ? new Date(date) : new Date();
+
+    if (lodash.isNaN(playDate.getTime())) {
+      return res.status(400).json({ error: "Invalid date" });
+    }
+
+    const userId = req.user!.id;
+    const playthroughId = req.playthrough!.id;
+
+    await db.transaction(async (tx) => {
+      await tx.insert(playthroughSession).values({
+        playDate,
+        playthroughId,
+        secondsPlayed,
+        userId,
+      });
+
+      await tx
+        .update(playthrough)
+        .set({
+          finishedAt: playDate,
+          totalSeconds: sql`${playthrough.totalSeconds} + ${secondsPlayed}`,
+          status: "Active",
+        })
+        .where(
+          and(
+            eq(playthrough.id, playthroughId),
+            eq(playthrough.userId, userId),
+          ),
+        );
+    });
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const deletePlaythrough = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const playthroughId = req.playthrough!.id;
+
+    await db
+      .delete(playthrough)
+      .where(
+        and(eq(playthrough.id, playthroughId), eq(playthrough.userId, userId)),
+      );
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const deletePlaythroughSession = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+    const playthroughId = req.playthrough!.id;
+    const playthroughSessionId = req.playthroughSession!.id;
+
+    const sessionSeconds = req.playthroughSession!.secondsPlayed;
+
+    await db.transaction(async (tx) => {
+      const deleted = await tx
+        .delete(playthroughSession)
+        .where(
+          and(
+            eq(playthroughSession.id, playthroughSessionId),
+            eq(playthroughSession.playthroughId, playthroughId),
+            eq(playthroughSession.userId, userId),
+          ),
+        )
+        .returning({ id: playthroughSession.id });
+
+      if (!deleted.length) {
+        throw new Error("Session not found", { cause: 404 });
+      }
+
+      await tx
+        .update(playthrough)
+        .set({
+          totalSeconds: sql`GREATEST(0, ${playthrough.totalSeconds} - ${sessionSeconds})`,
+        })
+        .where(
+          and(
+            eq(playthrough.id, playthroughId),
+            eq(playthrough.userId, userId),
+          ),
+        );
+    });
+
+    return res.sendStatus(204);
+  } catch (e) {
+    console.error(e);
+    if (e instanceof Error) {
+      if (e.cause === 404) {
+        return res.status(404).json({ error: e.message });
+      }
+    }
+
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
