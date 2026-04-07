@@ -3,7 +3,7 @@
   "mode": "file-router",
   "typescript": true,
   "packageManager": "pnpm",
-  "includeExamples": false,
+  "includeExamples": true,
   "tailwind": true,
   "addOnOptions": {},
   "envVarValues": {},
