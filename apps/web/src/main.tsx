@@ -1,5 +1,6 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { ThemeProvider } from "./components/ThemeProvider.tsx";
@@ -37,14 +38,16 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ThemeProvider>
-        <TooltipProvider>
-          <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-            <AppToaster />
-            <RouterProvider router={router} />
-          </TanStackQueryProvider.Provider>
-        </TooltipProvider>
-      </ThemeProvider>
+      <NuqsAdapter>
+        <ThemeProvider>
+          <TooltipProvider>
+            <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+              <AppToaster />
+              <RouterProvider router={router} />
+            </TanStackQueryProvider.Provider>
+          </TooltipProvider>
+        </ThemeProvider>
+      </NuqsAdapter>
     </StrictMode>,
   );
 }
