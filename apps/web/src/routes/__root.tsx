@@ -1,28 +1,30 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
-export const Route = createRootRoute({ component: RootLayout });
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
-function RootLayout() {
-  return (
-    <>
-      <div className="p-2 flex gap-2">
-        <Link
-          to="/"
-          className="[&.active]:font-bold"
-        >
-          Home
-        </Link>{" "}
-        <Link
-          to="/about"
-          className="[&.active]:font-bold"
-        >
-          About
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  );
+import type { QueryClient } from "@tanstack/react-query";
+
+interface MyRouterContext {
+  queryClient: QueryClient;
 }
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  component: () => (
+    <>
+      <Outlet />
+
+      <TanStackDevtools
+        config={{ position: "top-left" }}
+        plugins={[
+          {
+            name: "Tanstack Router",
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+          TanStackQueryDevtools,
+        ]}
+      />
+    </>
+  ),
+});
