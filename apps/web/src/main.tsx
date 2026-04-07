@@ -1,12 +1,15 @@
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { ThemeProvider } from "./components/ThemeProvider.tsx";
+import { AppToaster } from "./components/ui/app-toaster.tsx";
+
 import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
-import { ThemeProvider } from "./components/ThemeProvider.tsx";
 import "./globals.css";
 
 // Create a new router instance
@@ -35,9 +38,12 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ThemeProvider>
-        <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-          <RouterProvider router={router} />
-        </TanStackQueryProvider.Provider>
+        <TooltipProvider>
+          <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+            <AppToaster />
+            <RouterProvider router={router} />
+          </TanStackQueryProvider.Provider>
+        </TooltipProvider>
       </ThemeProvider>
     </StrictMode>,
   );
