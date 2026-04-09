@@ -618,6 +618,9 @@ importers:
 
   packages/utils:
     dependencies:
+      '@repo/schemas':
+        specifier: workspace:*
+        version: link:../schemas
       '@tanstack/react-query':
         specifier: ^5.66.5
         version: 5.96.2(react@19.2.4)

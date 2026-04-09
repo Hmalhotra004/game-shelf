@@ -7,13 +7,13 @@
     "./hooks/*": "./src/hooks/*.ts",
     "./lib/*": "./src/lib/*.ts",
     "./queries/*": "./src/queries/*.ts",
-    "./mutations/*": "./src/mutations/*.ts",
-    "./queryKeys/*": "./src/queryKeys/*.ts"
+    "./mutations/*": "./src/mutations/*.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@repo/schemas": "workspace:*",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "react": "^19.2.4",
