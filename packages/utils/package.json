@@ -1,0 +1,29 @@
+{
+  "name": "@repo/utils",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./constants": "./src/constants.ts",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./lib/*": "./src/lib/*.ts",
+    "./queries/*": "./src/queries/*.ts",
+    "./mutations/*": "./src/mutations/*.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@repo/schemas": "workspace:*",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "axios": "^1.13.4",
+    "@tanstack/react-query": "^5.66.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "@types/react": "^19.2.14"
+  }
+}

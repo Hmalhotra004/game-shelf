@@ -28,8 +28,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "@repo/ui/*": ["../../packages/ui/src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }
