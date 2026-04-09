@@ -15,9 +15,14 @@ import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
+import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
 import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
+import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
 import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
 import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
+import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
+import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
+import { Route as MainLayoutCollectionCollectionIdChangeImagesRouteImport } from './routes/_mainLayout/collection/$collectionId/change-images'
 
 const MainLayoutRoute = MainLayoutRouteImport.update({
   id: '/_mainLayout',
@@ -48,12 +53,23 @@ const AuthLayoutEmailVerificationRoute =
     path: '/email-verification',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutCollectionIndexRoute =
+  MainLayoutCollectionIndexRouteImport.update({
+    id: '/collection/',
+    path: '/collection/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const AuthLayoutForgotPasswordIndexRoute =
   AuthLayoutForgotPasswordIndexRouteImport.update({
     id: '/forgot-password/',
     path: '/forgot-password/',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
+  id: '/collection/add',
+  path: '/collection/add',
+  getParentRoute: () => MainLayoutRoute,
+} as any)
 const AuthLayoutForgotPasswordVerifyOtpRoute =
   AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
     id: '/forgot-password/verify-otp',
@@ -66,6 +82,24 @@ const AuthLayoutForgotPasswordChangePasswordRoute =
     path: '/forgot-password/change-password',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutCollectionCollectionIdIndexRoute =
+  MainLayoutCollectionCollectionIdIndexRouteImport.update({
+    id: '/collection/$collectionId/',
+    path: '/collection/$collectionId/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdEditRoute =
+  MainLayoutCollectionCollectionIdEditRouteImport.update({
+    id: '/collection/$collectionId/edit',
+    path: '/collection/$collectionId/edit',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdChangeImagesRoute =
+  MainLayoutCollectionCollectionIdChangeImagesRouteImport.update({
+    id: '/collection/$collectionId/change-images',
+    path: '/collection/$collectionId/change-images',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
@@ -74,7 +108,12 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AuthLayoutSignupRoute
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/collection/add': typeof MainLayoutCollectionAddRoute
   '/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
+  '/collection/': typeof MainLayoutCollectionIndexRoute
+  '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
@@ -83,7 +122,12 @@ export interface FileRoutesByTo {
   '/signup': typeof AuthLayoutSignupRoute
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/collection/add': typeof MainLayoutCollectionAddRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordIndexRoute
+  '/collection': typeof MainLayoutCollectionIndexRoute
+  '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/collection/$collectionId': typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,7 +139,12 @@ export interface FileRoutesById {
   '/_mainLayout/': typeof MainLayoutIndexRoute
   '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/_mainLayout/collection/add': typeof MainLayoutCollectionAddRoute
   '/_authLayout/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
+  '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
+  '/_mainLayout/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/_mainLayout/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/_mainLayout/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,7 +155,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
+    | '/collection/add'
     | '/forgot-password/'
+    | '/collection/'
+    | '/collection/$collectionId/change-images'
+    | '/collection/$collectionId/edit'
+    | '/collection/$collectionId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -115,7 +169,12 @@ export interface FileRouteTypes {
     | '/signup'
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
+    | '/collection/add'
     | '/forgot-password'
+    | '/collection'
+    | '/collection/$collectionId/change-images'
+    | '/collection/$collectionId/edit'
+    | '/collection/$collectionId'
   id:
     | '__root__'
     | '/_authLayout'
@@ -126,7 +185,12 @@ export interface FileRouteTypes {
     | '/_mainLayout/'
     | '/_authLayout/forgot-password/change-password'
     | '/_authLayout/forgot-password/verify-otp'
+    | '/_mainLayout/collection/add'
     | '/_authLayout/forgot-password/'
+    | '/_mainLayout/collection/'
+    | '/_mainLayout/collection/$collectionId/change-images'
+    | '/_mainLayout/collection/$collectionId/edit'
+    | '/_mainLayout/collection/$collectionId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -178,12 +242,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_mainLayout/collection/': {
+      id: '/_mainLayout/collection/'
+      path: '/collection'
+      fullPath: '/collection/'
+      preLoaderRoute: typeof MainLayoutCollectionIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_authLayout/forgot-password/': {
       id: '/_authLayout/forgot-password/'
       path: '/forgot-password'
       fullPath: '/forgot-password/'
       preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/collection/add': {
+      id: '/_mainLayout/collection/add'
+      path: '/collection/add'
+      fullPath: '/collection/add'
+      preLoaderRoute: typeof MainLayoutCollectionAddRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
     '/_authLayout/forgot-password/verify-otp': {
       id: '/_authLayout/forgot-password/verify-otp'
@@ -198,6 +276,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/forgot-password/change-password'
       preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/': {
+      id: '/_mainLayout/collection/$collectionId/'
+      path: '/collection/$collectionId'
+      fullPath: '/collection/$collectionId/'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/edit': {
+      id: '/_mainLayout/collection/$collectionId/edit'
+      path: '/collection/$collectionId/edit'
+      fullPath: '/collection/$collectionId/edit'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdEditRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/change-images': {
+      id: '/_mainLayout/collection/$collectionId/change-images'
+      path: '/collection/$collectionId/change-images'
+      fullPath: '/collection/$collectionId/change-images'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
   }
 }
@@ -228,10 +327,23 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 
 interface MainLayoutRouteChildren {
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
+  MainLayoutCollectionAddRoute: typeof MainLayoutCollectionAddRoute
+  MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
+  MainLayoutCollectionCollectionIdChangeImagesRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  MainLayoutCollectionCollectionIdEditRoute: typeof MainLayoutCollectionCollectionIdEditRoute
+  MainLayoutCollectionCollectionIdIndexRoute: typeof MainLayoutCollectionCollectionIdIndexRoute
 }
 
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
   MainLayoutIndexRoute: MainLayoutIndexRoute,
+  MainLayoutCollectionAddRoute: MainLayoutCollectionAddRoute,
+  MainLayoutCollectionIndexRoute: MainLayoutCollectionIndexRoute,
+  MainLayoutCollectionCollectionIdChangeImagesRoute:
+    MainLayoutCollectionCollectionIdChangeImagesRoute,
+  MainLayoutCollectionCollectionIdEditRoute:
+    MainLayoutCollectionCollectionIdEditRoute,
+  MainLayoutCollectionCollectionIdIndexRoute:
+    MainLayoutCollectionCollectionIdIndexRoute,
 }
 
 const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(
