@@ -15,6 +15,9 @@ import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
+import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
+import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
+import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
 
 const MainLayoutRoute = MainLayoutRouteImport.update({
   id: '/_mainLayout',
@@ -45,18 +48,42 @@ const AuthLayoutEmailVerificationRoute =
     path: '/email-verification',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const AuthLayoutForgotPasswordIndexRoute =
+  AuthLayoutForgotPasswordIndexRouteImport.update({
+    id: '/forgot-password/',
+    path: '/forgot-password/',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutForgotPasswordVerifyOtpRoute =
+  AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
+    id: '/forgot-password/verify-otp',
+    path: '/forgot-password/verify-otp',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutForgotPasswordChangePasswordRoute =
+  AuthLayoutForgotPasswordChangePasswordRouteImport.update({
+    id: '/forgot-password/change-password',
+    path: '/forgot-password/change-password',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -66,12 +93,29 @@ export interface FileRoutesById {
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
+  '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/_authLayout/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/email-verification' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/email-verification'
+    | '/login'
+    | '/signup'
+    | '/forgot-password/change-password'
+    | '/forgot-password/verify-otp'
+    | '/forgot-password/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/email-verification' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/email-verification'
+    | '/login'
+    | '/signup'
+    | '/forgot-password/change-password'
+    | '/forgot-password/verify-otp'
+    | '/forgot-password'
   id:
     | '__root__'
     | '/_authLayout'
@@ -80,6 +124,9 @@ export interface FileRouteTypes {
     | '/_authLayout/login'
     | '/_authLayout/signup'
     | '/_mainLayout/'
+    | '/_authLayout/forgot-password/change-password'
+    | '/_authLayout/forgot-password/verify-otp'
+    | '/_authLayout/forgot-password/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,6 +178,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_authLayout/forgot-password/': {
+      id: '/_authLayout/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password/'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/forgot-password/verify-otp': {
+      id: '/_authLayout/forgot-password/verify-otp'
+      path: '/forgot-password/verify-otp'
+      fullPath: '/forgot-password/verify-otp'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordVerifyOtpRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/forgot-password/change-password': {
+      id: '/_authLayout/forgot-password/change-password'
+      path: '/forgot-password/change-password'
+      fullPath: '/forgot-password/change-password'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
   }
 }
 
@@ -138,12 +206,20 @@ interface AuthLayoutRouteChildren {
   AuthLayoutEmailVerificationRoute: typeof AuthLayoutEmailVerificationRoute
   AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
   AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
+  AuthLayoutForgotPasswordChangePasswordRoute: typeof AuthLayoutForgotPasswordChangePasswordRoute
+  AuthLayoutForgotPasswordVerifyOtpRoute: typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  AuthLayoutForgotPasswordIndexRoute: typeof AuthLayoutForgotPasswordIndexRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthLayoutEmailVerificationRoute: AuthLayoutEmailVerificationRoute,
   AuthLayoutLoginRoute: AuthLayoutLoginRoute,
   AuthLayoutSignupRoute: AuthLayoutSignupRoute,
+  AuthLayoutForgotPasswordChangePasswordRoute:
+    AuthLayoutForgotPasswordChangePasswordRoute,
+  AuthLayoutForgotPasswordVerifyOtpRoute:
+    AuthLayoutForgotPasswordVerifyOtpRoute,
+  AuthLayoutForgotPasswordIndexRoute: AuthLayoutForgotPasswordIndexRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(

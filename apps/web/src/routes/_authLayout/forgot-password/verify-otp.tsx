@@ -1,0 +1,11 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_authLayout/forgot-password/verify-otp")(
+  {
+    component: RouteComponent,
+  },
+);
+
+function RouteComponent() {
+  return <div>Hello "/_authLayout/forgot-password/verify-otp"!</div>;
+}
