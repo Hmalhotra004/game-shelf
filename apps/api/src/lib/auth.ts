@@ -1,6 +1,7 @@
 import { ORIGINS } from "@/constants";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
+import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP } from "better-auth/plugins";
@@ -53,6 +54,7 @@ export const auth = betterAuth({
     revokeSessionsOnPasswordReset: true,
   },
   plugins: [
+    expo(),
     emailOTP({
       storeOTP: "encrypted",
       async sendVerificationOTP({ email, otp, type }) {
