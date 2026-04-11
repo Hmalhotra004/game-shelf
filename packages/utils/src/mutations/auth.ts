@@ -1,9 +1,9 @@
-import { api } from "@repo/utils/lib/api";
 import { mutationOptions } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
+import { AxiosInstance, isAxiosError } from "axios";
 import { Dispatch, SetStateAction } from "react";
 
 export const authCheckEmailMutationOptions = (
+  api: AxiosInstance,
   setError: Dispatch<SetStateAction<string | null>>,
   setPending: Dispatch<SetStateAction<boolean>>,
 ) =>
