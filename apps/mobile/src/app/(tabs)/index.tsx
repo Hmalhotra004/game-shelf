@@ -1,6 +1,9 @@
+import { api } from "@/lib/api";
 import { authClient } from "@/lib/authClient";
+import { getStatsQueryOptions } from "@repo/utils/queries/stats";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { Button, View } from "react-native";
+import { Button, Text, View } from "react-native";
 
 export default function Index() {
   const router = useRouter();
@@ -10,6 +13,8 @@ export default function Index() {
       fetchOptions: { onSuccess: () => router.replace("/(auth)/login") },
     });
   };
+
+  const { data: stats, isLoading } = useQuery(getStatsQueryOptions(api));
 
   return (
     <View
@@ -23,6 +28,14 @@ export default function Index() {
         onPress={logout}
         title="Logout"
       />
+
+      {isLoading && <Text>Loadr</Text>}
+
+      {!isLoading && stats && (
+        <View>
+          <Text>{JSON.stringify(stats.overview)}</Text>
+        </View>
+      )}
     </View>
   );
 }
