@@ -1,6 +1,6 @@
 import { getStats } from "@repo/schemas/types/stats";
-import { api } from "@repo/utils/lib/api";
 import { queryOptions } from "@tanstack/react-query";
+import { AxiosInstance } from "axios";
 
 // Keys
 export const StatsQueryKeys = {
@@ -8,7 +8,7 @@ export const StatsQueryKeys = {
 };
 
 // Queries
-export const getStatsQueryOptions = () =>
+export const getStatsQueryOptions = (api: AxiosInstance) =>
   queryOptions({
     queryKey: StatsQueryKeys.getStats(),
     queryFn: async () => {

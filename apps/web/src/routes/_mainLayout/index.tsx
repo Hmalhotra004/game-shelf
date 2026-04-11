@@ -1,11 +1,3 @@
-import PieChartCard from "@/components/charts/PieChartCard";
-import { OverviewCard } from "@/components/home/OverviewCard";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { overviewLabels } from "@repo/utils/constants";
-import { getStatsQueryOptions } from "@repo/utils/queries/stats";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-
 import {
   completionStyleChartColorMap,
   platformChartColorMap,
@@ -13,12 +5,23 @@ import {
   statusChartColorMap,
 } from "@repo/utils/lib/chartColors";
 
+import { overviewLabels } from "@repo/utils/constants";
+import { getStatsQueryOptions } from "@repo/utils/queries/stats";
+
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+
+import PieChartCard from "@/components/charts/PieChartCard";
+import { OverviewCard } from "@/components/home/OverviewCard";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { api } from "@/lib/api";
+
 export const Route = createFileRoute("/_mainLayout/")({
   component: Index,
 });
 
 function Index() {
-  const { data, isLoading } = useQuery(getStatsQueryOptions());
+  const { data, isLoading } = useQuery(getStatsQueryOptions(api));
 
   if (isLoading || !data)
     return (
