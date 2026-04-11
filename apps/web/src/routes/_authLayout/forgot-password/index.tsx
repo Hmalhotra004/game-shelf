@@ -21,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/_authLayout/forgot-password/")({
   beforeLoad: async () => {
@@ -41,7 +42,7 @@ function RouteComponent() {
   const router = useRouter();
 
   const checkEmail = useMutation(
-    authCheckEmailMutationOptions(setError, setPending),
+    authCheckEmailMutationOptions(api, setError, setPending),
   );
 
   const form = useForm<z.infer<typeof emailSchema>>({
