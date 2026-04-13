@@ -9,7 +9,6 @@ import { useCardVariantStore } from "@/store/useCardVariantStore";
 import { collectionGetManyQueryOptions } from "@repo/utils/queries/collection";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-// import { Activity } from "react";
 
 export const Route = createFileRoute("/_mainLayout/collection/")({
   loader: async ({ context }) => {
@@ -83,35 +82,27 @@ function RouteComponent() {
             <>
               {games.length === 0 && <CollectionEmptyState />}
 
-              {/* <Activity
-            name="GRID"
-            mode={isGrid ? "visible" : "hidden"}
-          > */}
-              <div className="flex flex-col">
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-2.5 gap-y-6">
-                  {filteredGames.map((g) => {
-                    return (
-                      <div
-                        key={g.id}
-                        className="mx-auto"
-                      >
-                        <CollectionCard
-                          game={g}
-                          variant={variant}
-                        />
-                      </div>
-                    );
-                  })}
+              {isGrid && (
+                <div className="flex flex-col">
+                  <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-2.5 gap-y-6">
+                    {filteredGames.map((g) => {
+                      return (
+                        <div
+                          key={g.id}
+                          className="mx-auto"
+                        >
+                          <CollectionCard
+                            game={g}
+                            variant={variant}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-              {/* </Activity> */}
+              )}
 
-              {/* <Activity
-            name="TABLE"
-            mode={isGrid ? "hidden" : "visible"}
-          >
-            <div>T</div>
-          </Activity> */}
+              {!isGrid && <div>T</div>}
             </>
           )}
 
