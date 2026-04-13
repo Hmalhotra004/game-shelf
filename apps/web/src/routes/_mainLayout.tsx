@@ -26,10 +26,10 @@ export const Route = createFileRoute("/_mainLayout")({
 
 function RouteComponent() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col h-screen overflow-hidden">
       <Navbar />
 
-      <main className="flex flex-col flex-1 p-4 h-full">
+      <main className="flex flex-col flex-1 p-4 min-h-0 overflow-hidden">
         <Outlet />
       </main>
     </div>

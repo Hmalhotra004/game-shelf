@@ -17,6 +17,7 @@ import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
 import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
 import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
+import { Route as MainLayoutProfileConnectionsRouteImport } from './routes/_mainLayout/profile/connections'
 import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
 import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
 import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
@@ -65,6 +66,12 @@ const AuthLayoutForgotPasswordIndexRoute =
     path: '/forgot-password/',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutProfileConnectionsRoute =
+  MainLayoutProfileConnectionsRouteImport.update({
+    id: '/profile/connections',
+    path: '/profile/connections',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
   id: '/collection/add',
   path: '/collection/add',
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
+  '/profile/connections': typeof MainLayoutProfileConnectionsRoute
   '/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
   '/collection/': typeof MainLayoutCollectionIndexRoute
   '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
@@ -123,6 +131,7 @@ export interface FileRoutesByTo {
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
+  '/profile/connections': typeof MainLayoutProfileConnectionsRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordIndexRoute
   '/collection': typeof MainLayoutCollectionIndexRoute
   '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
@@ -140,6 +149,7 @@ export interface FileRoutesById {
   '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/_mainLayout/collection/add': typeof MainLayoutCollectionAddRoute
+  '/_mainLayout/profile/connections': typeof MainLayoutProfileConnectionsRoute
   '/_authLayout/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
   '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
   '/_mainLayout/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
     | '/collection/add'
+    | '/profile/connections'
     | '/forgot-password/'
     | '/collection/'
     | '/collection/$collectionId/change-images'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
     | '/collection/add'
+    | '/profile/connections'
     | '/forgot-password'
     | '/collection'
     | '/collection/$collectionId/change-images'
@@ -186,6 +198,7 @@ export interface FileRouteTypes {
     | '/_authLayout/forgot-password/change-password'
     | '/_authLayout/forgot-password/verify-otp'
     | '/_mainLayout/collection/add'
+    | '/_mainLayout/profile/connections'
     | '/_authLayout/forgot-password/'
     | '/_mainLayout/collection/'
     | '/_mainLayout/collection/$collectionId/change-images'
@@ -255,6 +268,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/forgot-password/'
       preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/profile/connections': {
+      id: '/_mainLayout/profile/connections'
+      path: '/profile/connections'
+      fullPath: '/profile/connections'
+      preLoaderRoute: typeof MainLayoutProfileConnectionsRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
     '/_mainLayout/collection/add': {
       id: '/_mainLayout/collection/add'
@@ -328,6 +348,7 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 interface MainLayoutRouteChildren {
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
   MainLayoutCollectionAddRoute: typeof MainLayoutCollectionAddRoute
+  MainLayoutProfileConnectionsRoute: typeof MainLayoutProfileConnectionsRoute
   MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
   MainLayoutCollectionCollectionIdChangeImagesRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   MainLayoutCollectionCollectionIdEditRoute: typeof MainLayoutCollectionCollectionIdEditRoute
@@ -337,6 +358,7 @@ interface MainLayoutRouteChildren {
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
   MainLayoutIndexRoute: MainLayoutIndexRoute,
   MainLayoutCollectionAddRoute: MainLayoutCollectionAddRoute,
+  MainLayoutProfileConnectionsRoute: MainLayoutProfileConnectionsRoute,
   MainLayoutCollectionIndexRoute: MainLayoutCollectionIndexRoute,
   MainLayoutCollectionCollectionIdChangeImagesRoute:
     MainLayoutCollectionCollectionIdChangeImagesRoute,
