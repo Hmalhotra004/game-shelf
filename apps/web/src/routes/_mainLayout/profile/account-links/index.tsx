@@ -37,7 +37,7 @@ function RouteComponent() {
     isLoading: isLoadingPSN,
     isError: isErrorPSN,
     error: psnError,
-  } = useQuery(getPSNProfileQueryOptions(api, false));
+  } = useQuery(getPSNProfileQueryOptions(api, !!PSNAccountId));
 
   if (isErrorSteam) {
     if (isAxiosError(steamError)) {
@@ -82,7 +82,7 @@ function RouteComponent() {
             platform="playstation"
             isConnected={!!PSNAccountId}
             isLoading={isLoadingPSN}
-            data={psn}
+            data={psn ?? null}
           />
 
           <AccountCard
@@ -90,7 +90,7 @@ function RouteComponent() {
             platform="steam"
             isConnected={!!steamId}
             isLoading={isLoadingSteam}
-            data={steam}
+            data={steam ?? null}
           />
         </div>
       </CardContent>

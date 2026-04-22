@@ -24,7 +24,14 @@ export const getProfile = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Profile not found" });
     }
 
-    return res.status(200).json(profile);
+    return res.status(200).json({
+      username: profile.onlineId,
+      avatar:
+        profile.avatars.find((a) => a.size === "m")?.url ??
+        profile.avatars.find((a) => a.size === "l")?.url,
+      realName: null,
+      profileUrl: null,
+    });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: GenericErrorMessage });
