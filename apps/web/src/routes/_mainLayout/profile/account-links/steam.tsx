@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { Card } from "@/components/ui/card";
+
 export const Route = createFileRoute(
   "/_mainLayout/profile/account-links/steam",
 )({
@@ -7,5 +9,5 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  return <div>Hello "/_mainLayout/profile/account-links/steam"!</div>;
+  return <Card className="mx-auto w-full"></Card>;
 }

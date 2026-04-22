@@ -2,7 +2,6 @@ import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
-
 import type { Request, Response } from "express";
 
 export const getGames = async (req: Request, res: Response) => {
