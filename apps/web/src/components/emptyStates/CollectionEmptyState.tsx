@@ -19,7 +19,7 @@ export const CollectionEmptyState = () => {
       </EmptyHeader>
 
       <EmptyContent>
-        <Link to={`/profile/connections`}>
+        <Link to={`/profile/account-links`}>
           <span className="text-primary font-medium underline underline-offset-4 cursor-pointer">
             Import Games
           </span>

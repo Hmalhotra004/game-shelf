@@ -135,9 +135,9 @@ const UserButton = () => {
           className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
           asChild
         >
-          <Link to="/profile/connections">
+          <Link to="/profile/account-links">
             <KeyRoundIcon className="size-4 mr-1" />
-            Connections
+            Account Links
           </Link>
         </DropdownMenuItem>
 

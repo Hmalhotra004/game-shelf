@@ -21,7 +21,10 @@ import { Route as MainLayoutProfileConnectionsRouteImport } from './routes/_main
 import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
 import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
 import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
+import { Route as MainLayoutProfileAccountLinksIndexRouteImport } from './routes/_mainLayout/profile/account-links/index'
 import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
+import { Route as MainLayoutProfileAccountLinksSteamRouteImport } from './routes/_mainLayout/profile/account-links/steam'
+import { Route as MainLayoutProfileAccountLinksPlaystationRouteImport } from './routes/_mainLayout/profile/account-links/playstation'
 import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
 import { Route as MainLayoutCollectionCollectionIdChangeImagesRouteImport } from './routes/_mainLayout/collection/$collectionId/change-images'
 
@@ -89,10 +92,28 @@ const AuthLayoutForgotPasswordChangePasswordRoute =
     path: '/forgot-password/change-password',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutProfileAccountLinksIndexRoute =
+  MainLayoutProfileAccountLinksIndexRouteImport.update({
+    id: '/profile/account-links/',
+    path: '/profile/account-links/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const MainLayoutCollectionCollectionIdIndexRoute =
   MainLayoutCollectionCollectionIdIndexRouteImport.update({
     id: '/collection/$collectionId/',
     path: '/collection/$collectionId/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksSteamRoute =
+  MainLayoutProfileAccountLinksSteamRouteImport.update({
+    id: '/profile/account-links/steam',
+    path: '/profile/account-links/steam',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksPlaystationRoute =
+  MainLayoutProfileAccountLinksPlaystationRouteImport.update({
+    id: '/profile/account-links/playstation',
+    path: '/profile/account-links/playstation',
     getParentRoute: () => MainLayoutRoute,
   } as any)
 const MainLayoutCollectionCollectionIdEditRoute =
@@ -121,7 +142,10 @@ export interface FileRoutesByFullPath {
   '/collection/': typeof MainLayoutCollectionIndexRoute
   '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
+  '/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
   '/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
+  '/profile/account-links/': typeof MainLayoutProfileAccountLinksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
@@ -136,7 +160,10 @@ export interface FileRoutesByTo {
   '/collection': typeof MainLayoutCollectionIndexRoute
   '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
+  '/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
   '/collection/$collectionId': typeof MainLayoutCollectionCollectionIdIndexRoute
+  '/profile/account-links': typeof MainLayoutProfileAccountLinksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -154,7 +181,10 @@ export interface FileRoutesById {
   '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
   '/_mainLayout/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   '/_mainLayout/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/_mainLayout/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
+  '/_mainLayout/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
   '/_mainLayout/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
+  '/_mainLayout/profile/account-links/': typeof MainLayoutProfileAccountLinksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,7 +201,10 @@ export interface FileRouteTypes {
     | '/collection/'
     | '/collection/$collectionId/change-images'
     | '/collection/$collectionId/edit'
+    | '/profile/account-links/playstation'
+    | '/profile/account-links/steam'
     | '/collection/$collectionId/'
+    | '/profile/account-links/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,7 +219,10 @@ export interface FileRouteTypes {
     | '/collection'
     | '/collection/$collectionId/change-images'
     | '/collection/$collectionId/edit'
+    | '/profile/account-links/playstation'
+    | '/profile/account-links/steam'
     | '/collection/$collectionId'
+    | '/profile/account-links'
   id:
     | '__root__'
     | '/_authLayout'
@@ -203,7 +239,10 @@ export interface FileRouteTypes {
     | '/_mainLayout/collection/'
     | '/_mainLayout/collection/$collectionId/change-images'
     | '/_mainLayout/collection/$collectionId/edit'
+    | '/_mainLayout/profile/account-links/playstation'
+    | '/_mainLayout/profile/account-links/steam'
     | '/_mainLayout/collection/$collectionId/'
+    | '/_mainLayout/profile/account-links/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -297,11 +336,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_mainLayout/profile/account-links/': {
+      id: '/_mainLayout/profile/account-links/'
+      path: '/profile/account-links'
+      fullPath: '/profile/account-links/'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_mainLayout/collection/$collectionId/': {
       id: '/_mainLayout/collection/$collectionId/'
       path: '/collection/$collectionId'
       fullPath: '/collection/$collectionId/'
       preLoaderRoute: typeof MainLayoutCollectionCollectionIdIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/steam': {
+      id: '/_mainLayout/profile/account-links/steam'
+      path: '/profile/account-links/steam'
+      fullPath: '/profile/account-links/steam'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksSteamRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/playstation': {
+      id: '/_mainLayout/profile/account-links/playstation'
+      path: '/profile/account-links/playstation'
+      fullPath: '/profile/account-links/playstation'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksPlaystationRouteImport
       parentRoute: typeof MainLayoutRoute
     }
     '/_mainLayout/collection/$collectionId/edit': {
@@ -352,7 +412,10 @@ interface MainLayoutRouteChildren {
   MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
   MainLayoutCollectionCollectionIdChangeImagesRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   MainLayoutCollectionCollectionIdEditRoute: typeof MainLayoutCollectionCollectionIdEditRoute
+  MainLayoutProfileAccountLinksPlaystationRoute: typeof MainLayoutProfileAccountLinksPlaystationRoute
+  MainLayoutProfileAccountLinksSteamRoute: typeof MainLayoutProfileAccountLinksSteamRoute
   MainLayoutCollectionCollectionIdIndexRoute: typeof MainLayoutCollectionCollectionIdIndexRoute
+  MainLayoutProfileAccountLinksIndexRoute: typeof MainLayoutProfileAccountLinksIndexRoute
 }
 
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
@@ -364,8 +427,14 @@ const MainLayoutRouteChildren: MainLayoutRouteChildren = {
     MainLayoutCollectionCollectionIdChangeImagesRoute,
   MainLayoutCollectionCollectionIdEditRoute:
     MainLayoutCollectionCollectionIdEditRoute,
+  MainLayoutProfileAccountLinksPlaystationRoute:
+    MainLayoutProfileAccountLinksPlaystationRoute,
+  MainLayoutProfileAccountLinksSteamRoute:
+    MainLayoutProfileAccountLinksSteamRoute,
   MainLayoutCollectionCollectionIdIndexRoute:
     MainLayoutCollectionCollectionIdIndexRoute,
+  MainLayoutProfileAccountLinksIndexRoute:
+    MainLayoutProfileAccountLinksIndexRoute,
 }
 
 const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(
