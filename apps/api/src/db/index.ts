@@ -21,6 +21,9 @@ if (isProd) {
     schema: schemaWithRelations,
   });
 } else {
+  // db = drizzleNeon(process.env.DATABASE_URL_NEON_TEST!, {
+  //   schema: schemaWithRelations,
+  // });
   const pool =
     globalThis.pgPool ??
     new Pool({

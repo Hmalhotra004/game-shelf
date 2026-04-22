@@ -1,49 +1,42 @@
-import { CollectionCard } from "@/components/collection/CollectionCard";
+import { CollectionGetMany } from "@repo/schemas/types/collection";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
+
+import CollectionPageSuspense from "@/components/collection/CollectionPageSuspense";
 import Filters from "@/components/collection/Filters";
-import { CollectionEmptyState } from "@/components/emptyStates/CollectionEmptyState";
 import { CollectionLoading } from "@/components/fallbacks/CollectionLoading";
+import { ErrorBoundaryWrapper } from "@/components/fallbacks/ErrorBoundaryWrapper";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useCollectionFilters } from "@/hooks/useCollectionFilters";
 import { api } from "@/lib/api";
-import { useCardVariantStore } from "@/store/useCardVariantStore";
-import { collectionGetManyQueryOptions } from "@repo/utils/queries/collection";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { filterCollection } from "@/lib/filters";
+
+import {
+  collectionGetManyQueryOptions,
+  CollectionQueryKeys,
+} from "@repo/utils/queries/collection";
 
 export const Route = createFileRoute("/_mainLayout/collection/")({
   loader: async ({ context }) => {
     const { queryClient } = context;
 
-    await queryClient.ensureQueryData(collectionGetManyQueryOptions(api));
+    await queryClient.prefetchQuery(collectionGetManyQueryOptions(api));
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [filters] = useCollectionFilters();
-  const variant = useCardVariantStore((s) => s.variant);
-
-  const { platform, view, search, status, list } = filters;
-
-  const { data: games, isLoading } = useQuery(
-    collectionGetManyQueryOptions(api),
+  const { queryClient } = Route.useRouteContext();
+  const games = queryClient.getQueryData<Array<CollectionGetMany>>(
+    CollectionQueryKeys.getMany(),
   );
 
-  const filteredGames = games
-    ? games
-        .filter(
-          (g) =>
-            search.trim() === "" ||
-            g.name.toLowerCase().includes(search.toLowerCase()),
-        )
-        .filter((g) => status === "All" || g.status === status)
-        .filter((g) => platform === "All" || g.platform === platform)
-        .filter((g) => list === "All" || g.listIds.includes(list))
-    : [];
+  const [filters] = useCollectionFilters();
+
+  const filteredGames = filterCollection(games ?? [], filters);
 
   const totalAmount = filteredGames.reduce((sum, g) => sum + g.totalAmount, 0);
-
-  const isGrid = view === "GRID";
 
   return (
     <div className="flex flex-col gap-6 pb-4 min-h-0 h-full">
@@ -76,35 +69,13 @@ function RouteComponent() {
 
       <div className="flex-1 min-h-0">
         <ScrollArea className="h-full">
-          {isLoading || !games ? (
-            <CollectionLoading />
-          ) : (
-            <>
-              {games.length === 0 && <CollectionEmptyState />}
-
-              {isGrid && (
-                <div className="flex flex-col">
-                  <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-2.5 gap-y-6">
-                    {filteredGames.map((g) => {
-                      return (
-                        <div
-                          key={g.id}
-                          className="mx-auto"
-                        >
-                          <CollectionCard
-                            game={g}
-                            variant={variant}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {!isGrid && <div>T</div>}
-            </>
-          )}
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            <Suspense fallback={<CollectionLoading />}>
+              <ErrorBoundaryWrapper>
+                <CollectionPageSuspense />
+              </ErrorBoundaryWrapper>
+            </Suspense>
+          </HydrationBoundary>
 
           <ScrollBar orientation="vertical" />
         </ScrollArea>
