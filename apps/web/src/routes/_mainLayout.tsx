@@ -1,7 +1,9 @@
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+
 import Navbar from "@/components/Navbar";
 import { authClient } from "@/lib/authClient";
 
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import "@/lib/socket";
 
 export const Route = createFileRoute("/_mainLayout")({
   beforeLoad: async () => {
