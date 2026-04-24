@@ -26,7 +26,7 @@ export type TypedSocket = BaseSocket<
   SocketData
 >;
 
-let io: Server;
+let io: Server<ClientToServerEvents, ServerToClientEvents>;
 
 export const initSocket = (server: HttpServer) => {
   io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
@@ -43,8 +43,7 @@ export const initSocket = (server: HttpServer) => {
   return io;
 };
 
-// 🔥 important for Inngest
-export const getIO = () => {
+export const getIO = (): Server<ClientToServerEvents, ServerToClientEvents> => {
   if (!io) {
     throw new Error("Socket.io not initialized");
   }

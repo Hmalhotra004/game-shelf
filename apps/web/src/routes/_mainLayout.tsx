@@ -1,15 +1,16 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 import Navbar from "@/components/Navbar";
 import { authClient } from "@/lib/authClient";
-
-import "@/lib/socket";
+import { socket } from "@/lib/socket";
 
 export const Route = createFileRoute("/_mainLayout")({
   beforeLoad: async () => {
     const session = await authClient.getSession();
 
-    if (!session.data) {
+    if (session.data === null) {
       throw redirect({ to: "/login", replace: true });
     }
 
@@ -27,6 +28,18 @@ export const Route = createFileRoute("/_mainLayout")({
 });
 
 function RouteComponent() {
+  useEffect(() => {
+    const handleError = (error: string) => {
+      toast.error(error);
+    };
+
+    socket.on("error_message", handleError);
+
+    return () => {
+      socket.off("error_message", handleError);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <Navbar />
