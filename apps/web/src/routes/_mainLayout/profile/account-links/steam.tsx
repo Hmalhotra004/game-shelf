@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { linkSteamAccountSchema } from "@repo/schemas/schemas/user";
 import { linkSteamAccountMutationOptions } from "@repo/utils/mutations/user";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
 import type z from "zod";
@@ -16,6 +16,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -23,29 +24,44 @@ import {
 export const Route = createFileRoute(
   "/_mainLayout/profile/account-links/steam",
 )({
+  beforeLoad: ({ context }) => {
+    if (context.steamId !== null) {
+      throw redirect({
+        to: "/profile/account-links",
+      });
+    }
+  },
   component: RouteComponent,
 });
 
 type FormData = z.infer<typeof linkSteamAccountSchema>;
 
 function RouteComponent() {
-  const { steamId, queryClient } = Route.useRouteContext();
+  const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
 
   const link = useMutation(linkSteamAccountMutationOptions(api, queryClient));
 
   const form = useForm<FormData>({
     resolver: zodResolver(linkSteamAccountSchema),
     defaultValues: {
-      steamId: steamId ?? "",
+      steamId: "",
     },
   });
 
   async function onSubmit(values: FormData) {
     await link.mutateAsync(values);
+    router.history.back();
   }
 
+  const isPending = link.isPending;
+
+  // TODO:make responsive
+  // TODO:better how to get steamID
+  // TODO:Sign in via steam
+
   return (
-    <div className="flex flex-col gap-6 max-w-3xl mx-auto">
+    <div className="flex mx-auto gap-16 max-w-5xl">
       <Card>
         <CardHeader className="text-center">
           <CardTitle>Link your Steam Account</CardTitle>
@@ -58,6 +74,7 @@ function RouteComponent() {
           <Button
             size="lg"
             className="w-full"
+            disabled={isPending}
           >
             Sign in with Steam
           </Button>
@@ -79,19 +96,39 @@ function RouteComponent() {
             <FormInput
               name="steamId"
               control={form.control}
-              type="number"
               placeholder="76561199092075371"
-              disabled={false}
+              disabled={isPending}
             />
 
             <Button
               type="submit"
               className="w-full"
+              disabled={isPending}
             >
               Link Account
             </Button>
           </form>
         </CardContent>
+
+        <CardFooter className="flex flex-col gap-3 border-t pt-4">
+          <CardTitle className="text-base font-semibold">
+            Things to know
+          </CardTitle>
+
+          <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
+            <li>
+              Set your Steam profile privacy to{" "}
+              <span className="font-medium text-foreground">Public</span>.
+            </li>
+            <li>
+              Your{" "}
+              <span className="font-medium text-foreground">
+                13-digit SteamID
+              </span>{" "}
+              is not your username.
+            </li>
+          </ul>
+        </CardFooter>
       </Card>
 
       <Card>
