@@ -1,4 +1,6 @@
 import { db } from "@/db";
+import { functions } from "@/inngest";
+import { inngest } from "@/inngest/client";
 import { auth } from "@/lib/auth";
 import router from "@/router";
 import { toNodeHandler } from "better-auth/node";
@@ -8,6 +10,7 @@ import cors from "cors";
 import { sql } from "drizzle-orm";
 import express from "express";
 import helmet from "helmet";
+import { serve } from "inngest/express";
 import http from "node:http";
 import { ORIGINS } from "./constants";
 
@@ -30,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api", router());
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 const server = http.createServer(app);
 
