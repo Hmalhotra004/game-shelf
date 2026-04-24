@@ -1,9 +1,13 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { user } from "@/db/schema";
-import { UnlinkAccountSchemaType } from "@repo/schemas/schemas/user";
 import { eq } from "drizzle-orm";
 import type { Request, Response } from "express";
+
+import {
+  LinkSteamAccountSchemaType,
+  UnlinkAccountSchemaType,
+} from "@repo/schemas/schemas/user";
 
 export const getGames = async (req: Request, res: Response) => {
   try {
@@ -35,6 +39,26 @@ export const getGames = async (req: Request, res: Response) => {
       games,
       dlcs,
     });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const linkSteamAccount = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+
+    const { steamId } = req.cleanBody as LinkSteamAccountSchemaType;
+
+    await db
+      .update(user)
+      .set({
+        steamId,
+      })
+      .where(eq(user.id, userId));
+
+    return res.sendStatus(204);
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: GenericErrorMessage });
