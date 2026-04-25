@@ -3,6 +3,7 @@ import { createAuthClient } from "better-auth/react";
 
 import {
   emailOTPClient,
+  genericOAuthClient,
   inferAdditionalFields,
 } from "better-auth/client/plugins";
 
@@ -40,5 +41,9 @@ export const authClient = createAuthClient({
   fetchOptions: {
     credentials: "include",
   },
-  plugins: [emailOTPClient(), inferAdditionalFields<AdditionalFields>()],
+  plugins: [
+    genericOAuthClient(),
+    emailOTPClient(),
+    inferAdditionalFields<AdditionalFields>(),
+  ],
 });

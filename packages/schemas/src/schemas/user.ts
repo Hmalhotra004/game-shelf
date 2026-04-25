@@ -17,7 +17,7 @@ export const linkSteamAccountSchema = z.object({
 });
 
 export const unlinkAccountSchema = z.object({
-  type: providerSchema.exclude(["Physical", "Epic"]),
+  type: providerSchema.exclude(["Physical"]),
 });
 
 export type LinkAccountSchemaType = z.infer<typeof linkAccountSchema>;

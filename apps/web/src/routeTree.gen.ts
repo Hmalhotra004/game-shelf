@@ -22,8 +22,10 @@ import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/
 import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
 import { Route as MainLayoutProfileAccountLinksIndexRouteImport } from './routes/_mainLayout/profile/account-links/index'
 import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
+import { Route as MainLayoutProfileAccountLinksXboxRouteImport } from './routes/_mainLayout/profile/account-links/xbox'
 import { Route as MainLayoutProfileAccountLinksSteamRouteImport } from './routes/_mainLayout/profile/account-links/steam'
 import { Route as MainLayoutProfileAccountLinksPlaystationRouteImport } from './routes/_mainLayout/profile/account-links/playstation'
+import { Route as MainLayoutProfileAccountLinksEpicRouteImport } from './routes/_mainLayout/profile/account-links/epic'
 import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
 import { Route as MainLayoutCollectionCollectionIdChangeImagesRouteImport } from './routes/_mainLayout/collection/$collectionId/change-images'
 
@@ -97,6 +99,12 @@ const MainLayoutCollectionCollectionIdIndexRoute =
     path: '/collection/$collectionId/',
     getParentRoute: () => MainLayoutRoute,
   } as any)
+const MainLayoutProfileAccountLinksXboxRoute =
+  MainLayoutProfileAccountLinksXboxRouteImport.update({
+    id: '/profile/account-links/xbox',
+    path: '/profile/account-links/xbox',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const MainLayoutProfileAccountLinksSteamRoute =
   MainLayoutProfileAccountLinksSteamRouteImport.update({
     id: '/profile/account-links/steam',
@@ -107,6 +115,12 @@ const MainLayoutProfileAccountLinksPlaystationRoute =
   MainLayoutProfileAccountLinksPlaystationRouteImport.update({
     id: '/profile/account-links/playstation',
     path: '/profile/account-links/playstation',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksEpicRoute =
+  MainLayoutProfileAccountLinksEpicRouteImport.update({
+    id: '/profile/account-links/epic',
+    path: '/profile/account-links/epic',
     getParentRoute: () => MainLayoutRoute,
   } as any)
 const MainLayoutCollectionCollectionIdEditRoute =
@@ -134,8 +148,10 @@ export interface FileRoutesByFullPath {
   '/collection/': typeof MainLayoutCollectionIndexRoute
   '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/profile/account-links/epic': typeof MainLayoutProfileAccountLinksEpicRoute
   '/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
   '/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
+  '/profile/account-links/xbox': typeof MainLayoutProfileAccountLinksXboxRoute
   '/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
   '/profile/account-links/': typeof MainLayoutProfileAccountLinksIndexRoute
 }
@@ -151,8 +167,10 @@ export interface FileRoutesByTo {
   '/collection': typeof MainLayoutCollectionIndexRoute
   '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/profile/account-links/epic': typeof MainLayoutProfileAccountLinksEpicRoute
   '/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
   '/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
+  '/profile/account-links/xbox': typeof MainLayoutProfileAccountLinksXboxRoute
   '/collection/$collectionId': typeof MainLayoutCollectionCollectionIdIndexRoute
   '/profile/account-links': typeof MainLayoutProfileAccountLinksIndexRoute
 }
@@ -171,8 +189,10 @@ export interface FileRoutesById {
   '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
   '/_mainLayout/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   '/_mainLayout/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/_mainLayout/profile/account-links/epic': typeof MainLayoutProfileAccountLinksEpicRoute
   '/_mainLayout/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
   '/_mainLayout/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
+  '/_mainLayout/profile/account-links/xbox': typeof MainLayoutProfileAccountLinksXboxRoute
   '/_mainLayout/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
   '/_mainLayout/profile/account-links/': typeof MainLayoutProfileAccountLinksIndexRoute
 }
@@ -190,8 +210,10 @@ export interface FileRouteTypes {
     | '/collection/'
     | '/collection/$collectionId/change-images'
     | '/collection/$collectionId/edit'
+    | '/profile/account-links/epic'
     | '/profile/account-links/playstation'
     | '/profile/account-links/steam'
+    | '/profile/account-links/xbox'
     | '/collection/$collectionId/'
     | '/profile/account-links/'
   fileRoutesByTo: FileRoutesByTo
@@ -207,8 +229,10 @@ export interface FileRouteTypes {
     | '/collection'
     | '/collection/$collectionId/change-images'
     | '/collection/$collectionId/edit'
+    | '/profile/account-links/epic'
     | '/profile/account-links/playstation'
     | '/profile/account-links/steam'
+    | '/profile/account-links/xbox'
     | '/collection/$collectionId'
     | '/profile/account-links'
   id:
@@ -226,8 +250,10 @@ export interface FileRouteTypes {
     | '/_mainLayout/collection/'
     | '/_mainLayout/collection/$collectionId/change-images'
     | '/_mainLayout/collection/$collectionId/edit'
+    | '/_mainLayout/profile/account-links/epic'
     | '/_mainLayout/profile/account-links/playstation'
     | '/_mainLayout/profile/account-links/steam'
+    | '/_mainLayout/profile/account-links/xbox'
     | '/_mainLayout/collection/$collectionId/'
     | '/_mainLayout/profile/account-links/'
   fileRoutesById: FileRoutesById
@@ -330,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutCollectionCollectionIdIndexRouteImport
       parentRoute: typeof MainLayoutRoute
     }
+    '/_mainLayout/profile/account-links/xbox': {
+      id: '/_mainLayout/profile/account-links/xbox'
+      path: '/profile/account-links/xbox'
+      fullPath: '/profile/account-links/xbox'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksXboxRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_mainLayout/profile/account-links/steam': {
       id: '/_mainLayout/profile/account-links/steam'
       path: '/profile/account-links/steam'
@@ -342,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/profile/account-links/playstation'
       fullPath: '/profile/account-links/playstation'
       preLoaderRoute: typeof MainLayoutProfileAccountLinksPlaystationRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/epic': {
+      id: '/_mainLayout/profile/account-links/epic'
+      path: '/profile/account-links/epic'
+      fullPath: '/profile/account-links/epic'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksEpicRouteImport
       parentRoute: typeof MainLayoutRoute
     }
     '/_mainLayout/collection/$collectionId/edit': {
@@ -391,8 +431,10 @@ interface MainLayoutRouteChildren {
   MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
   MainLayoutCollectionCollectionIdChangeImagesRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRoute
   MainLayoutCollectionCollectionIdEditRoute: typeof MainLayoutCollectionCollectionIdEditRoute
+  MainLayoutProfileAccountLinksEpicRoute: typeof MainLayoutProfileAccountLinksEpicRoute
   MainLayoutProfileAccountLinksPlaystationRoute: typeof MainLayoutProfileAccountLinksPlaystationRoute
   MainLayoutProfileAccountLinksSteamRoute: typeof MainLayoutProfileAccountLinksSteamRoute
+  MainLayoutProfileAccountLinksXboxRoute: typeof MainLayoutProfileAccountLinksXboxRoute
   MainLayoutCollectionCollectionIdIndexRoute: typeof MainLayoutCollectionCollectionIdIndexRoute
   MainLayoutProfileAccountLinksIndexRoute: typeof MainLayoutProfileAccountLinksIndexRoute
 }
@@ -405,10 +447,14 @@ const MainLayoutRouteChildren: MainLayoutRouteChildren = {
     MainLayoutCollectionCollectionIdChangeImagesRoute,
   MainLayoutCollectionCollectionIdEditRoute:
     MainLayoutCollectionCollectionIdEditRoute,
+  MainLayoutProfileAccountLinksEpicRoute:
+    MainLayoutProfileAccountLinksEpicRoute,
   MainLayoutProfileAccountLinksPlaystationRoute:
     MainLayoutProfileAccountLinksPlaystationRoute,
   MainLayoutProfileAccountLinksSteamRoute:
     MainLayoutProfileAccountLinksSteamRoute,
+  MainLayoutProfileAccountLinksXboxRoute:
+    MainLayoutProfileAccountLinksXboxRoute,
   MainLayoutCollectionCollectionIdIndexRoute:
     MainLayoutCollectionCollectionIdIndexRoute,
   MainLayoutProfileAccountLinksIndexRoute:

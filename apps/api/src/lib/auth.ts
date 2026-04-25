@@ -4,7 +4,7 @@ import * as schema from "@/db/schema";
 import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { emailOTP } from "better-auth/plugins";
+import { emailOTP, genericOAuth } from "better-auth/plugins";
 import { sendEmail } from "./sendEmail";
 
 export const auth = betterAuth({
@@ -54,6 +54,37 @@ export const auth = betterAuth({
     revokeSessionsOnPasswordReset: true,
   },
   plugins: [
+    genericOAuth({
+      config: [
+        {
+          clientId: process.env.EPIC_CLIENT_ID!,
+          clientSecret: process.env.EPIC_CLIENT_SECRET!,
+          providerId: process.env.EPIC_PROVIDER_ID!,
+          authorizationUrl: process.env.EPIC_AUTHORIZE_URL!,
+          tokenUrl: process.env.EPIC_TOKEN_URL,
+          redirectURI: process.env.EPIC_REDIRECT_URI!,
+          scopes: ["basic_profile"],
+          responseType: "code",
+          pkce: false,
+
+          // getUserInfo:async({accessToken})=>{
+
+          // },
+          // mapProfileToUser: (profile: any) => ({
+
+          //   email: profile.email || `epic-${profile.account_id}@epicgames.com`,
+          //   name: profile.displayName || profile.name || "Epic User",
+          //   image: profile.profileImage || null,
+
+          //   epicAccountId: profile.account_id,
+          //   epicUsername: profile.displayName || profile.name,
+          //   epicEmail: profile.email,
+          //   epicConnected: true,
+          //   epicLastSynced: new Date().toISOString(),
+          // }),
+        },
+      ],
+    }),
     expo(),
     emailOTP({
       storeOTP: "encrypted",

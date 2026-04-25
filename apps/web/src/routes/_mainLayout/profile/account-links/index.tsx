@@ -92,6 +92,14 @@ function RouteComponent() {
             isLoading={isLoadingSteam}
             data={steam ?? null}
           />
+
+          <AccountCard
+            title="Epic"
+            platform="epic"
+            isConnected={false}
+            isLoading={false}
+            data={null}
+          />
         </div>
       </CardContent>
     </Card>

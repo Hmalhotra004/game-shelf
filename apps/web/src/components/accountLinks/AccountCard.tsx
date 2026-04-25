@@ -10,7 +10,7 @@ import { api } from "@/lib/api";
 import { UnlinkAccountSchemaType } from "@repo/schemas/schemas/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type Platform = "steam" | "playstation";
+type Platform = "steam" | "playstation" | "epic" | "xbox";
 
 interface Props {
   title: string;
@@ -23,6 +23,8 @@ interface Props {
 const map: Record<Platform, UnlinkAccountSchemaType["type"]> = {
   playstation: "PSN",
   steam: "Steam",
+  epic: "Epic",
+  xbox: "XBOX",
 } as const;
 
 const AccountCard = ({
