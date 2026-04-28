@@ -103,7 +103,10 @@ const AddCommand = ({ open, setOpen }: Props) => {
               <CommandItem
                 key={game.id}
                 onSelect={() => {
-                  navigate({ to: "/collection/add", params: { id: game.id } });
+                  navigate({
+                    to: "/collection/add",
+                    search: { id: game.id },
+                  });
                   setSearch("");
                   setOpen(false);
                 }}
