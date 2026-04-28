@@ -115,6 +115,8 @@ export const unlinkAccount = async (req: Request, res: Response) => {
     const updateMap = {
       Steam: { steamId: null },
       PSN: { PSNAccountId: null, PSNAccountUserName: null },
+      Epic: {},
+      XBOX: {},
     } as const;
 
     const updateData = updateMap[type];

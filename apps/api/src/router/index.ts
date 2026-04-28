@@ -2,6 +2,7 @@ import { Router } from "express";
 import auth from "./auth";
 import collection from "./collection";
 import completion from "./completion";
+import igdb from "./igdb";
 import list from "./list";
 import playthrough from "./playthrough";
 import psn from "./psn";
@@ -27,6 +28,7 @@ export default (): Router => {
   steamGridDB("/steamGridDB", router);
   psn("/PSN", router);
   steam("/steam", router);
+  igdb("/igdb", router);
 
   return router;
 };

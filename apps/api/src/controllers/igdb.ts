@@ -1,0 +1,92 @@
+import { IGDBCoverSizeType } from "@/lib/igdb/enum";
+import { IGDBSearchType } from "@repo/schemas/types/igdb";
+import axios from "axios";
+import type { Request, Response } from "express";
+
+import {
+  ExcludeGameType,
+  formatImage,
+  getFullYear,
+  igdb,
+  IGDBGame,
+  IGDBPlatformIds,
+} from "@/lib/igdb";
+
+export const searchGame = async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query as { query: string };
+
+    if (!query) {
+      return res.status(400).json({ error: "Query is required" });
+    }
+
+    const safeQuery = query.replace(/"/g, "");
+
+    const body = `
+      search "${safeQuery}";
+      fields ${IGDBGame.search};
+      limit ${50};
+      `;
+
+    const response = await igdb.post<IGDBSearchType[]>("/games", body);
+
+    const result = response.data
+      .filter(
+        (game) =>
+          !ExcludeGameType.includes(game.game_type) &&
+          game.platforms?.some((p) => IGDBPlatformIds.includes(p)) &&
+          game.cover,
+      )
+      .map((game) => ({
+        id: game.id,
+        name: game.name,
+        releaseYear: getFullYear(game.first_release_date),
+        coverUrl: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
+      }));
+
+    res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const test = async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query as { query: string };
+
+    if (!query) {
+      return res.status(400).json({ error: "Query is required" });
+    }
+
+    const safeQuery = query.replace(/"/g, "");
+
+    const body = `
+      search "${safeQuery}";
+      fields ${IGDBGame.test};
+      limit ${50};
+      `;
+
+    const response = await igdb.post("/games", body);
+
+    res.status(200).json(response.data);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getToken = async (req: Request, res: Response) => {
+  try {
+    const response = await axios.post(
+      `https://id.twitch.tv/oauth2/token?client_id=${process.env.IGDB_CLIENT_ID}&client_secret=${process.env.IGDB_SECRET}&grant_type=client_credentials`,
+    );
+
+    console.log(response.data);
+
+    res.send(200).json();
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};

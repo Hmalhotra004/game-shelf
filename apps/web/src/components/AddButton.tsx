@@ -1,6 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useState, type ReactNode } from "react";
+import { useState } from "react";
+
+import type { Dispatch, ReactNode, SetStateAction } from "react";
+
+import { Button } from "@/components/ui/button";
 
 interface AddButtonProps {
   renderContent?: (props: {

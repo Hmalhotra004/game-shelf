@@ -12,6 +12,8 @@ import { useCollectionFilters } from "@/hooks/useCollectionFilters";
 import { api } from "@/lib/api";
 import { filterCollection } from "@/lib/filters";
 
+import { AddButton } from "@/components/AddButton";
+import AddCommand from "@/components/AddCommand";
 import {
   collectionGetManyQueryOptions,
   CollectionQueryKeys,
@@ -40,15 +42,14 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-6 pb-4 min-h-0 h-full">
-      {/* <AddButton
+      <AddButton
         renderContent={({ open, setOpen }) => (
-          <Dialog></Dialog>
-          // <AddCommand
-          //   open={open}
-          //   setOpen={setOpen}
-          // />
+          <AddCommand
+            open={open}
+            setOpen={setOpen}
+          />
         )}
-      /> */}
+      />
 
       {/* header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
 import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
+import { Route as MainLayoutTestRouteImport } from './routes/_mainLayout/test'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
@@ -40,6 +41,11 @@ const AuthLayoutRoute = AuthLayoutRouteImport.update({
 const MainLayoutIndexRoute = MainLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => MainLayoutRoute,
+} as any)
+const MainLayoutTestRoute = MainLayoutTestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => MainLayoutRoute,
 } as any)
 const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/test': typeof MainLayoutTestRoute
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/test': typeof MainLayoutTestRoute
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
   '/collection/add': typeof MainLayoutCollectionAddRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
+  '/_mainLayout/test': typeof MainLayoutTestRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
   '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/email-verification'
     | '/login'
     | '/signup'
+    | '/test'
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
     | '/collection/add'
@@ -222,6 +232,7 @@ export interface FileRouteTypes {
     | '/email-verification'
     | '/login'
     | '/signup'
+    | '/test'
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
     | '/collection/add'
@@ -242,6 +253,7 @@ export interface FileRouteTypes {
     | '/_authLayout/email-verification'
     | '/_authLayout/login'
     | '/_authLayout/signup'
+    | '/_mainLayout/test'
     | '/_mainLayout/'
     | '/_authLayout/forgot-password/change-password'
     | '/_authLayout/forgot-password/verify-otp'
@@ -284,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof MainLayoutIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/test': {
+      id: '/_mainLayout/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof MainLayoutTestRouteImport
       parentRoute: typeof MainLayoutRoute
     }
     '/_authLayout/signup': {
@@ -426,6 +445,7 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 )
 
 interface MainLayoutRouteChildren {
+  MainLayoutTestRoute: typeof MainLayoutTestRoute
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
   MainLayoutCollectionAddRoute: typeof MainLayoutCollectionAddRoute
   MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
@@ -440,6 +460,7 @@ interface MainLayoutRouteChildren {
 }
 
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
+  MainLayoutTestRoute: MainLayoutTestRoute,
   MainLayoutIndexRoute: MainLayoutIndexRoute,
   MainLayoutCollectionAddRoute: MainLayoutCollectionAddRoute,
   MainLayoutCollectionIndexRoute: MainLayoutCollectionIndexRoute,
