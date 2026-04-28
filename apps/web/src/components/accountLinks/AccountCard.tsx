@@ -18,6 +18,7 @@ interface Props {
   isConnected: boolean;
   isLoading: boolean;
   data: AccountProfileType | null;
+  commingSoon?: boolean;
 }
 
 const map: Record<Platform, UnlinkAccountSchemaType["type"]> = {
@@ -33,6 +34,7 @@ const AccountCard = ({
   data,
   isConnected,
   isLoading,
+  commingSoon = false,
 }: Props) => {
   const queryClient = useQueryClient();
 
@@ -59,14 +61,23 @@ const AccountCard = ({
           Go to platform page to link an account.
         </h3>
 
-        <Link to={`/profile/account-links/${platform}`}>
-          <Button
-            variant="outline"
-            className="mr-auto mt-1"
-          >
-            Go to Page
-          </Button>
-        </Link>
+        {commingSoon ? (
+          <div className="mt-2 flex flex-col gap-1 text-sm text-muted-foreground">
+            <span className="inline-flex w-fit items-center rounded bg-muted px-2 py-0.5 text-xs font-medium">
+              Coming Soon
+            </span>
+            <span>Account linking for {title} will be available soon.</span>
+          </div>
+        ) : (
+          <Link to={`/profile/account-links/${platform}`}>
+            <Button
+              variant="outline"
+              className="mr-auto mt-1"
+            >
+              Go to Page
+            </Button>
+          </Link>
+        )}
       </div>
     );
   }

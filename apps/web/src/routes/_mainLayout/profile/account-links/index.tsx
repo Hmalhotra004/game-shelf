@@ -78,14 +78,6 @@ function RouteComponent() {
       <CardContent>
         <div className="grid grid-cols-2 justify-between gap-6">
           <AccountCard
-            title="Playstation"
-            platform="playstation"
-            isConnected={!!PSNAccountId}
-            isLoading={isLoadingPSN}
-            data={psn ?? null}
-          />
-
-          <AccountCard
             title="Steam"
             platform="steam"
             isConnected={!!steamId}
@@ -99,6 +91,24 @@ function RouteComponent() {
             isConnected={false}
             isLoading={false}
             data={null}
+            commingSoon
+          />
+
+          <AccountCard
+            title="Playstation"
+            platform="playstation"
+            isConnected={!!PSNAccountId}
+            isLoading={isLoadingPSN}
+            data={psn ?? null}
+          />
+
+          <AccountCard
+            title="Xbox"
+            platform="xbox"
+            isConnected={false}
+            isLoading={false}
+            data={null}
+            commingSoon
           />
         </div>
       </CardContent>
