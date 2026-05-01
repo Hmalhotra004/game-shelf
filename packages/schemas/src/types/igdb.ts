@@ -38,7 +38,14 @@ export type GetById = {
   summary: string;
   releaseDate: string;
   genres: Genres[];
-  dlcs: { id: number; name: string; image: string; releaseDate: string }[];
+  dlcs: DLCs[];
+};
+
+export type DLCs = {
+  id: number;
+  name: string;
+  image: string;
+  releaseDate: string;
 };
 
 export type IGDBDlcs = {

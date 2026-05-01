@@ -1,5 +1,5 @@
 import z from "zod";
-import { ownershipTypeSchema } from "./collection";
+import { ownershipTypeSchema } from "./index";
 
 export const createDLCSchema = z.object({
   igdbId: z.number().int().min(1, { error: "id is required" }),

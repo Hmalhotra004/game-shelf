@@ -1,7 +1,6 @@
 import z from "zod";
 import {
   CollectionStatusValues,
-  OwnershipTypeValues,
   PlatformValues,
   ProviderValues,
   PSVersionValues,
@@ -9,6 +8,7 @@ import {
 
 import type { PlatformType, ProviderType } from "@repo/schemas/types/index";
 import { createDLCSchema } from "./dlc";
+import { ownershipTypeSchema } from "./index";
 
 export const platformSchema = z.enum(PlatformValues, {
   error: "Platform is requried",
@@ -20,10 +20,6 @@ export const providerSchema = z.enum(ProviderValues, {
 
 export const statusSchema = z.enum(CollectionStatusValues, {
   error: "Status is required",
-});
-
-export const ownershipTypeSchema = z.enum(OwnershipTypeValues, {
-  error: "OwnerShip is required",
 });
 
 export const PSVersionSchema = z.enum(PSVersionValues, {
