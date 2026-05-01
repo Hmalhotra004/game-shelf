@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { format } from "date-fns";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -12,9 +13,11 @@ import type z from "zod";
 
 import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 import {
   FormDatePicker,
@@ -45,9 +48,108 @@ export const Route = createFileRoute("/_mainLayout/collection/add")({
 
 type FormValues = z.infer<typeof createCollectionSchema>;
 
+// Per-DLC purchase state when ticked
+type DlcEntry = {
+  dateOfPurchase: string;
+  amount: string;
+};
+
+function DlcRow({
+  dlc,
+  checked,
+  onToggle,
+  entry,
+  onChange,
+}: {
+  dlc: any;
+  checked: boolean;
+  onToggle: (id: number) => void;
+  entry: DlcEntry | undefined;
+  onChange: (id: number, field: keyof DlcEntry, value: string) => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-lg border transition-colors",
+        checked
+          ? "border-primary/40 bg-primary/5"
+          : "border-border bg-transparent",
+      )}
+    >
+      {/* Row — always visible */}
+      <label className="flex items-center gap-3 p-3 cursor-pointer select-none">
+        <Checkbox
+          checked={checked}
+          onCheckedChange={() => onToggle(dlc.id)}
+          className="shrink-0"
+        />
+
+        {/* Cover thumbnail */}
+        <div className="w-10 h-14 rounded overflow-hidden bg-muted shrink-0">
+          {dlc.image ? (
+            <img
+              src={dlc.image}
+              alt={dlc.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-muted" />
+          )}
+        </div>
+
+        {/* Name + release date */}
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate">{dlc.name}</p>
+          {dlc.releaseDate && (
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {format(dlc.releaseDate, "PPP")}
+            </p>
+          )}
+        </div>
+      </label>
+
+      {/* Expanded inputs when checked */}
+      {checked && (
+        <div className="px-3 pb-3 grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-muted-foreground">
+              Date of Purchase
+            </label>
+            <input
+              type="date"
+              value={entry?.dateOfPurchase ?? ""}
+              onChange={(e) =>
+                onChange(dlc.id, "dateOfPurchase", e.target.value)
+              }
+              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-muted-foreground">
+              Amount
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="e.g. 14.99"
+              value={entry?.amount ?? ""}
+              onChange={(e) => onChange(dlc.id, "amount", e.target.value)}
+              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RouteComponent() {
   const { id } = Route.useSearch();
   const [dlcOpen, setDlcOpen] = useState(false);
+  const [selectedDlcs, setSelectedDlcs] = useState<Record<number, DlcEntry>>(
+    {},
+  );
 
   const router = useRouter();
 
@@ -59,6 +161,7 @@ function RouteComponent() {
   const form = useForm<FormValues>({
     resolver: zodResolver(createCollectionSchema),
     defaultValues: {
+      igdbId: id,
       name: "",
       dateOfPurchase: "",
       edition: null,
@@ -73,21 +176,47 @@ function RouteComponent() {
       lists: null,
       isDLC: false,
       collectionId: "",
-      hasDLCs: false,
+      DLCs: [],
     },
   });
 
   const watchedName = form.watch("name");
+  const watchedImage = form.watch("image");
 
   if (game?.name && !watchedName) {
     form.setValue("name", game.name);
   }
 
+  if (game?.image && !watchedImage) {
+    form.setValue("image", game.image);
+  }
+
   const selectedPlatform = form.watch("platform");
-  const isDLC = form.watch("isDLC");
+
+  function toggleDlc(dlcId: number) {
+    setSelectedDlcs((prev) => {
+      if (prev[dlcId]) {
+        const next = { ...prev };
+        delete next[dlcId];
+        return next;
+      }
+      return { ...prev, [dlcId]: { dateOfPurchase: "", amount: "" } };
+    });
+  }
+
+  function updateDlcEntry(dlcId: number, field: keyof DlcEntry, value: string) {
+    setSelectedDlcs((prev) => ({
+      ...prev,
+      [dlcId]: { ...prev[dlcId], [field]: value },
+    }));
+  }
 
   function onSubmit(values: FormValues) {
-    console.log(values);
+    const dlcs = Object.entries(selectedDlcs).map(([dlcId, entry]) => ({
+      dlcId: Number(dlcId),
+      ...entry,
+    }));
+    console.log({ game: values, dlcs });
   }
 
   const isPending = false;
@@ -102,6 +231,9 @@ function RouteComponent() {
       </div>
     );
   }
+
+  const hasDlcs = game.dlcs?.length > 0;
+  const selectedCount = Object.keys(selectedDlcs).length;
 
   return (
     <div className="grid grid-cols-2 flex-1 gap-4 min-h-0 overflow-hidden">
