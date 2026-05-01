@@ -53,8 +53,6 @@ function RouteComponent() {
 
   const { data: game, isLoading } = useQuery(getByIdQueryOptions(api, id));
 
-  console.log(game);
-
   const { data: lists } = useSuspenseQuery(listGetManyQueryOptions(api));
 
   const listOptions = lists.map((d) => ({
@@ -83,8 +81,6 @@ function RouteComponent() {
     },
   });
 
-  console.log(game);
-
   const watchedName = form.watch("name");
 
   if (game?.name && !watchedName) {
@@ -103,7 +99,7 @@ function RouteComponent() {
   if (!id)
     return <div className="p-8 text-muted-foreground">No game selected.</div>;
 
-  if (isLoading) {
+  if (isLoading || !game) {
     return (
       <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
         Loading game…
@@ -217,7 +213,7 @@ function RouteComponent() {
 
           <Separator />
 
-          {game?.dlcs?.length > 0 && (
+          {game.dlcs.length > 0 && (
             <div>
               <button
                 type="button"
