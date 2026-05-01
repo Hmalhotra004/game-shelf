@@ -10,7 +10,7 @@ import { createCollectionSchema } from "@repo/schemas/schemas/collection";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import type z from "zod";
 
-import AddGameInfoPanel from "@/components/collection/AddGameInfoPanel";
+import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";

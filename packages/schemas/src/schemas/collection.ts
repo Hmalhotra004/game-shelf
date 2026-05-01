@@ -8,6 +8,7 @@ import {
 } from "../enums";
 
 import type { PlatformType, ProviderType } from "@repo/schemas/types/index";
+import { createDLCSchema } from "./dlc";
 
 export const platformSchema = z.enum(PlatformValues, {
   error: "Platform is requried",
@@ -44,6 +45,7 @@ export const externalIdsSchema = z.object({
 
 export const createCollectionSchema = z
   .object({
+    igdbId: z.number().int().min(1, { error: "id is required" }),
     name: z.string().trim().min(1, { error: "Name is requried" }),
     dateOfPurchase: z.string().trim().min(1, { error: "Date is required" }),
     edition: z.string().trim().nullable(),
@@ -58,7 +60,7 @@ export const createCollectionSchema = z
     lists: z.array(z.string().trim()).nullable(),
     isDLC: z.boolean().default(false).optional(),
     collectionId: z.string().trim().optional(),
-    hasDLCs: z.boolean().default(false).optional(),
+    DLCs: z.array(createDLCSchema).optional(),
   })
   .refine(
     (data) =>
