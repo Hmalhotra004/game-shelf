@@ -34,11 +34,11 @@ export type GetById = {
   name: string;
   game_type: number;
   platforms: PlatformType[];
-  coverUrl: string;
+  image: string;
   summary: string;
   releaseDate: string;
   genres: Genres[];
-  dlcs: { id: number; name: string; coverUrl: string; releaseDate: string }[];
+  dlcs: { id: number; name: string; image: string; releaseDate: string }[];
 };
 
 export type IGDBDlcs = {

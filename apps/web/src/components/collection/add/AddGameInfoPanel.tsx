@@ -13,10 +13,10 @@ interface Props {
 const AddGameInfoPanel = ({ game }: Props) => {
   return (
     <div className="flex flex-col">
-      <div className="relative w-full h-full rounded-lg bg-muted shadow-md overflow-hidden">
-        {game.coverUrl ? (
+      <div className="relative w-full h-full bg-muted shadow-md overflow-hidden">
+        {game.image ? (
           <img
-            src={game.coverUrl}
+            src={game.image}
             alt={game.name}
             className="absolute inset-0 w-full h-full object-cover block object-top"
           />

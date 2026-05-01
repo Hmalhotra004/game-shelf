@@ -81,7 +81,7 @@ export const getById = async (req: Request, res: Response) => {
     const result = {
       id: game.id,
       name: game.name,
-      coverUrl: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
+      image: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
       platforms: game.platforms,
       summary: game.summary,
       releaseDate: getDate(game.first_release_date),
@@ -91,7 +91,7 @@ export const getById = async (req: Request, res: Response) => {
         allAddons.map((dlc) => ({
           id: dlc.id,
           name: dlc.name,
-          coverUrl: formatImage(dlc.cover.image_id, IGDBCoverSizeType.t_1080p),
+          image: formatImage(dlc.cover.image_id, IGDBCoverSizeType.t_1080p),
           releaseDate: getDate(dlc.first_release_date),
         })) ?? [],
     };
