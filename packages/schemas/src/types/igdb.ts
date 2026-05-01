@@ -12,6 +12,7 @@ export type SearchGame = {
   name: string;
   coverUrl: string;
   releaseYear: string | null;
+  isDLC: boolean;
 }[];
 
 export type IGDBGetByIdType = {

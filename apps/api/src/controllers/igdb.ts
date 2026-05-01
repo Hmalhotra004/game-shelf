@@ -12,6 +12,7 @@ import {
   igdb,
   IGDBGame,
   IGDBPlatformIds,
+  isDLC,
 } from "@/lib/igdb";
 
 export const searchGame = async (req: Request, res: Response) => {
@@ -44,6 +45,7 @@ export const searchGame = async (req: Request, res: Response) => {
         name: game.name,
         releaseYear: getFullYear(game.first_release_date),
         coverUrl: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
+        isDLC: isDLC.includes(game.game_type),
       }));
 
     res.status(200).json(result);

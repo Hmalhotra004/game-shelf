@@ -11,6 +11,8 @@ export const igdb = axios.create({
   },
 });
 
+export const isDLC = [1, 2, 4];
+
 export const ExcludeGameType = [14, 5];
 
 export const IGDBPlatformIds = [167, 48, 6];

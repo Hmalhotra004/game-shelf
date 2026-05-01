@@ -132,6 +132,12 @@ const AddCommand = ({ open, setOpen }: Props) => {
                       {game.releaseYear}
                     </span>
                   )}
+
+                  {game.isDLC && (
+                    <p className="text-[10px] mt-0.5 text-muted-foreground">
+                      (DLC)
+                    </p>
+                  )}
                 </div>
               </CommandItem>
             ))}
