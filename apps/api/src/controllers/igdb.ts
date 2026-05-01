@@ -74,6 +74,8 @@ export const getById = async (req: Request, res: Response) => {
 
     const game = response.data[0];
 
+    const allAddons = [...(game.dlcs ?? []), ...(game.expansions ?? [])];
+
     const result = {
       id: game.id,
       name: game.name,
@@ -84,7 +86,7 @@ export const getById = async (req: Request, res: Response) => {
       genres: game.genres,
       gameType: game.game_type,
       dlcs:
-        game.dlcs?.map((dlc) => ({
+        allAddons.map((dlc) => ({
           id: dlc.id,
           name: dlc.name,
           coverUrl: formatImage(dlc.cover.image_id, IGDBCoverSizeType.t_1080p),

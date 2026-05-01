@@ -81,7 +81,7 @@ const AddGameInfoPanel = ({ game }: Props) => {
             {game?.summary && (
               <>
                 <Separator />
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-5">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {game.summary}
                 </p>
               </>

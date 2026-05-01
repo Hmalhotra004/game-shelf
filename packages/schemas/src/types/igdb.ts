@@ -25,6 +25,7 @@ export type IGDBGetByIdType = {
   first_release_date: number | null;
 
   dlcs: IGDBDlcs[] | undefined;
+  expansions: IGDBDlcs[] | undefined;
 };
 
 export type GetById = {

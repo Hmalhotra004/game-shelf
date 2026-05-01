@@ -29,15 +29,13 @@ export const IGDBGame = {
     IGDBGameField.Id,
     IGDBGameField.Name,
     IGDBGameField.CoverImageId,
-    IGDBGameField.PlatformsName,
-    IGDBGameField.PlatformsAbbreviation,
-    IGDBGameField.PlatformsAlternativeName,
+    IGDBGameField.PlatformsInfo,
     IGDBGameField.GameType,
     IGDBGameField.FirstReleaseDate,
     IGDBGameField.Summary,
     IGDBGameField.GenresName,
     IGDBGameField.DlcsInfo,
-    IGDBGameField.ParentGameAll,
+    IGDBGameField.ExpansionsInfo,
   ],
 
   test: [

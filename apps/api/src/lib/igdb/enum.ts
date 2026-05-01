@@ -14,7 +14,7 @@ export const IGDBPlatformId = {
 export const GameType = {
   0: "Main Game",
   1: "DLC",
-  // 2: "",
+  2: "Expansion",
   3: "Bundle",
   4: "Standalone Expansion",
   5: "Mod",
@@ -62,13 +62,12 @@ export enum IGDBGameField {
   // Platforms
   PlatformsAll = "platforms.*",
   Platforms = "platforms",
-  PlatformsName = "platforms.name",
-  PlatformsAbbreviation = "platforms.abbreviation",
-  PlatformsAlternativeName = "platforms.alternative_name",
+  PlatformsInfo = "platforms.name,platforms.abbreviation,platforms.alternative_name",
 
   // Parent game
   ParentGame = "parent_game",
   ParentGameAll = "parent_game.*",
+  ParentGameInfo = "parent_game.name,parent_game.cover.image_id",
 
   // Genres (expanded)
   Genres = "genres",
@@ -77,9 +76,13 @@ export enum IGDBGameField {
 
   // DLCs + Expansions (auto-expand)
   DlcsAll = "dlcs.*",
-  DlcsInfo = "dlcs.name,dlcs.cover.image_id,dlcs.first_release_date",
+  DlcsInfo = "dlcs.name,dlcs.cover.image_id,dlcs.first_release_date,dlcs.game_type.type",
 
-  Expansions = "expansions.*",
+  ExpansionsAll = "expansions.*",
+  ExpansionsInfo = "expansions.name,expansions.cover.image_id,expansions.first_release_date,expansions.game_type.type",
+
+  ExpandedGames = "expanded_games.*",
+  StandaloneExpansions = "standalone_expansions.*",
 
   Summary = "summary",
   Storyline = "storyline",
