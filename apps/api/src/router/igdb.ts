@@ -1,4 +1,4 @@
-import { getToken, searchGame, test } from "@/controllers/igdb";
+import { getById, getToken, searchGame, test } from "@/controllers/igdb";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { Router } from "express";
 
@@ -6,6 +6,8 @@ export default (baseUrl: string, app: Router) => {
   const router = Router();
 
   router.get("/search", authenticateUser, searchGame);
+
+  router.get("/:igdbId", authenticateUser, getById);
 
   router.get("/test", authenticateUser, test);
 

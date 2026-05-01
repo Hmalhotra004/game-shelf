@@ -25,6 +25,21 @@ export const IGDBGame = {
     IGDBGameField.FirstReleaseDate,
   ],
 
+  getById: [
+    IGDBGameField.Id,
+    IGDBGameField.Name,
+    IGDBGameField.CoverImageId,
+    IGDBGameField.PlatformsName,
+    IGDBGameField.PlatformsAbbreviation,
+    IGDBGameField.PlatformsAlternativeName,
+    IGDBGameField.GameType,
+    IGDBGameField.FirstReleaseDate,
+    IGDBGameField.Summary,
+    IGDBGameField.GenresName,
+    IGDBGameField.DlcsInfo,
+    IGDBGameField.ParentGameAll,
+  ],
+
   test: [
     IGDBGameField.Id,
     IGDBGameField.Name,
@@ -33,7 +48,6 @@ export const IGDBGame = {
     IGDBGameField.GameTypeAll,
     IGDBGameField.ScreenshotsAll,
     IGDBGameField.ArtworksAll,
-    IGDBGameField.Status,
     IGDBGameField.FirstReleaseDate,
   ],
 };
@@ -43,3 +57,6 @@ export const formatImage = (id: string, size: IGDBCoverSizeType) =>
 
 export const getFullYear = (date: number | null) =>
   date ? new Date(Number(date) * 1000).getFullYear() : null;
+
+export const getDate = (date: number | null) =>
+  date ? new Date(Number(date) * 1000) : null;

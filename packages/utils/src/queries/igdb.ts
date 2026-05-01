@@ -1,4 +1,4 @@
-import { SearchGame } from "@repo/schemas/types/igdb";
+import { GetById, SearchGame } from "@repo/schemas/types/igdb";
 import { queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
 
@@ -7,6 +7,8 @@ export const IGDBQueryKeys = {
 
   search: (submitted: string) =>
     [...IGDBQueryKeys.all, "search", submitted] as const,
+
+  getById: (id: number) => [...IGDBQueryKeys.all, "add", id] as const,
 };
 
 export const searchGameQueryOptions = (
@@ -24,4 +26,14 @@ export const searchGameQueryOptions = (
       return response.data;
     },
     enabled,
+  });
+
+export const getByIdQueryOptions = (api: AxiosInstance, id: number) =>
+  queryOptions({
+    queryKey: IGDBQueryKeys.getById(id),
+    queryFn: async () => {
+      const response = await api.get<GetById>(`/igdb/${id}`);
+
+      return response.data;
+    },
   });

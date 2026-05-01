@@ -1,11 +1,13 @@
+import { GenericErrorMessage } from "@/constants";
 import { IGDBCoverSizeType } from "@/lib/igdb/enum";
-import { IGDBSearchType } from "@repo/schemas/types/igdb";
+import { IGDBGetByIdType, IGDBSearchType } from "@repo/schemas/types/igdb";
 import axios from "axios";
 import type { Request, Response } from "express";
 
 import {
   ExcludeGameType,
   formatImage,
+  getDate,
   getFullYear,
   igdb,
   IGDBGame,
@@ -47,7 +49,53 @@ export const searchGame = async (req: Request, res: Response) => {
     res.status(200).json(result);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: GenericErrorMessage });
+  }
+};
+
+export const getById = async (req: Request, res: Response) => {
+  try {
+    const igdbId = Number(req.params.igdbId);
+
+    if (!igdbId || Number.isNaN(igdbId)) {
+      return res.status(400).json({ error: "Invalid IGDB ID" });
+    }
+
+    const body = `
+    fields ${IGDBGame.getById};
+    where id = ${igdbId};
+    `;
+
+    const response = await igdb.post<IGDBGetByIdType[]>("/games", body);
+
+    if (!response.data.length) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    const game = response.data[0];
+
+    const result = {
+      id: game.id,
+      name: game.name,
+      coverUrl: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
+      platforms: game.platforms,
+      summary: game.summary,
+      releaseDate: getDate(game.first_release_date),
+      genres: game.genres,
+      gameType: game.game_type,
+      dlcs:
+        game.dlcs?.map((dlc) => ({
+          id: dlc.id,
+          name: dlc.name,
+          coverUrl: formatImage(dlc.cover.image_id, IGDBCoverSizeType.t_1080p),
+          releaseDate: getDate(dlc.first_release_date),
+        })) ?? [],
+    };
+
+    res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: GenericErrorMessage });
   }
 };
 

@@ -1,9 +1,14 @@
 export const IGDBPlatformId = {
   167: "PS5",
-  169: "Series X|S",
   48: "PS4",
   9: "PS3",
+
+  169: "Series X|S",
+  49: "XONE",
+
   6: "PC",
+
+  508: "Switch 2",
 };
 
 export const GameType = {
@@ -43,16 +48,43 @@ export enum IGDBGameField {
   // Data
   Id = "id",
   Name = "name",
-  GameType = "game_type",
-  Cover = "cover",
-  Platforms = "platforms",
 
+  // Cover
+  Cover = "cover",
+  CoverAll = "cover.*",
+  CoverUrl = "cover.url",
+  CoverImageId = "cover.image_id",
+
+  // Game Type
+  GameTypeAll = "game_type.*",
+  GameType = "game_type",
+
+  // Platforms
   PlatformsAll = "platforms.*",
+  Platforms = "platforms",
+  PlatformsName = "platforms.name",
+  PlatformsAbbreviation = "platforms.abbreviation",
+  PlatformsAlternativeName = "platforms.alternative_name",
+
+  // Parent game
+  ParentGame = "parent_game",
+  ParentGameAll = "parent_game.*",
+
+  // Genres (expanded)
+  Genres = "genres",
+  GenresName = "genres.name",
+  GenresAll = "genres.*",
+
+  // DLCs + Expansions (auto-expand)
+  DlcsAll = "dlcs.*",
+  DlcsInfo = "dlcs.name,dlcs.cover.image_id,dlcs.first_release_date",
+
+  Expansions = "expansions.*",
+
   Summary = "summary",
   Storyline = "storyline",
-  Status = "status",
+  Status = "game_status",
   Slug = "slug",
-  GameTypeAll = "game_type.*",
 
   // Dates
   FirstReleaseDate = "first_release_date",
@@ -71,9 +103,6 @@ export enum IGDBGameField {
   Popularity = "popularity",
 
   // Images (auto-expandable)
-  CoverImageId = "cover.image_id",
-  CoverUrl = "cover.url",
-  CoverAll = "cover.*",
   ArtworksAll = "artworks.*",
   ScreenshotsAll = "screenshots.*",
   ArtworksUrl = "artworks.url",
@@ -102,10 +131,6 @@ export enum IGDBGameField {
   Forks = "forks.*",
   Bundles = "bundles.*",
 
-  // DLCs + Expansions (auto-expand)
-  Dlcs = "dlcs.*",
-  Expansions = "expansions.*",
-
   // Multiplayer data
   MultiplayerModes = "multiplayer_modes.*",
 
@@ -118,11 +143,6 @@ export enum IGDBGameField {
 
   // Release dates (expanded)
   ReleaseDates = "release_dates.*",
-
-  // Platforms (expanded)
-
-  // Genres (expanded)
-  Genres = "genres.*",
 
   // Collections
   Collection = "collection.*",
