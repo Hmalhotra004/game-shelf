@@ -1,10 +1,17 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
+
+import {
+  Outlet,
+  createFileRoute,
+  redirect,
+  useRouterState,
+} from "@tanstack/react-router";
 
 import Navbar from "@/components/Navbar";
 import { authClient } from "@/lib/authClient";
 import { socket } from "@/lib/socket";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_mainLayout")({
   beforeLoad: async () => {
@@ -28,6 +35,11 @@ export const Route = createFileRoute("/_mainLayout")({
 });
 
 function RouteComponent() {
+  const { location } = useRouterState();
+
+  const noPaddingRoutes = ["/collection/add"];
+  const noPadding = noPaddingRoutes.includes(location.pathname);
+
   useEffect(() => {
     const handleError = (error: string) => {
       toast.error(error);
@@ -44,7 +56,12 @@ function RouteComponent() {
     <div className="flex flex-col h-screen overflow-hidden">
       <Navbar />
 
-      <main className="flex flex-col flex-1 p-4 min-h-0 overflow-hidden">
+      <main
+        className={cn(
+          "flex flex-col flex-1 min-h-0 overflow-hidden",
+          !noPadding && "p-4",
+        )}
+      >
         <Outlet />
       </main>
     </div>

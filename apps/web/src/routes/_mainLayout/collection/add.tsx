@@ -12,6 +12,7 @@ import type z from "zod";
 
 import AddGameInfoPanel from "@/components/collection/AddGameInfoPanel";
 import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/lib/api";
 
@@ -37,7 +38,6 @@ export const Route = createFileRoute("/_mainLayout/collection/add")({
   }),
   loader: async ({ context }) => {
     const { queryClient } = context;
-
     await queryClient.prefetchQuery(listGetManyQueryOptions(api));
   },
   component: RouteComponent,
@@ -52,13 +52,9 @@ function RouteComponent() {
   const router = useRouter();
 
   const { data: game, isLoading } = useQuery(getByIdQueryOptions(api, id));
-
   const { data: lists } = useSuspenseQuery(listGetManyQueryOptions(api));
 
-  const listOptions = lists.map((d) => ({
-    label: d.name,
-    value: d.id,
-  }));
+  const listOptions = lists.map((d) => ({ label: d.name, value: d.id }));
 
   const form = useForm<FormValues>({
     resolver: zodResolver(createCollectionSchema),
@@ -108,209 +104,171 @@ function RouteComponent() {
   }
 
   return (
-    <div className="grid grid-cols-2 flex-1 gap-4">
+    <div className="grid grid-cols-2 flex-1 gap-4 min-h-0 overflow-hidden">
       {game && <AddGameInfoPanel game={game} />}
 
-      <div className="flex flex-col">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight">
-            Add to Collection
-          </h1>
+      <ScrollArea className="h-full min-h-0">
+        <div className="flex flex-col py-4 pr-4">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold tracking-tight">
+              Add to Collection
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Fill in the details below to add this game to your collection.
+            </p>
+          </div>
 
-          <p className="text-sm text-muted-foreground mt-1">
-            Fill in the details below to add this game to your collection.
-          </p>
-        </div>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
+            <div className="space-y-4">
+              {/* Name + Edition */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormInput
+                  control={form.control}
+                  name="name"
+                  disabled={isPending}
+                  placeholder="Game name"
+                />
+                <FormInput
+                  control={form.control}
+                  name="edition"
+                  placeholder="e.g. Deluxe, GOTY, Standard"
+                  disabled={isPending}
+                />
+              </div>
 
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormInput
-                control={form.control}
-                name="name"
-                disabled={isPending}
-                placeholder="Game name"
-              />
+              {/* Date + Amount */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormDatePicker
+                  name="dateOfPurchase"
+                  control={form.control}
+                  disabled={isPending}
+                />
+                <FormInput
+                  control={form.control}
+                  name="amount"
+                  disabled={isPending}
+                  placeholder="e.g. 59.99"
+                />
+              </div>
 
-              <FormInput
-                control={form.control}
-                name="edition"
-                placeholder="e.g. Deluxe, GOTY, Standard"
-                disabled={isPending}
-              />
+              {/* Platform + Provider */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormSelect
+                  name="platform"
+                  control={form.control}
+                  disabled={isPending}
+                >
+                  <PlatformSelect />
+                </FormSelect>
+
+                <FormSelect
+                  name="provider"
+                  control={form.control}
+                  disabled={isPending}
+                >
+                  {selectedPlatform === "PS" && <PSProviderSelect />}
+                  {selectedPlatform === "PC" && <PCProviderSelect />}
+                  {selectedPlatform === "XBOX" && <XBOXProviderSelect />}
+                </FormSelect>
+              </div>
+
+              {/* PS Version */}
+              {selectedPlatform === "PS" && (
+                <FormSelect
+                  name="PSVersion"
+                  control={form.control}
+                  disabled={isPending}
+                >
+                  <PSVersionSelect />
+                </FormSelect>
+              )}
+
+              {/* Ownership + Lists */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormSelect
+                  name="ownershipType"
+                  control={form.control}
+                  disabled={isPending}
+                >
+                  <OwnershipTypeSelect />
+                </FormSelect>
+
+                <FormMultiSelect
+                  control={form.control}
+                  name="lists"
+                  options={listOptions}
+                  placeholder="Select Custom Lists"
+                  disabled={isPending}
+                />
+              </div>
             </div>
 
-            {/* Date and Amount */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormDatePicker
-                name="dateOfPurchase"
-                control={form.control}
-                disabled={isPending}
-              />
+            {/* ── DLCs ──────────────────────────────────────────────────── */}
+            {hasDlcs && (
+              <>
+                <Separator />
 
-              <FormInput
-                control={form.control}
-                name="amount"
-                disabled={isPending}
-                placeholder="e.g. 59.99"
-              />
-            </div>
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => setDlcOpen((o) => !o)}
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full"
+                  >
+                    {dlcOpen ? (
+                      <ChevronUpIcon className="size-4 shrink-0" />
+                    ) : (
+                      <ChevronDownIcon className="size-4 shrink-0" />
+                    )}
+                    <span>
+                      DLCs
+                      <span className="ml-1.5 text-xs font-normal">
+                        ({game.dlcs.length} available
+                        {selectedCount > 0 && `, ${selectedCount} selected`})
+                      </span>
+                    </span>
+                  </button>
 
-            {/* Platform and Provider */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormSelect
-                name="platform"
-                control={form.control}
-                disabled={isPending}
-              >
-                <PlatformSelect />
-              </FormSelect>
-
-              <FormSelect
-                name="provider"
-                control={form.control}
-                disabled={isPending}
-              >
-                {selectedPlatform === "PS" && <PSProviderSelect />}
-                {selectedPlatform === "PC" && <PCProviderSelect />}
-                {selectedPlatform === "XBOX" && <XBOXProviderSelect />}
-              </FormSelect>
-            </div>
-
-            {/* PSVersion */}
-            {selectedPlatform === "PS" && (
-              <FormSelect
-                name="PSVersion"
-                control={form.control}
-                disabled={isPending}
-              >
-                <PSVersionSelect />
-              </FormSelect>
+                  {dlcOpen && (
+                    <div className="space-y-2">
+                      {game.dlcs.map((dlc: any) => (
+                        <DlcRow
+                          key={dlc.id}
+                          dlc={dlc}
+                          checked={!!selectedDlcs[dlc.id]}
+                          onToggle={toggleDlc}
+                          entry={selectedDlcs[dlc.id]}
+                          onChange={updateDlcEntry}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
 
-            {/* Ownership and Lists */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormSelect
-                name="ownershipType"
-                control={form.control}
-                disabled={isPending}
+            <div className="flex gap-3">
+              <Button
+                type="submit"
+                className="flex-1 sm:flex-none sm:min-w-32"
               >
-                <OwnershipTypeSelect />
-              </FormSelect>
-
-              <FormMultiSelect
-                control={form.control}
-                name="lists"
-                options={listOptions}
-                placeholder="Select Custom Lists"
-                disabled={isPending}
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {game.dlcs.length > 0 && (
-            <div>
-              <button
+                Add to Collection
+              </Button>
+              <Button
                 type="button"
-                onClick={() => setDlcOpen((o) => !o)}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                variant="outline"
+                onClick={() => router.history.back()}
               >
-                {dlcOpen ? (
-                  <ChevronUpIcon className="size-4" />
-                ) : (
-                  <ChevronDownIcon className="size-4" />
-                )}
-                Show Dlcs
-              </button>
-
-              {dlcOpen && (
-                <div className="mt-4 space-y-4">
-                  {/* Checkboxes */}
-                  {/* <div className="flex flex-col gap-3 pt-1">
-                        <FormField
-                          control={form.control}
-                          name="isDLC"
-                          render={({ field }) => (
-                            <FormItem className="flex items-center gap-2 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">
-                                This is a DLC
-                              </FormLabel>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="hasDLCs"
-                          render={({ field }) => (
-                            <FormItem className="flex items-center gap-2 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">
-                                Has DLCs
-                              </FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      </div> */}
-
-                  {/* Parent game — only shown when isDLC is true */}
-                  {/* {isDLC && (
-                        <FormField
-                          control={form.control}
-                          name="collectionId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Parent Game</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Collection ID of parent game"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )} */}
-                </div>
-              )}
+                Cancel
+              </Button>
             </div>
-          )}
+          </form>
+        </div>
 
-          <div className="flex gap-3 pt-2">
-            <Button
-              type="submit"
-              className="flex-1 sm:flex-none sm:min-w-32"
-            >
-              Add to Collection
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.history.back()}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </div>
+        <ScrollBar orientation="vertical" />
+      </ScrollArea>
     </div>
   );
 }
