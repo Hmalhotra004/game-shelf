@@ -4,7 +4,6 @@ import { searchGameQueryOptions } from "@repo/utils/queries/igdb";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ImageIcon } from "lucide-react";
-
 import type { Dispatch, SetStateAction } from "react";
 
 import { api } from "@/lib/api";
@@ -113,7 +112,7 @@ const AddCommand = ({ open, setOpen }: Props) => {
                 className="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors hover:bg-accent"
               >
                 <div className="w-12 h-16 shrink-0 overflow-hidden rounded-md bg-muted flex items-center justify-center">
-                  {game.coverUrl ? (
+                  {game.coverUrl !== null ? (
                     <img
                       src={game.coverUrl}
                       alt={game.name}
@@ -127,7 +126,7 @@ const AddCommand = ({ open, setOpen }: Props) => {
                 <div className="flex flex-col overflow-hidden">
                   <p className="font-medium text-sm truncate">{game.name}</p>
 
-                  {game.releaseYear && (
+                  {game.releaseYear !== null && (
                     <span className="text-xs text-muted-foreground">
                       {game.releaseYear}
                     </span>
@@ -136,6 +135,12 @@ const AddCommand = ({ open, setOpen }: Props) => {
                   {game.isDLC && (
                     <p className="text-[10px] mt-0.5 text-muted-foreground">
                       (DLC)
+                    </p>
+                  )}
+
+                  {game.isBundle && (
+                    <p className="text-[10px] mt-0.5 text-muted-foreground">
+                      (Bundle)
                     </p>
                   )}
                 </div>

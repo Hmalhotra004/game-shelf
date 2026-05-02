@@ -46,6 +46,7 @@ export const searchGame = async (req: Request, res: Response) => {
         releaseYear: getFullYear(game.first_release_date),
         coverUrl: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
         isDLC: isDLC.includes(game.game_type),
+        isBundle: game.game_type === 3,
       }));
 
     res.status(200).json(result);
