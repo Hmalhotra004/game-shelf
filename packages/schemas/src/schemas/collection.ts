@@ -6,7 +6,7 @@ import {
   PSVersionValues,
 } from "../enums";
 
-import type { PlatformType, ProviderType } from "@repo/schemas/types/index";
+import type { PlatformType, ProviderType } from "../types/index";
 import { createDLCSchema } from "./dlc";
 import { ownershipTypeSchema } from "./index";
 

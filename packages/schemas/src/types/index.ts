@@ -1,14 +1,18 @@
 import z from "zod";
 
 import {
-  ownershipTypeSchema,
   platformSchema,
   providerSchema,
   PSVersionSchema,
   statusSchema,
 } from "../schemas/collection";
 
-import { GameTypeSchema, SyncTypeSchema } from "../schemas";
+import {
+  GameTypeSchema,
+  ownershipTypeSchema,
+  SyncTypeSchema,
+} from "../schemas";
+
 import { completionStyleSchema } from "../schemas/completion";
 import { playthroughStatusSchema } from "../schemas/playthrough";
 
