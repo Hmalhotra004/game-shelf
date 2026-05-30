@@ -13,7 +13,7 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate --name",
     "db:migrate": "drizzle-kit migrate",
-    "db:migrate:neon": "drizzle-kit migrate --config=drizzle.neon.config.ts"
+    "db:migrate:prod": "drizzle-kit migrate --config=drizzle.neon.config.ts"
   },
   "keywords": [],
   "author": "",
