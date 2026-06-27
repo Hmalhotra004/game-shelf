@@ -7,7 +7,7 @@ import {
   getGames,
   linkSteamAccount,
   unlinkAccount,
-} from "@/controllers/user";
+} from "@/controllers/user/unlinkAccount";
 
 import {
   linkSteamAccountSchema,
