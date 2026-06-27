@@ -1,10 +1,9 @@
+import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
+import { collection, completion, dlc, playthrough } from "@/db/schema";
 import { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
 import axios from "axios";
 import { and, eq, sql } from "drizzle-orm";
-
-import { collection, completion, dlc, playthrough } from "@/db/schema";
-
 import type { Request, Response } from "express";
 
 export const getStats = async (req: Request, res: Response) => {
@@ -176,6 +175,6 @@ export const getStats = async (req: Request, res: Response) => {
     });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: GenericErrorMessage });
   }
 };

@@ -1,4 +1,4 @@
-import { getProfile } from "@/controllers/steam";
+import { getProfile } from "@/controllers/steam/getProfile";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifySteamId } from "@/middlewares/userMiddleware";
 import { Router } from "express";

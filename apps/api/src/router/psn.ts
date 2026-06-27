@@ -1,4 +1,4 @@
-import { getProfile } from "@/controllers/psn";
+import { getProfile } from "@/controllers/psn/getProfile";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyPSN } from "@/middlewares/userMiddleware";
 import { Router } from "express";
