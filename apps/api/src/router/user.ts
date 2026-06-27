@@ -1,13 +1,10 @@
+import { deleteUser } from "@/controllers/user/deleteUser";
+import { getGames } from "@/controllers/user/getGames";
+import { linkSteamAccount } from "@/controllers/user/linkSteamAccount";
+import { unlinkAccount } from "@/controllers/user/unlinkAccount";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
-
-import {
-  deleteUser,
-  getGames,
-  linkSteamAccount,
-  unlinkAccount,
-} from "@/controllers/user/unlinkAccount";
 
 import {
   linkSteamAccountSchema,

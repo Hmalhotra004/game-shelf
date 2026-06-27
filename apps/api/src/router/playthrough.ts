@@ -1,14 +1,11 @@
+import { add } from "@/controllers/playthroughs/add";
+import { addTime } from "@/controllers/playthroughs/addTime";
+import { deletePlaythrough } from "@/controllers/playthroughs/deletePlaythrough";
+import { deletePlaythroughSession } from "@/controllers/playthroughs/deletePlaythroughSession";
+import { getMany } from "@/controllers/playthroughs/getMany";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
-
-import {
-  add,
-  addTime,
-  deletePlaythrough,
-  deletePlaythroughSession,
-  getMany,
-} from "@/controllers/playthrough";
 
 import {
   createPlaythroughSchema,
