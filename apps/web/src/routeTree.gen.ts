@@ -12,12 +12,23 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
 import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
+import { Route as MainLayoutTestRouteImport } from './routes/_mainLayout/test'
 import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
 import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
+import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
 import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
+import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
 import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
 import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
+import { Route as MainLayoutProfileAccountLinksIndexRouteImport } from './routes/_mainLayout/profile/account-links/index'
+import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
+import { Route as MainLayoutProfileAccountLinksXboxRouteImport } from './routes/_mainLayout/profile/account-links/xbox'
+import { Route as MainLayoutProfileAccountLinksSteamRouteImport } from './routes/_mainLayout/profile/account-links/steam'
+import { Route as MainLayoutProfileAccountLinksPlaystationRouteImport } from './routes/_mainLayout/profile/account-links/playstation'
+import { Route as MainLayoutProfileAccountLinksEpicRouteImport } from './routes/_mainLayout/profile/account-links/epic'
+import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
+import { Route as MainLayoutCollectionCollectionIdChangeImagesRouteImport } from './routes/_mainLayout/collection/$collectionId/change-images'
 
 const MainLayoutRoute = MainLayoutRouteImport.update({
   id: '/_mainLayout',
@@ -30,6 +41,11 @@ const AuthLayoutRoute = AuthLayoutRouteImport.update({
 const MainLayoutIndexRoute = MainLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => MainLayoutRoute,
+} as any)
+const MainLayoutTestRoute = MainLayoutTestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => MainLayoutRoute,
 } as any)
 const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
@@ -48,12 +64,23 @@ const AuthLayoutEmailVerificationRoute =
     path: '/email-verification',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutCollectionIndexRoute =
+  MainLayoutCollectionIndexRouteImport.update({
+    id: '/collection/',
+    path: '/collection/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 const AuthLayoutForgotPasswordIndexRoute =
   AuthLayoutForgotPasswordIndexRouteImport.update({
     id: '/forgot-password/',
     path: '/forgot-password/',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
+  id: '/collection/add',
+  path: '/collection/add',
+  getParentRoute: () => MainLayoutRoute,
+} as any)
 const AuthLayoutForgotPasswordVerifyOtpRoute =
   AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
     id: '/forgot-password/verify-otp',
@@ -66,24 +93,94 @@ const AuthLayoutForgotPasswordChangePasswordRoute =
     path: '/forgot-password/change-password',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
+const MainLayoutProfileAccountLinksIndexRoute =
+  MainLayoutProfileAccountLinksIndexRouteImport.update({
+    id: '/profile/account-links/',
+    path: '/profile/account-links/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdIndexRoute =
+  MainLayoutCollectionCollectionIdIndexRouteImport.update({
+    id: '/collection/$collectionId/',
+    path: '/collection/$collectionId/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksXboxRoute =
+  MainLayoutProfileAccountLinksXboxRouteImport.update({
+    id: '/profile/account-links/xbox',
+    path: '/profile/account-links/xbox',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksSteamRoute =
+  MainLayoutProfileAccountLinksSteamRouteImport.update({
+    id: '/profile/account-links/steam',
+    path: '/profile/account-links/steam',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksPlaystationRoute =
+  MainLayoutProfileAccountLinksPlaystationRouteImport.update({
+    id: '/profile/account-links/playstation',
+    path: '/profile/account-links/playstation',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksEpicRoute =
+  MainLayoutProfileAccountLinksEpicRouteImport.update({
+    id: '/profile/account-links/epic',
+    path: '/profile/account-links/epic',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdEditRoute =
+  MainLayoutCollectionCollectionIdEditRouteImport.update({
+    id: '/collection/$collectionId/edit',
+    path: '/collection/$collectionId/edit',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutCollectionCollectionIdChangeImagesRoute =
+  MainLayoutCollectionCollectionIdChangeImagesRouteImport.update({
+    id: '/collection/$collectionId/change-images',
+    path: '/collection/$collectionId/change-images',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof MainLayoutIndexRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/test': typeof MainLayoutTestRoute
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/collection/add': typeof MainLayoutCollectionAddRoute
   '/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
+  '/collection/': typeof MainLayoutCollectionIndexRoute
+  '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/profile/account-links/epic': typeof MainLayoutProfileAccountLinksEpicRoute
+  '/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
+  '/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
+  '/profile/account-links/xbox': typeof MainLayoutProfileAccountLinksXboxRoute
+  '/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
+  '/profile/account-links/': typeof MainLayoutProfileAccountLinksIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof MainLayoutIndexRoute
   '/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/login': typeof AuthLayoutLoginRoute
   '/signup': typeof AuthLayoutSignupRoute
+  '/test': typeof MainLayoutTestRoute
   '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/collection/add': typeof MainLayoutCollectionAddRoute
   '/forgot-password': typeof AuthLayoutForgotPasswordIndexRoute
+  '/collection': typeof MainLayoutCollectionIndexRoute
+  '/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/profile/account-links/epic': typeof MainLayoutProfileAccountLinksEpicRoute
+  '/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
+  '/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
+  '/profile/account-links/xbox': typeof MainLayoutProfileAccountLinksXboxRoute
+  '/collection/$collectionId': typeof MainLayoutCollectionCollectionIdIndexRoute
+  '/profile/account-links': typeof MainLayoutProfileAccountLinksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,10 +189,21 @@ export interface FileRoutesById {
   '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
   '/_authLayout/login': typeof AuthLayoutLoginRoute
   '/_authLayout/signup': typeof AuthLayoutSignupRoute
+  '/_mainLayout/test': typeof MainLayoutTestRoute
   '/_mainLayout/': typeof MainLayoutIndexRoute
   '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
   '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/_mainLayout/collection/add': typeof MainLayoutCollectionAddRoute
   '/_authLayout/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
+  '/_mainLayout/collection/': typeof MainLayoutCollectionIndexRoute
+  '/_mainLayout/collection/$collectionId/change-images': typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  '/_mainLayout/collection/$collectionId/edit': typeof MainLayoutCollectionCollectionIdEditRoute
+  '/_mainLayout/profile/account-links/epic': typeof MainLayoutProfileAccountLinksEpicRoute
+  '/_mainLayout/profile/account-links/playstation': typeof MainLayoutProfileAccountLinksPlaystationRoute
+  '/_mainLayout/profile/account-links/steam': typeof MainLayoutProfileAccountLinksSteamRoute
+  '/_mainLayout/profile/account-links/xbox': typeof MainLayoutProfileAccountLinksXboxRoute
+  '/_mainLayout/collection/$collectionId/': typeof MainLayoutCollectionCollectionIdIndexRoute
+  '/_mainLayout/profile/account-links/': typeof MainLayoutProfileAccountLinksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,18 +212,40 @@ export interface FileRouteTypes {
     | '/email-verification'
     | '/login'
     | '/signup'
+    | '/test'
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
+    | '/collection/add'
     | '/forgot-password/'
+    | '/collection/'
+    | '/collection/$collectionId/change-images'
+    | '/collection/$collectionId/edit'
+    | '/profile/account-links/epic'
+    | '/profile/account-links/playstation'
+    | '/profile/account-links/steam'
+    | '/profile/account-links/xbox'
+    | '/collection/$collectionId/'
+    | '/profile/account-links/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/email-verification'
     | '/login'
     | '/signup'
+    | '/test'
     | '/forgot-password/change-password'
     | '/forgot-password/verify-otp'
+    | '/collection/add'
     | '/forgot-password'
+    | '/collection'
+    | '/collection/$collectionId/change-images'
+    | '/collection/$collectionId/edit'
+    | '/profile/account-links/epic'
+    | '/profile/account-links/playstation'
+    | '/profile/account-links/steam'
+    | '/profile/account-links/xbox'
+    | '/collection/$collectionId'
+    | '/profile/account-links'
   id:
     | '__root__'
     | '/_authLayout'
@@ -123,10 +253,21 @@ export interface FileRouteTypes {
     | '/_authLayout/email-verification'
     | '/_authLayout/login'
     | '/_authLayout/signup'
+    | '/_mainLayout/test'
     | '/_mainLayout/'
     | '/_authLayout/forgot-password/change-password'
     | '/_authLayout/forgot-password/verify-otp'
+    | '/_mainLayout/collection/add'
     | '/_authLayout/forgot-password/'
+    | '/_mainLayout/collection/'
+    | '/_mainLayout/collection/$collectionId/change-images'
+    | '/_mainLayout/collection/$collectionId/edit'
+    | '/_mainLayout/profile/account-links/epic'
+    | '/_mainLayout/profile/account-links/playstation'
+    | '/_mainLayout/profile/account-links/steam'
+    | '/_mainLayout/profile/account-links/xbox'
+    | '/_mainLayout/collection/$collectionId/'
+    | '/_mainLayout/profile/account-links/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -157,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutIndexRouteImport
       parentRoute: typeof MainLayoutRoute
     }
+    '/_mainLayout/test': {
+      id: '/_mainLayout/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof MainLayoutTestRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_authLayout/signup': {
       id: '/_authLayout/signup'
       path: '/signup'
@@ -178,12 +326,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
+    '/_mainLayout/collection/': {
+      id: '/_mainLayout/collection/'
+      path: '/collection'
+      fullPath: '/collection/'
+      preLoaderRoute: typeof MainLayoutCollectionIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
     '/_authLayout/forgot-password/': {
       id: '/_authLayout/forgot-password/'
       path: '/forgot-password'
       fullPath: '/forgot-password/'
       preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/collection/add': {
+      id: '/_mainLayout/collection/add'
+      path: '/collection/add'
+      fullPath: '/collection/add'
+      preLoaderRoute: typeof MainLayoutCollectionAddRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
     '/_authLayout/forgot-password/verify-otp': {
       id: '/_authLayout/forgot-password/verify-otp'
@@ -198,6 +360,62 @@ declare module '@tanstack/react-router' {
       fullPath: '/forgot-password/change-password'
       preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
       parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/': {
+      id: '/_mainLayout/profile/account-links/'
+      path: '/profile/account-links'
+      fullPath: '/profile/account-links/'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/': {
+      id: '/_mainLayout/collection/$collectionId/'
+      path: '/collection/$collectionId'
+      fullPath: '/collection/$collectionId/'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/xbox': {
+      id: '/_mainLayout/profile/account-links/xbox'
+      path: '/profile/account-links/xbox'
+      fullPath: '/profile/account-links/xbox'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksXboxRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/steam': {
+      id: '/_mainLayout/profile/account-links/steam'
+      path: '/profile/account-links/steam'
+      fullPath: '/profile/account-links/steam'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksSteamRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/playstation': {
+      id: '/_mainLayout/profile/account-links/playstation'
+      path: '/profile/account-links/playstation'
+      fullPath: '/profile/account-links/playstation'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksPlaystationRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/epic': {
+      id: '/_mainLayout/profile/account-links/epic'
+      path: '/profile/account-links/epic'
+      fullPath: '/profile/account-links/epic'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksEpicRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/edit': {
+      id: '/_mainLayout/collection/$collectionId/edit'
+      path: '/collection/$collectionId/edit'
+      fullPath: '/collection/$collectionId/edit'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdEditRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/$collectionId/change-images': {
+      id: '/_mainLayout/collection/$collectionId/change-images'
+      path: '/collection/$collectionId/change-images'
+      fullPath: '/collection/$collectionId/change-images'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
   }
 }
@@ -227,11 +445,41 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 )
 
 interface MainLayoutRouteChildren {
+  MainLayoutTestRoute: typeof MainLayoutTestRoute
   MainLayoutIndexRoute: typeof MainLayoutIndexRoute
+  MainLayoutCollectionAddRoute: typeof MainLayoutCollectionAddRoute
+  MainLayoutCollectionIndexRoute: typeof MainLayoutCollectionIndexRoute
+  MainLayoutCollectionCollectionIdChangeImagesRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRoute
+  MainLayoutCollectionCollectionIdEditRoute: typeof MainLayoutCollectionCollectionIdEditRoute
+  MainLayoutProfileAccountLinksEpicRoute: typeof MainLayoutProfileAccountLinksEpicRoute
+  MainLayoutProfileAccountLinksPlaystationRoute: typeof MainLayoutProfileAccountLinksPlaystationRoute
+  MainLayoutProfileAccountLinksSteamRoute: typeof MainLayoutProfileAccountLinksSteamRoute
+  MainLayoutProfileAccountLinksXboxRoute: typeof MainLayoutProfileAccountLinksXboxRoute
+  MainLayoutCollectionCollectionIdIndexRoute: typeof MainLayoutCollectionCollectionIdIndexRoute
+  MainLayoutProfileAccountLinksIndexRoute: typeof MainLayoutProfileAccountLinksIndexRoute
 }
 
 const MainLayoutRouteChildren: MainLayoutRouteChildren = {
+  MainLayoutTestRoute: MainLayoutTestRoute,
   MainLayoutIndexRoute: MainLayoutIndexRoute,
+  MainLayoutCollectionAddRoute: MainLayoutCollectionAddRoute,
+  MainLayoutCollectionIndexRoute: MainLayoutCollectionIndexRoute,
+  MainLayoutCollectionCollectionIdChangeImagesRoute:
+    MainLayoutCollectionCollectionIdChangeImagesRoute,
+  MainLayoutCollectionCollectionIdEditRoute:
+    MainLayoutCollectionCollectionIdEditRoute,
+  MainLayoutProfileAccountLinksEpicRoute:
+    MainLayoutProfileAccountLinksEpicRoute,
+  MainLayoutProfileAccountLinksPlaystationRoute:
+    MainLayoutProfileAccountLinksPlaystationRoute,
+  MainLayoutProfileAccountLinksSteamRoute:
+    MainLayoutProfileAccountLinksSteamRoute,
+  MainLayoutProfileAccountLinksXboxRoute:
+    MainLayoutProfileAccountLinksXboxRoute,
+  MainLayoutCollectionCollectionIdIndexRoute:
+    MainLayoutCollectionCollectionIdIndexRoute,
+  MainLayoutProfileAccountLinksIndexRoute:
+    MainLayoutProfileAccountLinksIndexRoute,
 }
 
 const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(

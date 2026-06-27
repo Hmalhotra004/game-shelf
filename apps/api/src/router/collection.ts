@@ -1,3 +1,9 @@
+import { deleteCollection } from "@/controllers/collection/deleteCollection";
+import { getById } from "@/controllers/collection/getById";
+import { getMany } from "@/controllers/collection/getMany";
+import { updateExternalIds } from "@/controllers/collection/updateExternalIds";
+import { updateImages } from "@/controllers/collection/updateImages";
+import { updateSteamGridDBId } from "@/controllers/collection/updateSteamGridDBId";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyCollection } from "@/middlewares/collectionMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
@@ -7,15 +13,6 @@ import {
   externalIdsSchema,
   updateImagesSchema,
 } from "@repo/schemas/server/schemas/collection";
-
-import {
-  deleteCollection,
-  getById,
-  getMany,
-  updateExternalIds,
-  updateImages,
-  updateSteamGridDBId,
-} from "@/controllers/collection";
 
 export default (baseUrl: string, app: Router) => {
   const router = Router();

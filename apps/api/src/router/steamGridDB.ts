@@ -1,7 +1,8 @@
-import { Router } from "express";
-
-import { getGrids, getHeros, linkGame } from "@/controllers/steamGridDB";
+import { getGrids } from "@/controllers/steamGridDB/getGrids";
+import { getHeros } from "@/controllers/steamGridDB/getHeros";
+import { linkGame } from "@/controllers/steamGridDB/linkGame";
 import { authenticateUser } from "@/middlewares/authMiddleware";
+import { Router } from "express";
 
 export default (baseUrl: string, app: Router) => {
   const router = Router();

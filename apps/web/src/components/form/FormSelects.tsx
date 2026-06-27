@@ -84,3 +84,40 @@ export const PSVersionSelect = () => {
     </>
   );
 };
+
+export const PlatformSelect = () => {
+  return (
+    <>
+      <SelectItem value="PC">PC</SelectItem>
+      <SelectItem value="PS">PS</SelectItem>
+      <SelectItem value="XBOX">Xbox</SelectItem>
+    </>
+  );
+};
+
+export const PCProviderSelect = () => {
+  return (
+    <>
+      <SelectItem value="Steam">Steam</SelectItem>
+      <SelectItem value="Epic">Epic Games</SelectItem>
+    </>
+  );
+};
+
+export const PSProviderSelect = () => {
+  return (
+    <>
+      <SelectItem value="PSN">PlayStation Store</SelectItem>
+      <SelectItem value="Physical">Physical</SelectItem>
+    </>
+  );
+};
+
+export const XBOXProviderSelect = () => {
+  return (
+    <>
+      <SelectItem value="XBOX">Xbox</SelectItem>
+      <SelectItem value="Physical">Physical</SelectItem>
+    </>
+  );
+};

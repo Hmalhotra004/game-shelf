@@ -16,3 +16,10 @@ export type GetGamesType = {
     image: string | null;
   }[];
 };
+
+export type AccountProfileType = {
+  username: string;
+  avatar: string | null;
+  realName: string | null;
+  profileUrl: string | null;
+};

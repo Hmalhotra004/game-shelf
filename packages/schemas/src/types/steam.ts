@@ -90,10 +90,22 @@ export type GetGlobalAchievementPercentagesForAppType = {
 export type getSteamProfileType = {
   response: {
     players: {
+      steamid: string;
       avatarfull: string;
       personaname: string;
       profileurl: string;
       realname: string;
+      communityvisibilitystate: number;
+      profilestate: number;
+      commentpermission: number;
+      avatar: string;
+      avatarmedium: string;
+      avatarhash: string;
+      lastlogoff: number;
+      personastate: number;
+      primaryclanid: string;
+      timecreated: number;
+      personastateflags: number;
     }[];
   };
 };

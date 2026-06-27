@@ -253,6 +253,13 @@
       "when": 1771734189431,
       "tag": "0035_isadult",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1777099742891,
+      "tag": "0036_XBOX",
+      "breakpoints": true
     }
   ]
 }

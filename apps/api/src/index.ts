@@ -1,4 +1,6 @@
 import { db } from "@/db";
+import { functions } from "@/inngest";
+import { inngest } from "@/inngest/client";
 import { auth } from "@/lib/auth";
 import router from "@/router";
 import { toNodeHandler } from "better-auth/node";
@@ -8,8 +10,10 @@ import cors from "cors";
 import { sql } from "drizzle-orm";
 import express from "express";
 import helmet from "helmet";
+import { serve } from "inngest/express";
 import http from "node:http";
 import { ORIGINS } from "./constants";
+import { initSocket } from "./socket";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
@@ -30,12 +34,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api", router());
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 const server = http.createServer(app);
 
 async function start() {
   await db.execute(sql`SELECT 1`);
   console.log("database connected");
+
+  initSocket(server);
 
   server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);

@@ -1,4 +1,39 @@
 {
+  "terminal.integrated.profiles.windows": {
+    "api": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--cd=D:/Projects/game-shelf/apps/api"]
+    },
+    "web": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--cd=D:/Projects/game-shelf/apps/web"]
+    },
+    "@repo/schemas": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--cd=D:/Projects/game-shelf/packages/schemas"]
+    },
+    "@repo/utils": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--cd=D:/Projects/game-shelf/packages/utils"]
+    },
+    "db": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": [
+        "--cd=D:/Projects/game-shelf/apps/api",
+        "-c",
+        "pnpm db;exec bash"
+      ]
+    },
+    "inngest:dev": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": [
+        "--cd=D:/Projects/game-shelf/apps/api",
+        "-c",
+        "pnpm inngest:dev;exec bash"
+      ]
+    }
+  },
+
   "eslint.workingDirectories": [
     {
       "mode": "auto"

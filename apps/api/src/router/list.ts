@@ -1,3 +1,8 @@
+import { addList, addListItem } from "@/controllers/list/add";
+import { deleteList, deleteListItem } from "@/controllers/list/delete";
+import { getListItems } from "@/controllers/list/getListItems";
+import { getMany } from "@/controllers/list/getMany";
+import { updateList } from "@/controllers/list/updateList";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyList, verifyListItem } from "@/middlewares/listMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
@@ -8,16 +13,6 @@ import {
   createListSchema,
   updateListSchema,
 } from "@repo/schemas/server/schemas/list";
-
-import {
-  addList,
-  addListItem,
-  deleteList,
-  deleteListItem,
-  getListItems,
-  getMany,
-  updateList,
-} from "@/controllers/list";
 
 export default (baseUrl: string, app: Router) => {
   const router = Router();

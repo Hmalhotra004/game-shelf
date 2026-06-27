@@ -16,11 +16,12 @@ import {
 
 // Enums
 export const GameType = pgEnum("game_type", ["Game", "DLC"]);
-export const platform = pgEnum("platform", ["PS", "PC"]);
+export const platform = pgEnum("platform", ["PS", "XBOX", "PC"]);
 export const PSVersion = pgEnum("ps_version", ["PS4", "PS5"]);
 
 export const provider = pgEnum("provider", [
   "PSN",
+  "XBOX",
   "Physical",
   "Steam",
   "Epic",
@@ -166,8 +167,8 @@ export const collection = pgTable(
     coverImage: text("cover_image"),
     customCoverImage: text("custom_cover_image"),
     completions: integer("completions").notNull().default(0),
-    platform: platform("platform").notNull().default("PS"),
-    provider: provider("provider").notNull().default("PSN"),
+    platform: platform("platform").notNull().default("PC"),
+    provider: provider("provider").notNull().default("Steam"),
     PSVersion: PSVersion("ps_version"),
     status: status("status").notNull().default("Backlog"),
     dlcCount: integer("dlc_count").notNull().default(0),

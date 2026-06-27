@@ -364,6 +364,7 @@ export const FormMultiSelect: FormControlFunc<{
             const list = options.find((x) => x.value === id);
             return list ?? { value: id, label: id };
           })}
+          className="bg-input dark:bg-input/30"
           defaultOptions={options}
           placeholder={placeholder}
           hidePlaceholderWhenSelected

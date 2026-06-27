@@ -1,4 +1,4 @@
-import { getMany } from "@/controllers/completion";
+import { getMany } from "@/controllers/completion/getMany";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { Router } from "express";
 
