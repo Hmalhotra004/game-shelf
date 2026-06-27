@@ -42,12 +42,12 @@ async function start() {
   await db.execute(sql`SELECT 1`);
   console.log("database connected");
 
+  initSocket(server);
+
   server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
-
-initSocket(server);
 
 try {
   await start();
