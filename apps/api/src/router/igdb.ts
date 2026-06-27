@@ -1,4 +1,7 @@
-import { getById, getToken, searchGame, test } from "@/controllers/igdb";
+import { getById } from "@/controllers/igdb/getById";
+import { getToken } from "@/controllers/igdb/getToken";
+import { searchGame } from "@/controllers/igdb/searchGame";
+import { test } from "@/controllers/igdb/test";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { Router } from "express";
 
