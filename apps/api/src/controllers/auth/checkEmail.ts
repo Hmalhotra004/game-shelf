@@ -1,5 +1,5 @@
+import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
-
 import type { EmailSchemaType } from "@repo/schemas/schemas/auth";
 import type { Request, Response } from "express";
 
@@ -19,6 +19,6 @@ export const checkEmail = async (req: Request, res: Response) => {
     return res.sendStatus(204);
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: GenericErrorMessage });
   }
 };
