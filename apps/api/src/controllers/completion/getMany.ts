@@ -1,6 +1,5 @@
-import type { Request, Response } from "express";
-
 import { GenericErrorMessage } from "@/constants";
+import type { Request, Response } from "express";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
