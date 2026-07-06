@@ -11,3 +11,5 @@ export const overviewLabels = [
   "Active Runs",
   "Completions",
 ];
+
+export const GenericErrorMessage = "Something Went Wrong!";

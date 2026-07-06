@@ -8,7 +8,7 @@ export const IGDBQueryKeys = {
   search: (submitted: string) =>
     [...IGDBQueryKeys.all, "search", submitted] as const,
 
-  getById: (id: number) => [...IGDBQueryKeys.all, "add", id] as const,
+  getById: (id: number) => [...IGDBQueryKeys.all, "getById", id] as const,
 };
 
 export const searchGameQueryOptions = (

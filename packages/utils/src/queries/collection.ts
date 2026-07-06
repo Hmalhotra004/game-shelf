@@ -1,3 +1,11 @@
+import { queryOptions } from "@tanstack/react-query";
+import { AxiosInstance } from "axios";
+
+import {
+  CollectionGetById,
+  CollectionGetMany,
+} from "@repo/schemas/types/collection";
+
 export const CollectionQueryKeys = {
   all: ["Collection"] as const,
 
@@ -11,14 +19,6 @@ export const CollectionQueryKeys = {
     name,
   ],
 };
-
-import { queryOptions } from "@tanstack/react-query";
-
-import {
-  CollectionGetById,
-  CollectionGetMany,
-} from "@repo/schemas/types/collection";
-import { AxiosInstance } from "axios";
 
 export const collectionGetManyQueryOptions = (api: AxiosInstance) =>
   queryOptions({
