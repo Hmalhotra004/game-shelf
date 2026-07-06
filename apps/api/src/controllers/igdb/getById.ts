@@ -4,6 +4,7 @@ import { IGDBCoverSizeType } from "@/lib/igdb/enum";
 import { IGDBGetByIdType } from "@repo/schemas/types/igdb";
 import type { Request, Response } from "express";
 
+// TODO: fetch steamId coverImage and handle bundle dlcs
 export const getById = async (req: Request, res: Response) => {
   try {
     const igdbId = Number(req.params.igdbId);

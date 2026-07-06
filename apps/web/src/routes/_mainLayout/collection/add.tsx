@@ -1,11 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
@@ -14,11 +7,21 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+
 import { createCollectionSchema } from "@repo/schemas/schemas/collection";
 import { DLCs } from "@repo/schemas/types/igdb";
 import { GenericErrorMessage } from "@repo/utils/constants";
 import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
+import { CollectionQueryKeys } from "@repo/utils/queries/collection";
+import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
+import { StatsQueryKeys } from "@repo/utils/queries/stats";
 
 import AddDlcRow from "@/components/collection/add/AddDlcRow";
 import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
@@ -42,9 +45,8 @@ import {
   PlatformSelect,
   XBOXProviderSelect,
 } from "@/components/form/FormSelects";
-import { CollectionQueryKeys } from "@repo/utils/queries/collection";
-import { StatsQueryKeys } from "@repo/utils/queries/stats";
 
+// TODO:handle dlc submission via asking for which game
 export const Route = createFileRoute("/_mainLayout/collection/add")({
   validateSearch: (search: Record<string, unknown>) => ({
     id: typeof search.id === "number" ? search.id : Number(search.id),
@@ -77,7 +79,7 @@ function RouteComponent() {
     defaultValues: {
       igdbId: id,
       name: "",
-      dateOfPurchase: new Date().toDateString(),
+      dateOfPurchase: new Date().toISOString(),
       edition: null,
       amount: "",
       platform: "PC",
@@ -118,7 +120,7 @@ function RouteComponent() {
         igdbId: dlc.id,
         name: dlc.name,
         amount: "",
-        dateOfPurchase: new Date().toDateString(),
+        dateOfPurchase: new Date().toISOString(),
         image: dlc.image ?? null,
         coverImage: null, //TODO:Fetch
         steamAppId: null, //TODO:Fetch
