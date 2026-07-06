@@ -16,8 +16,8 @@ export const linkGame = async (req: Request, res: Response) => {
     const games = await client.searchGame(name.toLowerCase());
 
     res.status(200).json(games);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "STEAMGRIDDB_LINK_GAME_ERROR");
     res.status(500).json({
       error: "An error occurred while fetching data from SteamGridDB.",
     });

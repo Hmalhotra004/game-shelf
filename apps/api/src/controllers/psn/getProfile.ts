@@ -1,9 +1,3 @@
-// import { db } from "@/db";
-// import { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
-// import axios from "axios";
-// import { and, eq, sql } from "drizzle-orm";
-// import { collection, completion, dlc, playthrough } from "@/db/schema";
-
 import { GenericErrorMessage } from "@/constants";
 import type { Request, Response } from "express";
 import psn from "psn-api";
@@ -32,8 +26,8 @@ export const getProfile = async (req: Request, res: Response) => {
       realName: null,
       profileUrl: null,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_PSN_PROFILE_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

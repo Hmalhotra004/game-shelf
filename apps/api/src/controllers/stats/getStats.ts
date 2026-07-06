@@ -173,8 +173,8 @@ export const getStats = async (req: Request, res: Response) => {
       // playtimeByDate,
       // purchasesByMonth,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_HOME_STATS_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

@@ -11,8 +11,8 @@ export const getToken = async (req: Request, res: Response) => {
     console.log(response.data);
 
     res.send(200).json();
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "IGDB_GET_TOKEN_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

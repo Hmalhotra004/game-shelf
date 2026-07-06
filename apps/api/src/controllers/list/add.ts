@@ -23,14 +23,11 @@ export const addList = async (req: Request, res: Response) => {
         .status(409)
         .json({ error: "A list with this name already exists" });
 
-    const [createdList] = await db
-      .insert(list)
-      .values({ name, userId: userId })
-      .returning();
+    await db.insert(list).values({ name, userId: userId });
 
-    return res.status(201).json(createdList);
-  } catch (e) {
-    console.error(e);
+    return res.sendStatus(201);
+  } catch (err) {
+    req.log.error({ err }, "ADD_LIST_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
@@ -47,14 +44,11 @@ export const addListItem = async (req: Request, res: Response) => {
 
     if (existing) return res.sendStatus(204);
 
-    const [item] = await db
-      .insert(listItem)
-      .values({ listId, collectionId })
-      .returning();
+    await db.insert(listItem).values({ listId, collectionId });
 
-    return res.status(200).json(item);
-  } catch (e) {
-    console.error(e);
+    return res.sendStatus(201);
+  } catch (err) {
+    req.log.error({ err }, "ADD_LIST_ITEM_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

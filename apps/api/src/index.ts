@@ -14,7 +14,6 @@ import { serve } from "inngest/express";
 import http from "node:http";
 import { ORIGINS } from "./constants";
 import { requestLogger } from "./middlewares/logger";
-import { initSocket } from "./socket";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
@@ -44,7 +43,7 @@ async function start() {
   await db.execute(sql`SELECT 1`);
   console.log("database connected");
 
-  initSocket(server);
+  // initSocket(server);
 
   server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);

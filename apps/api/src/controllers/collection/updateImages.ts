@@ -20,8 +20,8 @@ export const updateImages = async (req: Request, res: Response) => {
       );
 
     return res.sendStatus(204);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "UPDATE_IMAGES_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

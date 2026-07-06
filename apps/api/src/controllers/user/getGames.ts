@@ -32,8 +32,8 @@ export const getGames = async (req: Request, res: Response) => {
       games,
       dlcs,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_USER_GAMES_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

@@ -46,8 +46,8 @@ export const getById = async (req: Request, res: Response) => {
     };
 
     res.status(200).json(result);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "IGDB_GET_BY_ID_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
