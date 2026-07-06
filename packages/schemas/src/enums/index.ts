@@ -16,6 +16,7 @@ export const OwnershipTypeValues = [
   "Free",
   "Gift",
   "Bought",
+  "Included",
   "Rented",
   "PS+",
   "Steam Family",

@@ -28,9 +28,10 @@ export const provider = pgEnum("provider", [
 ]);
 
 export const ownershipType = pgEnum("ownership_type", [
-  "Free",
-  "Gift",
   "Bought",
+  "Gift",
+  "Free",
+  "Included",
   "Rented",
   "PS+",
   "Steam Family",
