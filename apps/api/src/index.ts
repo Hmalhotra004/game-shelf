@@ -13,6 +13,7 @@ import helmet from "helmet";
 import { serve } from "inngest/express";
 import http from "node:http";
 import { ORIGINS } from "./constants";
+import { requestLogger } from "./middlewares/logger";
 import { initSocket } from "./socket";
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(
   }),
 );
 
+app.use(requestLogger);
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
