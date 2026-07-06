@@ -1,14 +1,23 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { isAxiosError } from "axios";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import type z from "zod";
 
 import { createCollectionSchema } from "@repo/schemas/schemas/collection";
 import { DLCs } from "@repo/schemas/types/igdb";
+import { GenericErrorMessage } from "@repo/utils/constants";
+import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 
 import AddDlcRow from "@/components/collection/add/AddDlcRow";
@@ -33,6 +42,8 @@ import {
   PlatformSelect,
   XBOXProviderSelect,
 } from "@/components/form/FormSelects";
+import { CollectionQueryKeys } from "@repo/utils/queries/collection";
+import { StatsQueryKeys } from "@repo/utils/queries/stats";
 
 export const Route = createFileRoute("/_mainLayout/collection/add")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -52,18 +63,21 @@ function RouteComponent() {
   const [dlcOpen, setDlcOpen] = useState(false);
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: game, isLoading } = useQuery(getByIdQueryOptions(api, id));
   const { data: lists } = useSuspenseQuery(listGetManyQueryOptions(api));
 
   const listOptions = lists.map((d) => ({ label: d.name, value: d.id }));
 
+  const addGame = useMutation(addCollectionMutationOptions(api));
+
   const form = useForm<FormValues>({
     resolver: zodResolver(createCollectionSchema),
     defaultValues: {
       igdbId: id,
       name: "",
-      dateOfPurchase: "",
+      dateOfPurchase: new Date().toDateString(),
       edition: null,
       amount: "",
       platform: "PC",
@@ -104,7 +118,7 @@ function RouteComponent() {
         igdbId: dlc.id,
         name: dlc.name,
         amount: "",
-        dateOfPurchase: "",
+        dateOfPurchase: new Date().toDateString(),
         image: dlc.image ?? null,
         coverImage: null, //TODO:Fetch
         steamAppId: null, //TODO:Fetch
@@ -113,11 +127,33 @@ function RouteComponent() {
     }
   }
 
-  function onSubmit(values: FormValues) {
-    console.log(values);
+  async function onSubmit(values: FormValues) {
+    await addGame.mutateAsync(
+      { ...values },
+
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: StatsQueryKeys.getStats(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey: CollectionQueryKeys.getMany(),
+          });
+          // router.history.back()
+        },
+
+        onError: (e) => {
+          const msg =
+            isAxiosError(e) && e.response?.data.error
+              ? e.response.data.error
+              : GenericErrorMessage;
+          toast.error("Error", { description: msg });
+        },
+      },
+    );
   }
 
-  const isPending = false;
+  const isPending = addGame.isPending;
 
   if (!id)
     return <div className="p-8 text-muted-foreground">No game selected.</div>;
@@ -273,6 +309,9 @@ function RouteComponent() {
                             onToggle={toggleDlc}
                             fieldIndex={fieldIndex}
                             control={form.control}
+                            gamePurchaseDate={form.watch("dateOfPurchase")}
+                            form={form}
+                            isPending={isPending}
                           />
                         );
                       })}
@@ -286,6 +325,7 @@ function RouteComponent() {
               <Button
                 type="submit"
                 className="flex-1 sm:flex-none sm:min-w-32"
+                disabled={isPending}
               >
                 Add to Collection
               </Button>
@@ -293,6 +333,7 @@ function RouteComponent() {
                 type="button"
                 variant="outline"
                 onClick={() => router.history.back()}
+                disabled={isPending}
               >
                 Cancel
               </Button>

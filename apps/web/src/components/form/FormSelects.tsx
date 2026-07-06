@@ -62,11 +62,12 @@ export const CompletionStyleSelect = () => {
   );
 };
 
-export const OwnershipTypeSelect = () => {
+export const OwnershipTypeSelect = ({ isDlc = false }: { isDlc?: boolean }) => {
   return (
     <>
       <SelectItem value="Free">Free</SelectItem>
       <SelectItem value="Gift">Gift</SelectItem>
+      {isDlc && <SelectItem value="Included">Included</SelectItem>}
       <SelectItem value="Bought">Bought</SelectItem>
       <SelectItem value="Rented">Rented</SelectItem>
       <SelectItem value="PS+">PS+</SelectItem>

@@ -3,6 +3,8 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 
+import { AddButton } from "@/components/AddButton";
+import AddCommand from "@/components/AddCommand";
 import CollectionPageSuspense from "@/components/collection/CollectionPageSuspense";
 import Filters from "@/components/collection/Filters";
 import { CollectionLoading } from "@/components/fallbacks/CollectionLoading";
@@ -12,8 +14,6 @@ import { useCollectionFilters } from "@/hooks/useCollectionFilters";
 import { api } from "@/lib/api";
 import { filterCollection } from "@/lib/filters";
 
-import { AddButton } from "@/components/AddButton";
-import AddCommand from "@/components/AddCommand";
 import {
   collectionGetManyQueryOptions,
   CollectionQueryKeys,
