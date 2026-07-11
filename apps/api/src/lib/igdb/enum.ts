@@ -69,6 +69,10 @@ export enum IGDBGameField {
   ParentGameAll = "parent_game.*",
   ParentGameInfo = "parent_game.name,parent_game.cover.image_id",
 
+  // external_games
+  ExternalGamesAll = "external_games.*",
+  ExternalGamesInfo = "external_games.external_game_source,external_games.game,external_games.id,external_games.uid,external_games.url",
+
   // Genres (expanded)
   Genres = "genres",
   GenresName = "genres.name",
@@ -81,7 +85,13 @@ export enum IGDBGameField {
   ExpansionsAll = "expansions.*",
   ExpansionsInfo = "expansions.name,expansions.cover.image_id,expansions.first_release_date,expansions.game_type.type",
 
-  ExpandedGames = "expanded_games.*",
+  // Artworks
+  ArtworksAll = "artworks.*",
+  ArtworksInfo = "artworks.id,artworks.game,artworks.height,artworks.width,artworks.image_id,artworks.artwork_type",
+  ArtworksUrl = "artworks.url",
+  ArtworksImageId = "artworks.image_id",
+
+  ExpandedGamesAll = "expanded_games.*",
   StandaloneExpansions = "standalone_expansions.*",
 
   Summary = "summary",
@@ -106,11 +116,8 @@ export enum IGDBGameField {
   Popularity = "popularity",
 
   // Images (auto-expandable)
-  ArtworksAll = "artworks.*",
   ScreenshotsAll = "screenshots.*",
-  ArtworksUrl = "artworks.url",
   ScreenshotsUrl = "screenshots.url",
-  ArtworksImageId = "artworks.image_id",
   ScreenshotsImageId = "screenshots.image_id",
 
   // External references

@@ -1,10 +1,18 @@
-import { GenericErrorMessage } from "@/constants";
-import { formatImage, getDate, igdb, IGDBGame } from "@/lib/igdb";
+import { GenericErrorMessage, STEAM_URL_REGEX } from "@/constants";
 import { IGDBCoverSizeType } from "@/lib/igdb/enum";
+import { resolveSteamImage, SteamImageSizeType } from "@/lib/steam";
 import { IGDBGetByIdType } from "@repo/schemas/types/igdb";
 import type { Request, Response } from "express";
 
-// TODO: fetch steamId coverImage and handle bundle dlcs
+import {
+  formatImage,
+  getBestIGDBArtwork,
+  getDate,
+  igdb,
+  IGDBGame,
+} from "@/lib/igdb";
+
+// TODO: fetch and handle bundle dlcs
 export const getById = async (req: Request, res: Response) => {
   try {
     const igdbId = Number(req.params.igdbId);
@@ -26,12 +34,33 @@ export const getById = async (req: Request, res: Response) => {
 
     const game = response.data[0];
 
+    const steamGame = game.external_games?.find(
+      (g) => g.external_game_source === 1 && STEAM_URL_REGEX.test(g.url),
+    );
+
+    const artwork = getBestIGDBArtwork(game.artworks);
+
+    const getFallbackArtwork = () =>
+      artwork ? formatImage(artwork, IGDBCoverSizeType.t_1080p) : null;
+
+    const coverImage = steamGame
+      ? ((await resolveSteamImage(steamGame.uid, SteamImageSizeType.hero)) ??
+        getFallbackArtwork())
+      : getFallbackArtwork();
+
+    // const image = steamGame
+    //   ? ((await resolveSteamImage(steamGame.uid, SteamImageSizeType.grid)) ??
+    //     formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p))
+    //   : formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p);
+
     const allAddons = [...(game.dlcs ?? []), ...(game.expansions ?? [])];
 
     const result = {
       id: game.id,
       name: game.name,
       image: formatImage(game.cover.image_id, IGDBCoverSizeType.t_1080p),
+      coverImage,
+      steamAppId: steamGame?.uid ?? null,
       platforms: game.platforms,
       summary: game.summary,
       releaseDate: getDate(game.first_release_date),

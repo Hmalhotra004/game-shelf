@@ -103,9 +103,15 @@ function RouteComponent() {
 
   const watchedName = form.watch("name");
   const watchedImage = form.watch("image");
+  const watchedCoverImage = form.watch("coverImage");
+  const steamAppId = form.watch("steamAppId");
 
   if (game?.name && !watchedName) form.setValue("name", game.name);
   if (game?.image && !watchedImage) form.setValue("image", game.image);
+  if (game?.coverImage && !watchedCoverImage)
+    form.setValue("coverImage", game.coverImage);
+  if (game?.steamAppId && !steamAppId)
+    form.setValue("steamAppId", game.steamAppId);
 
   const selectedPlatform = form.watch("platform");
 
