@@ -8,3 +8,5 @@ export const ORIGINS = [
 ];
 
 export const GenericErrorMessage = "Something Went Wrong!";
+
+export const STEAM_URL_REGEX = /^https:\/\/store\.steampowered\.com\/app\/\d+/;
