@@ -10,6 +10,7 @@
     "start": "tsx src/index.ts",
     "inngest:dev": "pnpm dlx inngest-cli@latest dev",
     "db": "drizzle-kit studio",
+    "db:prod": "drizzle-kit studio --config=drizzle.neon.config.ts",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate --name",
     "db:migrate": "drizzle-kit migrate",

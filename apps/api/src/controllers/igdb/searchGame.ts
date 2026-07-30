@@ -26,7 +26,7 @@ export const searchGame = async (req: Request, res: Response) => {
     const body = `
       search "${safeQuery}";
       fields ${IGDBGame.search};
-      limit ${50};
+      limit ${500};
       `;
 
     const response = await igdb.post<IGDBSearchType[]>("/games", body);
