@@ -30,8 +30,8 @@ const Filters = () => {
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <InputGroup className="w-57.25">
+    <div className="flex md:flex-row flex-col md:items-center gap-2 max-md:w-full">
+      <InputGroup className="md:w-57.25 w-full">
         <InputGroupInput
           value={search}
           onChange={(v) => setFilters({ search: v.target.value })}
@@ -48,7 +48,7 @@ const Filters = () => {
         )}
       </InputGroup>
 
-      {!isLoading && lists && lists.length > 0 && (
+      {!isLoading && lists !== undefined && lists.length > 0 && (
         <Select
           value={list}
           onValueChange={(value) => setFilters({ list: value })}
@@ -77,7 +77,7 @@ const Filters = () => {
           setFilters({ status: value as typeof status })
         }
       >
-        <SelectTrigger className="w-fit">
+        <SelectTrigger className="max-md:w-full w-fit">
           <FilterIcon className="size-4 mr-1" />
           <SelectValue placeholder="Status" />
         </SelectTrigger>
@@ -93,7 +93,7 @@ const Filters = () => {
           setFilters({ platform: value as typeof filters.platform })
         }
       >
-        <SelectTrigger className="w-fit">
+        <SelectTrigger className="max-md:w-full w-fit">
           <FilterIcon className="size-4 mr-1" />
           <SelectValue placeholder="Platform" />
         </SelectTrigger>
