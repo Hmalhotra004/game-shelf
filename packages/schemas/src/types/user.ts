@@ -5,12 +5,14 @@ export type GetGamesType = {
     id: string;
     name: string;
     image: string | null;
+    igdbId: string;
     customImage: string | null;
     platform: PlatformType;
     provider: ProviderType;
   }[];
   dlcs: {
     id: string;
+    igdbId: string;
     collectionId: string;
     name: string;
     image: string | null;

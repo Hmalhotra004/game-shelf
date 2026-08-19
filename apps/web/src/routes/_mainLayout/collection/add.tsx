@@ -107,6 +107,7 @@ function RouteComponent() {
   const watchedCoverImage = form.watch("coverImage");
   const steamAppId = form.watch("steamAppId");
   const isDlc = form.watch("isDLC");
+  const watchedCollectionId = form.watch("collectionId");
 
   if (game?.name && !watchedName) form.setValue("name", game.name);
   if (game?.image && !watchedImage) form.setValue("image", game.image);
@@ -124,6 +125,13 @@ function RouteComponent() {
   const { data: userGames } = useSuspenseQuery(
     userGetCollectionQueryOptions(api, isDlc ?? false),
   );
+
+  const parentGame = isDlc
+    ? userGames.games.find((ug) => ug.igdbId === String(game?.parentGameIgdbId))
+    : undefined;
+
+  if (parentGame && !watchedCollectionId)
+    form.setValue("collectionId", parentGame.id);
 
   function toggleDlc(dlc: DLCs) {
     if (dlcIndexMap.has(dlc.id)) {
@@ -280,6 +288,8 @@ function RouteComponent() {
                 >
                   <OwnershipTypeSelect />
                 </FormSelect>
+
+                {/* TODO:add collection selection combobox fo that u have to make it fiorst  */}
 
                 {!isDlc && (
                   <FormMultiSelect
