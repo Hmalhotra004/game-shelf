@@ -178,11 +178,11 @@ function RouteComponent() {
   const selectedCount = fields.length;
 
   return (
-    <div className="grid grid-cols-2 flex-1 gap-4 min-h-0 overflow-hidden">
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-3 h-full min-h-0 overflow-y-auto overflow-x-hidden md:overflow-hidden">
       {game && <AddGameInfoPanel game={game} />}
 
-      <ScrollArea className="h-full min-h-0">
-        <div className="flex flex-col py-4 pr-4">
+      <ScrollArea className="shrink-0 md:shrink md:h-full md:min-h-0 py-2 max-sm:px-2">
+        <div className="flex flex-col pb-4 md:pr-4">
           <div className="mb-6">
             <h1 className="text-2xl font-bold tracking-tight">
               Add to Collection
@@ -198,7 +198,7 @@ function RouteComponent() {
           >
             <div className="space-y-4">
               {/* Name + Edition */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormInput
                   control={form.control}
                   name="name"
@@ -214,7 +214,7 @@ function RouteComponent() {
               </div>
 
               {/* Date + Amount */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormDatePicker
                   name="dateOfPurchase"
                   control={form.control}
@@ -229,7 +229,7 @@ function RouteComponent() {
               </div>
 
               {/* Platform + Provider */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect
                   name="platform"
                   control={form.control}
@@ -261,7 +261,7 @@ function RouteComponent() {
               )}
 
               {/* Ownership + Lists */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormSelect
                   name="ownershipType"
                   control={form.control}

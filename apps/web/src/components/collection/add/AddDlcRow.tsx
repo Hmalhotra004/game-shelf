@@ -89,18 +89,20 @@ const AddDlcRow = ({
 
       {/* Expanded purchase inputs — only when checked */}
       {checked && fieldIndex !== undefined && (
-        <div className="px-3 pb-3 grid grid-cols-3 gap-3">
+        <div className="px-3 pb-3 flex flex-col md:grid md:grid-cols-3 gap-3">
           <FormDatePicker
             control={control}
             name={`DLCs.${fieldIndex}.dateOfPurchase`}
             disabled={isPending || included}
           />
-          <FormInput
-            control={control}
-            name={`DLCs.${fieldIndex}.amount`}
-            placeholder="e.g. 14.99"
-            disabled={isPending || included}
-          />
+          {!included && (
+            <FormInput
+              control={control}
+              name={`DLCs.${fieldIndex}.amount`}
+              placeholder="e.g. 14.99"
+              disabled={isPending || included}
+            />
+          )}
           <FormSelect
             name={`DLCs.${fieldIndex}.ownershipType`}
             control={control}
