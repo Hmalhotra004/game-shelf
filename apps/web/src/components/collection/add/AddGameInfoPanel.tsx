@@ -1,13 +1,13 @@
 import { format } from "date-fns";
 import { Gamepad2Icon } from "lucide-react";
 
-import type { GetById } from "@repo/schemas/types/igdb";
+import type { GetByIdClientResponse } from "@repo/schemas/types/igdb";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 interface Props {
-  game: GetById;
+  game: GetByIdClientResponse;
 }
 
 const AddGameInfoPanel = ({ game }: Props) => {
