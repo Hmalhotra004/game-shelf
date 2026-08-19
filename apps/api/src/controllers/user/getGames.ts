@@ -14,6 +14,7 @@ export const getGames = async (req: Request, res: Response) => {
         customImage: true,
         platform: true,
         provider: true,
+        igdbId: true,
       },
       where: (c, { eq }) => eq(c.userId, userId),
     });
@@ -24,6 +25,8 @@ export const getGames = async (req: Request, res: Response) => {
         collectionId: true,
         name: true,
         image: true,
+        coverImage: true,
+        igdbId: true,
       },
       where: (d, { eq }) => eq(d.userId, userId),
     });

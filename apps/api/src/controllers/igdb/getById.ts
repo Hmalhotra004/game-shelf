@@ -10,6 +10,7 @@ import {
   getDate,
   igdb,
   IGDBGame,
+  isDLC,
 } from "@/lib/igdb";
 
 // TODO: fetch and handle bundle dlcs
@@ -87,6 +88,8 @@ export const getById = async (req: Request, res: Response) => {
       }),
     );
 
+    const isDlc = isDLC.includes(game.game_type);
+
     const result = {
       id: game.id,
       name: game.name,
@@ -98,6 +101,8 @@ export const getById = async (req: Request, res: Response) => {
       releaseDate: getDate(game.first_release_date),
       genres: game.genres,
       gameType: game.game_type,
+      parentGameIgdbId: isDLC ? game.parent_game : null,
+      isDlc,
       dlcs,
     };
 

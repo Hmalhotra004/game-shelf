@@ -22,6 +22,7 @@ import { CollectionQueryKeys } from "@repo/utils/queries/collection";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
+import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 
 import AddDlcRow from "@/components/collection/add/AddDlcRow";
 import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
@@ -105,6 +106,7 @@ function RouteComponent() {
   const watchedImage = form.watch("image");
   const watchedCoverImage = form.watch("coverImage");
   const steamAppId = form.watch("steamAppId");
+  const isDlc = form.watch("isDLC");
 
   if (game?.name && !watchedName) form.setValue("name", game.name);
   if (game?.image && !watchedImage) form.setValue("image", game.image);
@@ -112,11 +114,16 @@ function RouteComponent() {
     form.setValue("coverImage", game.coverImage);
   if (game?.steamAppId && !steamAppId)
     form.setValue("steamAppId", game.steamAppId);
+  if (game?.isDlc && !isDlc) form.setValue("isDLC", game.isDlc);
 
   const selectedPlatform = form.watch("platform");
 
   // Map igdbId → field-array index for O(1) lookup
   const dlcIndexMap = new Map(fields.map((f, i) => [f.igdbId, i]));
+
+  const { data: userGames } = useSuspenseQuery(
+    userGetCollectionQueryOptions(api, isDlc ?? false),
+  );
 
   function toggleDlc(dlc: DLCs) {
     if (dlcIndexMap.has(dlc.id)) {
@@ -205,12 +212,14 @@ function RouteComponent() {
                   disabled={isPending}
                   placeholder="Game name"
                 />
-                <FormInput
-                  control={form.control}
-                  name="edition"
-                  placeholder="e.g. Deluxe, GOTY, Standard"
-                  disabled={isPending}
-                />
+                {!isDlc && (
+                  <FormInput
+                    control={form.control}
+                    name="edition"
+                    placeholder="e.g. Deluxe, GOTY, Standard"
+                    disabled={isPending}
+                  />
+                )}
               </div>
 
               {/* Date + Amount */}
@@ -229,28 +238,30 @@ function RouteComponent() {
               </div>
 
               {/* Platform + Provider */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect
-                  name="platform"
-                  control={form.control}
-                  disabled={isPending}
-                >
-                  <PlatformSelect />
-                </FormSelect>
+              {!isDlc && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect
+                    name="platform"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    <PlatformSelect />
+                  </FormSelect>
 
-                <FormSelect
-                  name="provider"
-                  control={form.control}
-                  disabled={isPending}
-                >
-                  {selectedPlatform === "PS" && <PSProviderSelect />}
-                  {selectedPlatform === "PC" && <PCProviderSelect />}
-                  {selectedPlatform === "XBOX" && <XBOXProviderSelect />}
-                </FormSelect>
-              </div>
+                  <FormSelect
+                    name="provider"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    {selectedPlatform === "PS" && <PSProviderSelect />}
+                    {selectedPlatform === "PC" && <PCProviderSelect />}
+                    {selectedPlatform === "XBOX" && <XBOXProviderSelect />}
+                  </FormSelect>
+                </div>
+              )}
 
               {/* PS Version */}
-              {selectedPlatform === "PS" && (
+              {selectedPlatform === "PS" && !isDlc && (
                 <FormSelect
                   name="PSVersion"
                   control={form.control}
@@ -270,13 +281,15 @@ function RouteComponent() {
                   <OwnershipTypeSelect />
                 </FormSelect>
 
-                <FormMultiSelect
-                  control={form.control}
-                  name="lists"
-                  options={listOptions}
-                  placeholder="Select Custom Lists"
-                  disabled={isPending}
-                />
+                {!isDlc && (
+                  <FormMultiSelect
+                    control={form.control}
+                    name="lists"
+                    options={listOptions}
+                    placeholder="Select Custom Lists"
+                    disabled={isPending}
+                  />
+                )}
               </div>
             </div>
 

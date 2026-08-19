@@ -20,6 +20,7 @@ export type IGDBGetByIdType = {
   id: number;
   name: string;
   platforms: PlatformType[];
+  parent_game?: number;
   cover: Omit<CoverType, "url">;
   game_type: number;
   summary: string;
@@ -44,6 +45,8 @@ export type GetByIdClientResponse = {
   releaseDate: string;
   genres: Genres[];
   dlcs: DLCs[];
+  isDlc: boolean;
+  parentGameIgdbId: number | null;
 };
 
 export type DLCs = {

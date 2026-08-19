@@ -83,6 +83,7 @@ export enum IGDBGameField {
   DlcsInfo = `dlcs.name,
   dlcs.cover.image_id,
   dlcs.first_release_date,
+  dlcs.parent_game,
   dlcs.game_type.type,
   dlcs.external_games.external_game_source,
   dlcs.external_games.game,

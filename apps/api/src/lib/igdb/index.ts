@@ -33,6 +33,7 @@ export const IGDBGame = {
   getById: [
     IGDBGameField.Id,
     IGDBGameField.Name,
+    IGDBGameField.ParentGame,
     IGDBGameField.CoverImageId,
     IGDBGameField.PlatformsInfo,
     IGDBGameField.GameType,
