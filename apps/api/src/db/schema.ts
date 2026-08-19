@@ -177,6 +177,7 @@ export const collection = pgTable(
     hidden: boolean("hidden").default(false),
     edition: text("edition"),
 
+    igdbId: text("igdbId").notNull(),
     npCommunicationId: text("np_communication_id"),
     steamAppId: text("steam_app_id"),
     steamGridDBId: text("steam_grid_db_id"),
@@ -241,6 +242,7 @@ export const dlc = pgTable(
     ownershipType: ownershipType("ownership_type").notNull().default("Bought"),
     hidden: boolean("hidden").default(false),
 
+    igdbId: text("igdbId").notNull(),
     npCommunicationId: text("np_communication_id"),
     steamAppId: text("steam_app_id"),
 
