@@ -37,6 +37,7 @@ export const addCollection = async (req: Request, res: Response) => {
         }
 
         await tx.insert(dlc).values({
+          igdbId: String(data.igdbId),
           name: data.name,
           image: data.image,
           coverImage: data.coverImage,
@@ -64,6 +65,7 @@ export const addCollection = async (req: Request, res: Response) => {
         const [createdGame] = await tx
           .insert(collection)
           .values({
+            igdbId: String(data.igdbId),
             name: data.name,
             amount: data.amount,
             image: data.image,
@@ -92,6 +94,7 @@ export const addCollection = async (req: Request, res: Response) => {
         if (data.DLCs?.length) {
           await tx.insert(dlc).values(
             data.DLCs.map((value) => ({
+              igdbId: String(value.igdbId),
               name: value.name,
               image: value.image,
               coverImage: value.coverImage,

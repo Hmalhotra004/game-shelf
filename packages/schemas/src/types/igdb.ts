@@ -50,7 +50,9 @@ export type DLCs = {
   id: number;
   name: string;
   image: string;
-  releaseDate: string;
+  coverImage: string | null;
+  releaseDate: Date | null;
+  steamAppId: number | null;
 };
 
 export type IGDBDlcs = {
@@ -58,6 +60,8 @@ export type IGDBDlcs = {
   name: string;
   cover: Omit<CoverType, "url">;
   first_release_date: number | null;
+  external_games: ExternalGames[];
+  artworks: Artworks[];
 };
 
 export type CoverType = {

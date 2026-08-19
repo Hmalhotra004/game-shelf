@@ -55,6 +55,38 @@ export const getById = async (req: Request, res: Response) => {
 
     const allAddons = [...(game.dlcs ?? []), ...(game.expansions ?? [])];
 
+    const dlcs = await Promise.all(
+      allAddons.map(async (dlc) => {
+        const dlcSteamAppId =
+          dlc.external_games?.find(
+            (g) => g.external_game_source === 1 && STEAM_URL_REGEX.test(g.url),
+          )?.uid ?? null;
+
+        const dlcArtwork = getBestIGDBArtwork(dlc.artworks);
+
+        const getDlcFallbackArtwork = () =>
+          dlcArtwork
+            ? formatImage(dlcArtwork, IGDBCoverSizeType.t_1080p)
+            : null;
+
+        const dlcCoverImage = dlcSteamAppId
+          ? ((await resolveSteamImage(
+              dlcSteamAppId,
+              SteamImageSizeType.hero,
+            )) ?? getDlcFallbackArtwork())
+          : getDlcFallbackArtwork();
+
+        return {
+          id: dlc.id,
+          name: dlc.name,
+          image: formatImage(dlc.cover.image_id, IGDBCoverSizeType.t_1080p),
+          coverImage: dlcCoverImage,
+          releaseDate: getDate(dlc.first_release_date),
+          steamAppId: dlcSteamAppId,
+        };
+      }),
+    );
+
     const result = {
       id: game.id,
       name: game.name,
@@ -66,13 +98,7 @@ export const getById = async (req: Request, res: Response) => {
       releaseDate: getDate(game.first_release_date),
       genres: game.genres,
       gameType: game.game_type,
-      dlcs:
-        allAddons.map((dlc) => ({
-          id: dlc.id,
-          name: dlc.name,
-          image: formatImage(dlc.cover.image_id, IGDBCoverSizeType.t_1080p),
-          releaseDate: getDate(dlc.first_release_date),
-        })) ?? [],
+      dlcs,
     };
 
     res.status(200).json(result);

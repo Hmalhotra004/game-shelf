@@ -128,8 +128,8 @@ function RouteComponent() {
         amount: "",
         dateOfPurchase: new Date().toISOString(),
         image: dlc.image ?? null,
-        coverImage: null, //TODO:Fetch
-        steamAppId: null, //TODO:Fetch
+        coverImage: dlc.coverImage ?? null,
+        steamAppId: String(dlc.steamAppId),
         ownershipType: "Bought",
       });
     }
@@ -147,7 +147,7 @@ function RouteComponent() {
           await queryClient.invalidateQueries({
             queryKey: CollectionQueryKeys.getMany(),
           });
-          // router.history.back()
+          router.history.back();
         },
 
         onError: (e) => {
