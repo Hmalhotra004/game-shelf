@@ -2,8 +2,8 @@ packages:
   - "apps/*"
   - "packages/*"
 allowBuilds:
-  esbuild: set this to true or false
-  protobufjs: set this to true or false
+  esbuild: false
+  protobufjs: false
 minimumReleaseAgeExclude:
   - '@next/eslint-plugin-next@16.3.2'
   - eslint@10.9.0
