@@ -26,10 +26,12 @@ import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 
 import AddDlcRow from "@/components/collection/add/AddDlcRow";
 import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
+import GameSelectionCombobox from "@/components/collection/GameSelectionCombobox";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 import {
   FormDatePicker,
@@ -228,6 +230,16 @@ function RouteComponent() {
                     disabled={isPending}
                   />
                 )}
+
+                {isDlc && (
+                  <FormSelect
+                    name="ownershipType"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    <OwnershipTypeSelect />
+                  </FormSelect>
+                )}
               </div>
 
               {/* Date + Amount */}
@@ -280,16 +292,21 @@ function RouteComponent() {
               )}
 
               {/* Ownership + Lists */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormSelect
-                  name="ownershipType"
-                  control={form.control}
-                  disabled={isPending}
-                >
-                  <OwnershipTypeSelect />
-                </FormSelect>
-
-                {/* TODO:add collection selection combobox fo that u have to make it fiorst  */}
+              <div
+                className={cn(
+                  "gap-4",
+                  isDlc ? "flex" : "grid grid-cols-1 sm:grid-cols-2",
+                )}
+              >
+                {!isDlc && (
+                  <FormSelect
+                    name="ownershipType"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    <OwnershipTypeSelect />
+                  </FormSelect>
+                )}
 
                 {!isDlc && (
                   <FormMultiSelect
@@ -298,6 +315,17 @@ function RouteComponent() {
                     options={listOptions}
                     placeholder="Select Custom Lists"
                     disabled={isPending}
+                  />
+                )}
+
+                {isDlc && (
+                  <GameSelectionCombobox
+                    data={userGames.games.map((g) => ({
+                      id: g.id,
+                      label: g.name,
+                      value: g.id,
+                      image: g.image,
+                    }))}
                   />
                 )}
               </div>
