@@ -1,6 +1,11 @@
 import { GenericErrorMessage } from "@/constants";
 import type { Request, Response } from "express";
-import psn from "psn-api";
+
+import {
+  exchangeAccessCodeForAuthTokens,
+  exchangeNpssoForAccessCode,
+  getProfileFromAccountId,
+} from "psn-api";
 
 const platforms = new Set(["PS4", "PS5"]);
 const npsso = process.env.PSNNPPSO!;
@@ -9,10 +14,10 @@ export const getProfile = async (req: Request, res: Response) => {
   try {
     const PSNId = req.user!.PSNAccountId!;
 
-    const accessCode = await psn.exchangeNpssoForAccessCode(npsso);
-    const authorization = await psn.exchangeAccessCodeForAuthTokens(accessCode);
+    const accessCode = await exchangeNpssoForAccessCode(npsso);
+    const authorization = await exchangeAccessCodeForAuthTokens(accessCode);
 
-    const profile = await psn.getProfileFromAccountId(authorization, PSNId);
+    const profile = await getProfileFromAccountId(authorization, PSNId);
 
     if (!profile) {
       return res.status(404).json({ error: "Profile not found" });
