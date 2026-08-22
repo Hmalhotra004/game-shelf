@@ -13,6 +13,7 @@ import helmet from "helmet";
 import { serve } from "inngest/express";
 import http from "node:http";
 import { ORIGINS } from "./constants";
+import { logger } from "./lib/logger";
 import { requestLogger } from "./middlewares/logger";
 
 const app = express();
@@ -41,18 +42,18 @@ const server = http.createServer(app);
 
 async function start() {
   await db.execute(sql`SELECT 1`);
-  console.log("database connected");
+  logger.info("Database Connected");
 
   // initSocket(server);
 
   server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
   });
 }
 
 try {
   await start();
 } catch (err) {
-  console.error("Failed to start server:", err);
+  logger.fatal({ err }, "Failed to start server");
   process.exit(1);
 }
