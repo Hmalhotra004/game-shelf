@@ -1,6 +1,7 @@
+import GameSelectionCombobox from "@/components/collection/GameSelectionCombobox";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Combobox, OptionType } from "@/components/ui/combobox";
 import { DateTimePicker } from "@/components/ui/date-picker";
+import { DurationTimePicker } from "@/components/ui/duration-time-picker";
 import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/ui/multiple-select";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { type ClassValue } from "clsx";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { InputHTMLAttributes, ReactNode, useState } from "react";
-import { DurationTimePicker } from "../ui/duration-time-picker";
 
 import {
   Field,
@@ -312,24 +312,46 @@ export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({
   );
 };
 
-export const FormComboBox: FormControlFunc<{
-  options: OptionType[];
-  placeholder: string;
-}> = ({ options, disabled, placeholder, ...props }) => {
+export const FormGameSelectionCombobox: FormControlFunc<{
+  data: Array<{
+    id: string;
+    value: string;
+    label: string;
+    image: string | null;
+  }>;
+}> = ({ data, disabled, ...props }) => {
   return (
     <FormBase {...props}>
       {({ onChange, value }) => (
-        <Combobox
-          options={options}
+        <GameSelectionCombobox
+          data={data}
           value={value}
-          disabled={disabled}
           onChange={onChange}
-          placeholder={placeholder}
+          disabled={disabled}
         />
       )}
     </FormBase>
   );
 };
+
+// export const FormComboBox: FormControlFunc<{
+//   options: OptionType[];
+//   placeholder: string;
+// }> = ({ options, disabled, placeholder, ...props }) => {
+//   return (
+//     <FormBase {...props}>
+//       {({ onChange, value }) => (
+//         <Combobox
+//           options={options}
+//           value={value}
+//           disabled={disabled}
+//           onChange={onChange}
+//           placeholder={placeholder}
+//         />
+//       )}
+//     </FormBase>
+//   );
+// };
 
 export const FormCheckbox: FormControlFunc = ({ disabled, ...props }) => {
   return (

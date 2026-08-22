@@ -26,7 +26,6 @@ import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 
 import AddDlcRow from "@/components/collection/add/AddDlcRow";
 import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
-import GameSelectionCombobox from "@/components/collection/GameSelectionCombobox";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -35,6 +34,7 @@ import { cn } from "@/lib/utils";
 
 import {
   FormDatePicker,
+  FormGameSelectionCombobox,
   FormInput,
   FormMultiSelect,
   FormSelect,
@@ -49,7 +49,6 @@ import {
   XBOXProviderSelect,
 } from "@/components/form/FormSelects";
 
-// TODO:handle dlc submission via asking for which game
 export const Route = createFileRoute("/_mainLayout/collection/add")({
   validateSearch: (search: Record<string, unknown>) => ({
     id: typeof search.id === "number" ? search.id : Number(search.id),
@@ -319,13 +318,16 @@ function RouteComponent() {
                 )}
 
                 {isDlc && (
-                  <GameSelectionCombobox
+                  <FormGameSelectionCombobox
+                    control={form.control}
+                    name="collectionId"
                     data={userGames.games.map((g) => ({
                       id: g.id,
                       label: g.name,
                       value: g.id,
                       image: g.image,
                     }))}
+                    disabled={isPending}
                   />
                 )}
               </div>

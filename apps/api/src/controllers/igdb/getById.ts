@@ -13,7 +13,7 @@ import {
   isDLC,
 } from "@/lib/igdb";
 
-// TODO: fetch and handle bundle dlcs
+// TODO: fetch and handle bundle
 export const getById = async (req: Request, res: Response) => {
   try {
     const igdbId = Number(req.params.igdbId);

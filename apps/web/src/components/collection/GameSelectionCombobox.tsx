@@ -20,19 +20,25 @@ interface Props {
     label: string;
     image: string | null;
   }>;
+  value?: string | null;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
-const GameSelectionCombobox = ({ data }: Props) => {
+const GameSelectionCombobox = ({ data, value, onChange, disabled }: Props) => {
   return (
     <Combobox
       items={data}
-      defaultValue={data[0]}
+      value={value ?? ""}
+      onValueChange={(val: string | null) => onChange?.(val ?? "")}
+      disabled={disabled}
     >
       <ComboboxTrigger
         render={
           <Button
             variant="outline"
             className="w-full justify-between font-normal"
+            disabled={disabled}
           >
             <ComboboxValue />
           </Button>
