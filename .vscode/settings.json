@@ -2,19 +2,25 @@
   "terminal.integrated.profiles.windows": {
     "api": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": ["--cd=D:/Projects/game-shelf/apps/api"]
+      "args": ["--cd=D:/Projects/game-shelf/apps/api"],
+      "icon": "server",
+      "overrideName": true
     },
     "web": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": ["--cd=D:/Projects/game-shelf/apps/web"]
+      "args": ["--cd=D:/Projects/game-shelf/apps/web"],
+      "icon": "globe",
+      "overrideName": true
     },
     "@repo/schemas": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": ["--cd=D:/Projects/game-shelf/packages/schemas"]
+      "args": ["--cd=D:/Projects/game-shelf/packages/schemas"],
+      "overrideName": true
     },
     "@repo/utils": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": ["--cd=D:/Projects/game-shelf/packages/utils"]
+      "args": ["--cd=D:/Projects/game-shelf/packages/utils"],
+      "overrideName": true
     },
     "db": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
@@ -22,7 +28,9 @@
         "--cd=D:/Projects/game-shelf/apps/api",
         "-c",
         "pnpm db;exec bash"
-      ]
+      ],
+      "icon": "database",
+      "overrideName": true
     },
     "inngest:dev": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
