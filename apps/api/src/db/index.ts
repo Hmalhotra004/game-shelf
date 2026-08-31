@@ -1,5 +1,5 @@
 import * as relations from "./relation";
-import * as schema from "./schema";
+import * as schema from "./schema/index";
 
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 
