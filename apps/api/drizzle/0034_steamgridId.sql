@@ -1,1 +1,0 @@
-ALTER TABLE "collection" ADD COLUMN "steam_grid_db_id" text;
