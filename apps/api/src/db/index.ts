@@ -2,7 +2,6 @@ import * as relations from "./relation";
 import * as schema from "./schema";
 
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
-import { drizzle as drizzleNode } from "drizzle-orm/node-postgres";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -11,7 +10,7 @@ const schemaWithRelations = {
   ...relations,
 };
 
-type DB = ReturnType<typeof drizzleNode<typeof schemaWithRelations>>;
+type DB = ReturnType<typeof drizzleNeon<typeof schemaWithRelations>>;
 
 let db: DB;
 
