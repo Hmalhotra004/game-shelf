@@ -4,6 +4,7 @@ export const ORIGINS = [
   "http://localhost:4173",
   "https://game-shelf-web-tan.vercel.app",
   "game-shelf://",
+  "http://192.168.1.7:3000",
   "http://192.168.1.16:3000",
   "http://192.168.29.157:3000/",
 ];

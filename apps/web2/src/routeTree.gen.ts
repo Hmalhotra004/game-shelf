@@ -9,54 +9,187 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
+import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
+import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
+import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
+import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
+import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
+import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
+import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
 
-const IndexRoute = IndexRouteImport.update({
+const AuthLayoutRoute = AuthLayoutRouteImport.update({
+  id: '/_authLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MainLayoutRoute = MainLayoutRouteImport.update({
+  id: '/_mainLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLayoutEmailVerificationRoute =
+  AuthLayoutEmailVerificationRouteImport.update({
+    id: '/email-verification',
+    path: '/email-verification',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const MainLayoutIndexRoute = MainLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => MainLayoutRoute,
 } as any)
 const DemoTableRoute = DemoTableRouteImport.update({
   id: '/demo/table',
   path: '/demo/table',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthLayoutForgotPasswordIndexRoute =
+  AuthLayoutForgotPasswordIndexRouteImport.update({
+    id: '/forgot-password/',
+    path: '/forgot-password/',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutForgotPasswordChangePasswordRoute =
+  AuthLayoutForgotPasswordChangePasswordRouteImport.update({
+    id: '/forgot-password/change-password',
+    path: '/forgot-password/change-password',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutForgotPasswordVerifyOtpRoute =
+  AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
+    id: '/forgot-password/verify-otp',
+    path: '/forgot-password/verify-otp',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof MainLayoutIndexRoute
+  '/email-verification': typeof AuthLayoutEmailVerificationRoute
+  '/login': typeof AuthLayoutLoginRoute
+  '/signup': typeof AuthLayoutSignupRoute
   '/demo/table': typeof DemoTableRoute
+  '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof MainLayoutIndexRoute
+  '/email-verification': typeof AuthLayoutEmailVerificationRoute
+  '/login': typeof AuthLayoutLoginRoute
+  '/signup': typeof AuthLayoutSignupRoute
   '/demo/table': typeof DemoTableRoute
+  '/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/forgot-password': typeof AuthLayoutForgotPasswordIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_authLayout': typeof AuthLayoutRouteWithChildren
+  '/_mainLayout': typeof MainLayoutRouteWithChildren
+  '/_authLayout/email-verification': typeof AuthLayoutEmailVerificationRoute
+  '/_authLayout/login': typeof AuthLayoutLoginRoute
+  '/_authLayout/signup': typeof AuthLayoutSignupRoute
   '/demo/table': typeof DemoTableRoute
+  '/_mainLayout/': typeof MainLayoutIndexRoute
+  '/_authLayout/forgot-password/change-password': typeof AuthLayoutForgotPasswordChangePasswordRoute
+  '/_authLayout/forgot-password/verify-otp': typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  '/_authLayout/forgot-password/': typeof AuthLayoutForgotPasswordIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/table'
+  fullPaths:
+    | '/'
+    | '/email-verification'
+    | '/login'
+    | '/signup'
+    | '/demo/table'
+    | '/forgot-password/change-password'
+    | '/forgot-password/verify-otp'
+    | '/forgot-password/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/table'
-  id: '__root__' | '/' | '/demo/table'
+  to:
+    | '/'
+    | '/email-verification'
+    | '/login'
+    | '/signup'
+    | '/demo/table'
+    | '/forgot-password/change-password'
+    | '/forgot-password/verify-otp'
+    | '/forgot-password'
+  id:
+    | '__root__'
+    | '/_authLayout'
+    | '/_mainLayout'
+    | '/_authLayout/email-verification'
+    | '/_authLayout/login'
+    | '/_authLayout/signup'
+    | '/demo/table'
+    | '/_mainLayout/'
+    | '/_authLayout/forgot-password/change-password'
+    | '/_authLayout/forgot-password/verify-otp'
+    | '/_authLayout/forgot-password/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
+  MainLayoutRoute: typeof MainLayoutRouteWithChildren
   DemoTableRoute: typeof DemoTableRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authLayout': {
+      id: '/_authLayout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_mainLayout': {
+      id: '/_mainLayout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MainLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authLayout/email-verification': {
+      id: '/_authLayout/email-verification'
+      path: '/email-verification'
+      fullPath: '/email-verification'
+      preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/login': {
+      id: '/_authLayout/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLayoutLoginRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/signup': {
+      id: '/_authLayout/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof AuthLayoutSignupRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/': {
+      id: '/_mainLayout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof MainLayoutIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
     }
     '/demo/table': {
       id: '/demo/table'
@@ -65,11 +198,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTableRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authLayout/forgot-password/': {
+      id: '/_authLayout/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password/'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/forgot-password/change-password': {
+      id: '/_authLayout/forgot-password/change-password'
+      path: '/forgot-password/change-password'
+      fullPath: '/forgot-password/change-password'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/forgot-password/verify-otp': {
+      id: '/_authLayout/forgot-password/verify-otp'
+      path: '/forgot-password/verify-otp'
+      fullPath: '/forgot-password/verify-otp'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordVerifyOtpRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
   }
 }
 
+interface AuthLayoutRouteChildren {
+  AuthLayoutEmailVerificationRoute: typeof AuthLayoutEmailVerificationRoute
+  AuthLayoutLoginRoute: typeof AuthLayoutLoginRoute
+  AuthLayoutSignupRoute: typeof AuthLayoutSignupRoute
+  AuthLayoutForgotPasswordChangePasswordRoute: typeof AuthLayoutForgotPasswordChangePasswordRoute
+  AuthLayoutForgotPasswordVerifyOtpRoute: typeof AuthLayoutForgotPasswordVerifyOtpRoute
+  AuthLayoutForgotPasswordIndexRoute: typeof AuthLayoutForgotPasswordIndexRoute
+}
+
+const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthLayoutEmailVerificationRoute: AuthLayoutEmailVerificationRoute,
+  AuthLayoutLoginRoute: AuthLayoutLoginRoute,
+  AuthLayoutSignupRoute: AuthLayoutSignupRoute,
+  AuthLayoutForgotPasswordChangePasswordRoute:
+    AuthLayoutForgotPasswordChangePasswordRoute,
+  AuthLayoutForgotPasswordVerifyOtpRoute:
+    AuthLayoutForgotPasswordVerifyOtpRoute,
+  AuthLayoutForgotPasswordIndexRoute: AuthLayoutForgotPasswordIndexRoute,
+}
+
+const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
+  AuthLayoutRouteChildren,
+)
+
+interface MainLayoutRouteChildren {
+  MainLayoutIndexRoute: typeof MainLayoutIndexRoute
+}
+
+const MainLayoutRouteChildren: MainLayoutRouteChildren = {
+  MainLayoutIndexRoute: MainLayoutIndexRoute,
+}
+
+const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(
+  MainLayoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AuthLayoutRoute: AuthLayoutRouteWithChildren,
+  MainLayoutRoute: MainLayoutRouteWithChildren,
   DemoTableRoute: DemoTableRoute,
 }
 export const routeTree = rootRouteImport
