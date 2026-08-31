@@ -111,9 +111,9 @@ function RouteComponent() {
 
             <Button
               size="lg"
+              type="submit"
               className="w-full"
               disabled={pending}
-              type="submit"
             >
               {pending ? <Spinner /> : "Log In"}
             </Button>

@@ -46,6 +46,7 @@ export const account = pgTable("account", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => nanoid()),
+  issuer: text("issuer").notNull(),
   accountId: text("account_id").notNull(),
   providerId: text("provider_id").notNull(),
   userId: text("user_id")
