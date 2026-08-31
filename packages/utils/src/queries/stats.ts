@@ -4,7 +4,9 @@ import { AxiosInstance } from "axios";
 
 // Keys
 export const StatsQueryKeys = {
-  getStats: () => ["HomeStats"] as const,
+  all: ["Stats"] as const,
+
+  getStats: () => [...StatsQueryKeys.all, "HomeStats"] as const,
 };
 
 // Queries
