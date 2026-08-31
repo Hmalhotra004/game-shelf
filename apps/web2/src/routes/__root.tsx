@@ -1,7 +1,10 @@
+import { ThemeProvider } from "#/components/ThemeProvider";
+// import { TooltipProvider } from "@/components/ui/tooltip";
 import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+// import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
 
 import {
   HeadContent,
@@ -50,7 +53,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
 
       <body className="font-sans antialiased wrap-anywhere">
-        {children}
+        {/* <NuqsAdapter> */}
+        <ThemeProvider>
+          {/* <TooltipProvider> */}
+          {children}
+          {/* </TooltipProvider> */}
+        </ThemeProvider>
+        {/* </NuqsAdapter> */}
 
         <TanStackDevtools
           config={{
