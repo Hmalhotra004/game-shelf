@@ -2,7 +2,7 @@ export const GameTypeValues = ["Game", "DLC"] as const;
 
 export const PlatformValues = ["PC", "XBOX", "PS"] as const;
 
-export const PSVersionValues = ["PS4", "PS5"] as const;
+export const PSVersionValues = ["PS5", "PS4", "PS3", "PS2", "PS1"] as const;
 
 export const ProviderValues = [
   "PSN",
@@ -13,9 +13,9 @@ export const ProviderValues = [
 ] as const;
 
 export const OwnershipTypeValues = [
-  "Free",
-  "Gift",
   "Bought",
+  "Gift",
+  "Free",
   "Included",
   "Rented",
   "PS+",

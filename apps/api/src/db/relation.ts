@@ -5,16 +5,16 @@ import {
   collection,
   completion,
   dlc,
-  gameRecord,
+  // gameRecord,
   list,
   listItem,
   playthrough,
   playthroughSession,
   session,
-  syncStatus,
+  // syncStatus,
   user,
   verification,
-} from "./schema";
+} from "./schema/index";
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
@@ -29,8 +29,8 @@ export const userRelations = relations(user, ({ many }) => ({
   completions: many(completion),
 
   lists: many(list),
-  gameRecords: many(gameRecord),
-  syncStatuses: many(syncStatus),
+  // gameRecords: many(gameRecord),
+  // syncStatuses: many(syncStatus),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -60,7 +60,7 @@ export const collectionRelations = relations(collection, ({ one, many }) => ({
   completions: many(completion),
 
   listItems: many(listItem),
-  gameRecords: many(gameRecord),
+  // gameRecords: many(gameRecord),
 }));
 
 export const dlcRelations = relations(dlc, ({ one, many }) => ({
@@ -150,14 +150,14 @@ export const listItemRelations = relations(listItem, ({ one }) => ({
   }),
 }));
 
-export const gameRecordRelations = relations(gameRecord, ({ one }) => ({
-  user: one(user, {
-    fields: [gameRecord.userId],
-    references: [user.id],
-  }),
+// export const gameRecordRelations = relations(gameRecord, ({ one }) => ({
+//   user: one(user, {
+//     fields: [gameRecord.userId],
+//     references: [user.id],
+//   }),
 
-  collection: one(collection, {
-    fields: [gameRecord.collectionId],
-    references: [collection.id],
-  }),
-}));
+//   collection: one(collection, {
+//     fields: [gameRecord.collectionId],
+//     references: [collection.id],
+//   }),
+// }));

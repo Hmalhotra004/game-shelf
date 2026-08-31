@@ -24,11 +24,7 @@
     },
     "db": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": [
-        "--cd=D:/Projects/game-shelf/apps/api",
-        "-c",
-        "pnpm db;exec bash"
-      ],
+      "args": ["--cd=D:/Projects/game-shelf/apps/api"],
       "icon": "database",
       "overrideName": true
     },
