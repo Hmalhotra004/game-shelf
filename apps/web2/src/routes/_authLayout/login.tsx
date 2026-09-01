@@ -1,3 +1,4 @@
+import { getSession } from "#/lib/getSession";
 import AlertError from "@/components/AlertError";
 import { FormInput, FormInputPassword } from "@/components/form/Form";
 import { Button } from "@/components/ui/button";
@@ -23,9 +24,10 @@ type FormData = z.infer<typeof loginSchema>;
 
 export const Route = createFileRoute("/_authLayout/login")({
   beforeLoad: async () => {
-    const session = await authClient.getSession();
+    // TODO: switch to client side fetch
+    const session = await getSession();
 
-    if (session.data?.session.id && session.data?.user.id) {
+    if (session?.session.id && session?.user.id) {
       throw redirect({ to: "/", replace: true });
     }
   },
