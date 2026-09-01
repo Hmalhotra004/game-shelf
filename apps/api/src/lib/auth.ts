@@ -28,10 +28,6 @@ export const auth = betterAuth({
         type: "string",
         required: false,
       },
-      PSNAccountUserName: {
-        type: "string",
-        required: false,
-      },
       PSNAccountId: {
         type: "string",
         required: false,
