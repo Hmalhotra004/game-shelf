@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import { authClient } from "@/lib/authClient";
+import { getSession } from "@/lib/getSession";
 import { cn } from "@/lib/utils";
 
 import {
@@ -11,21 +11,22 @@ import {
 
 export const Route = createFileRoute("/_mainLayout")({
   beforeLoad: async () => {
-    const session = await authClient.getSession();
+    // TODO: switch to client side fetch
+    const session = await getSession();
 
-    if (session.data === null) {
+    if (session === null) {
       throw redirect({ to: "/login", replace: true });
     }
 
-    if (!session.data.user.emailVerified) {
+    if (!session.user.emailVerified) {
       throw redirect({
         to: "/email-verification",
-        search: { email: session.data.user.email },
+        search: { email: session.user.email },
         replace: true,
       });
     }
 
-    return session.data.user;
+    return session.user;
   },
   component: RouteComponent,
 });

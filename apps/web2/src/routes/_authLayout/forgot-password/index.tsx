@@ -1,3 +1,4 @@
+import { getSession } from "#/lib/getSession";
 import AlertError from "@/components/AlertError";
 import { FormInput } from "@/components/form/Form";
 import { Button } from "@/components/ui/button";
@@ -24,9 +25,10 @@ import {
 
 export const Route = createFileRoute("/_authLayout/forgot-password/")({
   beforeLoad: async () => {
-    const session = await authClient.getSession();
+    // TODO: switch to client side fetch
+    const session = await getSession();
 
-    if (session.data?.session.id && session.data?.user.id) {
+    if (session?.session.id && session?.user.id) {
       throw redirect({ to: "/", replace: true });
     }
   },
