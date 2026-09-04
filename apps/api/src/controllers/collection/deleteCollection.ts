@@ -19,8 +19,8 @@ export const deleteCollection = async (req: Request, res: Response) => {
     if (!deleted) return res.status(404).json({ error: "Game not found" });
 
     return res.sendStatus(204);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "DELETE_COLLECION_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

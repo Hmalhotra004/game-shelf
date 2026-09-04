@@ -1,10 +1,10 @@
+import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import type { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
 import axios from "axios";
 import { eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 
-import { GenericErrorMessage } from "@/constants";
 import {
   collection,
   completion,
@@ -125,8 +125,8 @@ export const getMany = async (req: Request, res: Response) => {
     });
 
     return res.status(200).json(result);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "COLLECTION_GET_MANY_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

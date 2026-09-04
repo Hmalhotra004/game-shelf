@@ -26,7 +26,7 @@ export const searchGame = async (req: Request, res: Response) => {
     const body = `
       search "${safeQuery}";
       fields ${IGDBGame.search};
-      limit ${50};
+      limit ${500};
       `;
 
     const response = await igdb.post<IGDBSearchType[]>("/games", body);
@@ -48,8 +48,8 @@ export const searchGame = async (req: Request, res: Response) => {
       }));
 
     res.status(200).json(result);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "IGDB_SEARCH_GAME_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

@@ -17,7 +17,9 @@ export const getStats = async (req: Request, res: Response) => {
         spentOnGames: sql<number>`coalesce(sum(${collection.amount}), 0)`,
       })
       .from(collection)
-      .where(and(eq(collection.userId, userId), eq(collection.hidden, false)));
+      .where(
+        and(eq(collection.userId, userId), eq(collection.archived, false)),
+      );
 
     const [dlcAgg] = await db
       .select({
@@ -25,7 +27,7 @@ export const getStats = async (req: Request, res: Response) => {
         spentOnDLCs: sql<number>`coalesce(sum(${dlc.amount}), 0)`,
       })
       .from(dlc)
-      .where(and(eq(dlc.userId, userId), eq(dlc.hidden, false)));
+      .where(and(eq(dlc.userId, userId), eq(dlc.archived, false)));
 
     // const [activePlaytime] = await db
     //   .select({
@@ -60,7 +62,7 @@ export const getStats = async (req: Request, res: Response) => {
         value: sql<number>`count(*)`,
       })
       .from(collection)
-      .where(and(eq(collection.userId, userId), eq(collection.hidden, false)))
+      .where(and(eq(collection.userId, userId), eq(collection.archived, false)))
       .groupBy(collection.status);
 
     const platformDistribution = await db
@@ -69,7 +71,7 @@ export const getStats = async (req: Request, res: Response) => {
         value: sql<number>`count(*)`,
       })
       .from(collection)
-      .where(and(eq(collection.userId, userId), eq(collection.hidden, false)))
+      .where(and(eq(collection.userId, userId), eq(collection.archived, false)))
       .groupBy(collection.platform);
 
     const providerDistribution = await db
@@ -78,7 +80,7 @@ export const getStats = async (req: Request, res: Response) => {
         value: sql<number>`count(*)`,
       })
       .from(collection)
-      .where(and(eq(collection.userId, userId), eq(collection.hidden, false)))
+      .where(and(eq(collection.userId, userId), eq(collection.archived, false)))
       .groupBy(collection.provider);
 
     const completionStyleDistribution = await db
@@ -115,7 +117,7 @@ export const getStats = async (req: Request, res: Response) => {
     //   .orderBy(sql`to_char(${collection.dateOfPurchase}, 'YYYY-MM')`);
 
     /* ------------------ ONLINE HOURS ------------------ */
-    //TODO add psn online hrs
+    //TODO: add psn online hrs
     const onlineGames = await db
       .select({ steamId: collection.steamAppId })
       .from(collection)
@@ -173,8 +175,8 @@ export const getStats = async (req: Request, res: Response) => {
       // playtimeByDate,
       // purchasesByMonth,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_HOME_STATS_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

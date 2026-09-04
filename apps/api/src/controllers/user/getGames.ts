@@ -11,9 +11,12 @@ export const getGames = async (req: Request, res: Response) => {
         id: true,
         name: true,
         image: true,
+        coverImage: true,
         customImage: true,
+        customCoverImage: true,
         platform: true,
         provider: true,
+        igdbId: true,
       },
       where: (c, { eq }) => eq(c.userId, userId),
     });
@@ -24,6 +27,8 @@ export const getGames = async (req: Request, res: Response) => {
         collectionId: true,
         name: true,
         image: true,
+        coverImage: true,
+        igdbId: true,
       },
       where: (d, { eq }) => eq(d.userId, userId),
     });
@@ -32,8 +37,8 @@ export const getGames = async (req: Request, res: Response) => {
       games,
       dlcs,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_USER_GAMES_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

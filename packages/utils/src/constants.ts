@@ -1,6 +1,6 @@
 export const BASEURL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:8080"
+    ? "http://192.168.1.7:8080"
     : "https://game-shelf-ssj1.onrender.com";
 
 export const overviewLabels = [
@@ -11,3 +11,5 @@ export const overviewLabels = [
   "Active Runs",
   "Completions",
 ];
+
+export const GenericErrorMessage = "Something Went Wrong!";

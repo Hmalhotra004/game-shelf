@@ -1,7 +1,7 @@
 import { ORIGINS } from "@/constants";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
-import { expo } from "@better-auth/expo";
+// import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, genericOAuth } from "better-auth/plugins";
@@ -25,10 +25,6 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       steamId: {
-        type: "string",
-        required: false,
-      },
-      PSNAccountUserName: {
         type: "string",
         required: false,
       },
@@ -85,7 +81,7 @@ export const auth = betterAuth({
         },
       ],
     }),
-    expo(),
+    // expo(),
     emailOTP({
       storeOTP: "encrypted",
       async sendVerificationOTP({ email, otp, type }) {

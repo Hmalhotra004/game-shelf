@@ -7,7 +7,7 @@ export type IGDBSearchType = {
   first_release_date: number | null;
 };
 
-export type SearchGame = {
+export type SearchGameClientResponse = {
   id: number;
   name: string;
   coverUrl: string;
@@ -20,6 +20,7 @@ export type IGDBGetByIdType = {
   id: number;
   name: string;
   platforms: PlatformType[];
+  parent_game?: number;
   cover: Omit<CoverType, "url">;
   game_type: number;
   summary: string;
@@ -28,25 +29,33 @@ export type IGDBGetByIdType = {
 
   dlcs: IGDBDlcs[] | undefined;
   expansions: IGDBDlcs[] | undefined;
+  external_games: ExternalGames[];
+  artworks: Artworks[];
 };
 
-export type GetById = {
+export type GetByIdClientResponse = {
   id: number;
   name: string;
   game_type: number;
   platforms: PlatformType[];
   image: string;
+  coverImage: string;
+  steamAppId: string | null;
   summary: string;
   releaseDate: string;
   genres: Genres[];
   dlcs: DLCs[];
+  isDlc: boolean;
+  parentGameIgdbId: number | null;
 };
 
 export type DLCs = {
   id: number;
   name: string;
   image: string;
-  releaseDate: string;
+  coverImage: string | null;
+  releaseDate: Date | null;
+  steamAppId: number | null;
 };
 
 export type IGDBDlcs = {
@@ -54,6 +63,8 @@ export type IGDBDlcs = {
   name: string;
   cover: Omit<CoverType, "url">;
   first_release_date: number | null;
+  external_games: ExternalGames[];
+  artworks: Artworks[];
 };
 
 export type CoverType = {
@@ -72,4 +83,21 @@ export type PlatformType = {
 export type Genres = {
   id: number;
   name: "Platform";
+};
+
+export type ExternalGames = {
+  external_game_source: number;
+  game: number;
+  id: number;
+  uid: number;
+  url: string;
+};
+
+export type Artworks = {
+  id: number;
+  game: number;
+  height: number;
+  image_id: string;
+  width: number;
+  artwork_type: number;
 };

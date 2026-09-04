@@ -21,9 +21,6 @@ export const linkSteamAccountMutationOptions = (
       await queryClient.invalidateQueries({
         queryKey: SteamQueryKeys.getProfile(),
       });
-      queryClient.removeQueries({
-        queryKey: SteamQueryKeys.getProfile(),
-      });
       toast.success("Account Linked");
     },
     onError: (e) => {
@@ -47,12 +44,6 @@ export const unlinkAccountMutationOptions = (
       });
       await queryClient.invalidateQueries({
         queryKey: SteamQueryKeys.getProfile(),
-      });
-      queryClient.removeQueries({
-        queryKey: SteamQueryKeys.getProfile(),
-      });
-      queryClient.removeQueries({
-        queryKey: PSNQueryKeys.getProfile(),
       });
       toast.success("unlinked success");
     },

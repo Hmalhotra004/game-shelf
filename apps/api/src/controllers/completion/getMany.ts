@@ -3,8 +3,8 @@ import type { Request, Response } from "express";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "COMPLETION_GET_MANY_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

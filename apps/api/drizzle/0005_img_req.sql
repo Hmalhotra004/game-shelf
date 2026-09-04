@@ -1,1 +1,0 @@
-ALTER TABLE "collection" ALTER COLUMN "cover_image" SET NOT NULL;
