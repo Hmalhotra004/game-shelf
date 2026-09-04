@@ -1,4 +1,4 @@
-import { Skeleton } from "@repo/ui/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const PlaythroughLoading = () => {
   return (

@@ -189,8 +189,8 @@ export const getById = async (req: Request, res: Response) => {
       onlinePlaySecs,
       totalTime: gamePlaythroughTime + gameCompletionTime,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "COLLECTION_GET_BY_ID_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

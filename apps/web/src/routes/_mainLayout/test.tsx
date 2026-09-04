@@ -26,5 +26,5 @@ function RouteComponent() {
 
   console.log(data);
 
-  return <div>Hello "/_mainLayout/test"!</div>;
+  return <div>Hello "/_mainLayout/test"!dsds</div>;
 }

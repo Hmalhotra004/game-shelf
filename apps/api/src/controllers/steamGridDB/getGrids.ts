@@ -47,8 +47,8 @@ export const getGrids = async (req: Request, res: Response) => {
     );
 
     res.status(200).json(response.data);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "STEAMGRIDDB_GET_GRID_ERROR");
     res.status(500).json({
       error: "An error occurred while fetching data from SteamGridDB.",
     });

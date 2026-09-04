@@ -1,4 +1,4 @@
-import AuthNavbar from "@repo/ui/components/AuthNavbar";
+import AuthNavbar from "@/components/AuthNavbar";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authLayout")({
@@ -9,6 +9,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-col min-h-screen">
       <AuthNavbar />
+
       <div className="flex flex-col mt-20 justify-center items-center">
         <Outlet />
       </div>

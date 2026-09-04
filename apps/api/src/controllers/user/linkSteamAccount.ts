@@ -60,8 +60,8 @@ export const linkSteamAccount = async (req: Request, res: Response) => {
       .where(eq(user.id, userId));
 
     return res.sendStatus(204);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "LINK_STEAM_ACCOUNT_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

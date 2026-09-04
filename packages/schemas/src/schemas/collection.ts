@@ -127,3 +127,4 @@ export const updateImagesSchema = z.object({
 // types
 export type ExternalIdsSchemaType = z.infer<typeof externalIdsSchema>;
 export type UpdateImagesSchemaType = z.infer<typeof updateImagesSchema>;
+export type CreateCollectionSchemaType = z.infer<typeof createCollectionSchema>;

@@ -1,18 +1,18 @@
 import { format } from "date-fns";
 import { Gamepad2Icon } from "lucide-react";
 
-import type { GetById } from "@repo/schemas/types/igdb";
+import type { GetByIdClientResponse } from "@repo/schemas/types/igdb";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 interface Props {
-  game: GetById;
+  game: GetByIdClientResponse;
 }
 
 const AddGameInfoPanel = ({ game }: Props) => {
   return (
-    <div className="flex flex-col">
+    <div className="md:flex md:flex-col hidden">
       <div className="relative w-full h-full bg-muted shadow-md overflow-hidden">
         {game.image ? (
           <img

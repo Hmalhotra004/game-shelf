@@ -16,7 +16,7 @@ declare global {
     export interface Request {
       cleanBody: any;
 
-      user?: {
+      user: {
         id: string;
         email: string;
         steamId?: string | null | undefined;
@@ -25,18 +25,18 @@ declare global {
         userAccountType: "User" | "Admin";
         isAdult: boolean;
       };
-      session?: {
+      session: {
         id: string;
         expiresAt: Date;
       };
 
-      collection?: InferSelectModel<typeof collection>;
-      playthrough?: InferSelectModel<typeof playthrough>;
-      playthroughSession?: InferSelectModel<typeof playthroughSession>;
-      completion?: InferSelectModel<typeof completion>;
+      collection: InferSelectModel<typeof collection>;
+      playthrough: InferSelectModel<typeof playthrough>;
+      playthroughSession: InferSelectModel<typeof playthroughSession>;
+      completion: InferSelectModel<typeof completion>;
 
-      list?: InferSelectModel<typeof list>;
-      listItem?: InferSelectModel<typeof listItem>;
+      list: InferSelectModel<typeof list>;
+      listItem: InferSelectModel<typeof listItem>;
     }
   }
 }

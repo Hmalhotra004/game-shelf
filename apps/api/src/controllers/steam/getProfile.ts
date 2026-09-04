@@ -22,8 +22,8 @@ export const getProfile = async (req: Request, res: Response) => {
       realName: player.realname,
       profileUrl: player.profileurl,
     });
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_STEAM_PROFILE_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

@@ -28,3 +28,6 @@ export type SyncType = z.infer<typeof SyncTypeSchema>;
 // export type UserAccountType = z.infer<typeof UserAccountTySchema>;
 
 export type DataType = { label: string; value: number };
+
+export type Theme = "dark" | "light";
+export type CollectionCardVariant = "compact" | "overlay" | "slideUp";

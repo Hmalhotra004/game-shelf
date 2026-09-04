@@ -1,6 +1,9 @@
+import { useEffect } from "react";
+
 import { format } from "date-fns";
 
 import type { DLCs } from "@repo/schemas/types/igdb";
+import type { UseFormReturn } from "react-hook-form";
 
 import { FormDatePicker, FormInput, FormSelect } from "@/components/form/Form";
 import { OwnershipTypeSelect } from "@/components/form/FormSelects";
@@ -13,9 +16,37 @@ interface Props {
   onToggle: (dlc: DLCs) => void;
   fieldIndex?: number;
   control: any;
+  form: UseFormReturn<any>;
+  gamePurchaseDate: string;
+  isPending: boolean;
 }
 
-const AddDlcRow = ({ checked, control, dlc, onToggle, fieldIndex }: Props) => {
+const AddDlcRow = ({
+  checked,
+  control,
+  dlc,
+  onToggle,
+  fieldIndex,
+  form,
+  gamePurchaseDate,
+  isPending,
+}: Props) => {
+  const ownershipType =
+    fieldIndex !== undefined
+      ? form.watch(`DLCs.${fieldIndex}.ownershipType`)
+      : undefined;
+
+  const included = ownershipType === "Included";
+
+  useEffect(() => {
+    if (fieldIndex === undefined) return;
+
+    if (included) {
+      form.setValue(`DLCs.${fieldIndex}.amount`, "0");
+      form.setValue(`DLCs.${fieldIndex}.dateOfPurchase`, gamePurchaseDate);
+    }
+  }, [included, gamePurchaseDate, fieldIndex, form]);
+
   return (
     <div
       className={cn(
@@ -31,6 +62,7 @@ const AddDlcRow = ({ checked, control, dlc, onToggle, fieldIndex }: Props) => {
           checked={checked}
           onCheckedChange={() => onToggle(dlc)}
           className="shrink-0"
+          disabled={isPending}
         />
 
         <div className="w-10 h-14 rounded overflow-hidden bg-muted shrink-0">
@@ -57,24 +89,26 @@ const AddDlcRow = ({ checked, control, dlc, onToggle, fieldIndex }: Props) => {
 
       {/* Expanded purchase inputs — only when checked */}
       {checked && fieldIndex !== undefined && (
-        <div className="px-3 pb-3 grid grid-cols-3 gap-3">
+        <div className="px-3 pb-3 flex flex-col md:grid md:grid-cols-3 gap-3">
           <FormDatePicker
             control={control}
             name={`DLCs.${fieldIndex}.dateOfPurchase`}
-            disabled={false}
+            disabled={isPending || included}
           />
-          <FormInput
-            control={control}
-            name={`DLCs.${fieldIndex}.amount`}
-            placeholder="e.g. 14.99"
-            disabled={false}
-          />
+          {!included && (
+            <FormInput
+              control={control}
+              name={`DLCs.${fieldIndex}.amount`}
+              placeholder="e.g. 14.99"
+              disabled={isPending || included}
+            />
+          )}
           <FormSelect
             name={`DLCs.${fieldIndex}.ownershipType`}
             control={control}
-            disabled={false}
+            disabled={isPending}
           >
-            <OwnershipTypeSelect />
+            <OwnershipTypeSelect isDlc />
           </FormSelect>
         </div>
       )}

@@ -76,7 +76,7 @@ function RouteComponent() {
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-2 justify-between gap-6">
+        <div className="md:grid md:grid-cols-2 justify-between md:gap-6 gap-3 flex flex-col">
           <AccountCard
             title="Steam"
             platform="steam"

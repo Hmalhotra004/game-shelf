@@ -35,9 +35,9 @@ export const updateList = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "List not found" });
     }
 
-    return res.status(200).json(updated);
-  } catch (e) {
-    console.error(e);
+    return res.sendStatus(204);
+  } catch (err) {
+    req.log.error({ err }, "UPDATE_LIST_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

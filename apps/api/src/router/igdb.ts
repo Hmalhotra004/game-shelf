@@ -10,9 +10,9 @@ export default (baseUrl: string, app: Router) => {
 
   router.get("/search", authenticateUser, searchGame);
 
-  router.get("/:igdbId", authenticateUser, getById);
-
   router.get("/test", authenticateUser, test);
+
+  router.get("/:igdbId", authenticateUser, getById);
 
   router.post("/getToken", getToken);
 

@@ -9,34 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
 import { Route as AuthLayoutRouteImport } from './routes/_authLayout'
+import { Route as MainLayoutRouteImport } from './routes/_mainLayout'
+import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
+import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
+import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
 import { Route as MainLayoutIndexRouteImport } from './routes/_mainLayout/index'
 import { Route as MainLayoutTestRouteImport } from './routes/_mainLayout/test'
-import { Route as AuthLayoutSignupRouteImport } from './routes/_authLayout/signup'
-import { Route as AuthLayoutLoginRouteImport } from './routes/_authLayout/login'
-import { Route as AuthLayoutEmailVerificationRouteImport } from './routes/_authLayout/email-verification'
-import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
 import { Route as AuthLayoutForgotPasswordIndexRouteImport } from './routes/_authLayout/forgot-password/index'
-import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
-import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
 import { Route as AuthLayoutForgotPasswordChangePasswordRouteImport } from './routes/_authLayout/forgot-password/change-password'
-import { Route as MainLayoutProfileAccountLinksIndexRouteImport } from './routes/_mainLayout/profile/account-links/index'
+import { Route as AuthLayoutForgotPasswordVerifyOtpRouteImport } from './routes/_authLayout/forgot-password/verify-otp'
+import { Route as MainLayoutCollectionIndexRouteImport } from './routes/_mainLayout/collection/index'
+import { Route as MainLayoutCollectionAddRouteImport } from './routes/_mainLayout/collection/add'
 import { Route as MainLayoutCollectionCollectionIdIndexRouteImport } from './routes/_mainLayout/collection/$collectionId/index'
-import { Route as MainLayoutProfileAccountLinksXboxRouteImport } from './routes/_mainLayout/profile/account-links/xbox'
-import { Route as MainLayoutProfileAccountLinksSteamRouteImport } from './routes/_mainLayout/profile/account-links/steam'
-import { Route as MainLayoutProfileAccountLinksPlaystationRouteImport } from './routes/_mainLayout/profile/account-links/playstation'
-import { Route as MainLayoutProfileAccountLinksEpicRouteImport } from './routes/_mainLayout/profile/account-links/epic'
-import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
 import { Route as MainLayoutCollectionCollectionIdChangeImagesRouteImport } from './routes/_mainLayout/collection/$collectionId/change-images'
+import { Route as MainLayoutCollectionCollectionIdEditRouteImport } from './routes/_mainLayout/collection/$collectionId/edit'
+import { Route as MainLayoutProfileAccountLinksIndexRouteImport } from './routes/_mainLayout/profile/account-links/index'
+import { Route as MainLayoutProfileAccountLinksEpicRouteImport } from './routes/_mainLayout/profile/account-links/epic'
+import { Route as MainLayoutProfileAccountLinksPlaystationRouteImport } from './routes/_mainLayout/profile/account-links/playstation'
+import { Route as MainLayoutProfileAccountLinksSteamRouteImport } from './routes/_mainLayout/profile/account-links/steam'
+import { Route as MainLayoutProfileAccountLinksXboxRouteImport } from './routes/_mainLayout/profile/account-links/xbox'
 
+const AuthLayoutRoute = AuthLayoutRouteImport.update({
+  id: '/_authLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MainLayoutRoute = MainLayoutRouteImport.update({
   id: '/_mainLayout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthLayoutRoute = AuthLayoutRouteImport.update({
-  id: '/_authLayout',
-  getParentRoute: () => rootRouteImport,
+const AuthLayoutEmailVerificationRoute =
+  AuthLayoutEmailVerificationRouteImport.update({
+    id: '/email-verification',
+    path: '/email-verification',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthLayoutRoute,
 } as any)
 const MainLayoutIndexRoute = MainLayoutIndexRouteImport.update({
   id: '/',
@@ -48,43 +64,10 @@ const MainLayoutTestRoute = MainLayoutTestRouteImport.update({
   path: '/test',
   getParentRoute: () => MainLayoutRoute,
 } as any)
-const AuthLayoutSignupRoute = AuthLayoutSignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthLayoutLoginRoute = AuthLayoutLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
-const AuthLayoutEmailVerificationRoute =
-  AuthLayoutEmailVerificationRouteImport.update({
-    id: '/email-verification',
-    path: '/email-verification',
-    getParentRoute: () => AuthLayoutRoute,
-  } as any)
-const MainLayoutCollectionIndexRoute =
-  MainLayoutCollectionIndexRouteImport.update({
-    id: '/collection/',
-    path: '/collection/',
-    getParentRoute: () => MainLayoutRoute,
-  } as any)
 const AuthLayoutForgotPasswordIndexRoute =
   AuthLayoutForgotPasswordIndexRouteImport.update({
     id: '/forgot-password/',
     path: '/forgot-password/',
-    getParentRoute: () => AuthLayoutRoute,
-  } as any)
-const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
-  id: '/collection/add',
-  path: '/collection/add',
-  getParentRoute: () => MainLayoutRoute,
-} as any)
-const AuthLayoutForgotPasswordVerifyOtpRoute =
-  AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
-    id: '/forgot-password/verify-otp',
-    path: '/forgot-password/verify-otp',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
 const AuthLayoutForgotPasswordChangePasswordRoute =
@@ -93,40 +76,33 @@ const AuthLayoutForgotPasswordChangePasswordRoute =
     path: '/forgot-password/change-password',
     getParentRoute: () => AuthLayoutRoute,
   } as any)
-const MainLayoutProfileAccountLinksIndexRoute =
-  MainLayoutProfileAccountLinksIndexRouteImport.update({
-    id: '/profile/account-links/',
-    path: '/profile/account-links/',
+const AuthLayoutForgotPasswordVerifyOtpRoute =
+  AuthLayoutForgotPasswordVerifyOtpRouteImport.update({
+    id: '/forgot-password/verify-otp',
+    path: '/forgot-password/verify-otp',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
+const MainLayoutCollectionIndexRoute =
+  MainLayoutCollectionIndexRouteImport.update({
+    id: '/collection/',
+    path: '/collection/',
     getParentRoute: () => MainLayoutRoute,
   } as any)
+const MainLayoutCollectionAddRoute = MainLayoutCollectionAddRouteImport.update({
+  id: '/collection/add',
+  path: '/collection/add',
+  getParentRoute: () => MainLayoutRoute,
+} as any)
 const MainLayoutCollectionCollectionIdIndexRoute =
   MainLayoutCollectionCollectionIdIndexRouteImport.update({
     id: '/collection/$collectionId/',
     path: '/collection/$collectionId/',
     getParentRoute: () => MainLayoutRoute,
   } as any)
-const MainLayoutProfileAccountLinksXboxRoute =
-  MainLayoutProfileAccountLinksXboxRouteImport.update({
-    id: '/profile/account-links/xbox',
-    path: '/profile/account-links/xbox',
-    getParentRoute: () => MainLayoutRoute,
-  } as any)
-const MainLayoutProfileAccountLinksSteamRoute =
-  MainLayoutProfileAccountLinksSteamRouteImport.update({
-    id: '/profile/account-links/steam',
-    path: '/profile/account-links/steam',
-    getParentRoute: () => MainLayoutRoute,
-  } as any)
-const MainLayoutProfileAccountLinksPlaystationRoute =
-  MainLayoutProfileAccountLinksPlaystationRouteImport.update({
-    id: '/profile/account-links/playstation',
-    path: '/profile/account-links/playstation',
-    getParentRoute: () => MainLayoutRoute,
-  } as any)
-const MainLayoutProfileAccountLinksEpicRoute =
-  MainLayoutProfileAccountLinksEpicRouteImport.update({
-    id: '/profile/account-links/epic',
-    path: '/profile/account-links/epic',
+const MainLayoutCollectionCollectionIdChangeImagesRoute =
+  MainLayoutCollectionCollectionIdChangeImagesRouteImport.update({
+    id: '/collection/$collectionId/change-images',
+    path: '/collection/$collectionId/change-images',
     getParentRoute: () => MainLayoutRoute,
   } as any)
 const MainLayoutCollectionCollectionIdEditRoute =
@@ -135,10 +111,34 @@ const MainLayoutCollectionCollectionIdEditRoute =
     path: '/collection/$collectionId/edit',
     getParentRoute: () => MainLayoutRoute,
   } as any)
-const MainLayoutCollectionCollectionIdChangeImagesRoute =
-  MainLayoutCollectionCollectionIdChangeImagesRouteImport.update({
-    id: '/collection/$collectionId/change-images',
-    path: '/collection/$collectionId/change-images',
+const MainLayoutProfileAccountLinksIndexRoute =
+  MainLayoutProfileAccountLinksIndexRouteImport.update({
+    id: '/profile/account-links/',
+    path: '/profile/account-links/',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksEpicRoute =
+  MainLayoutProfileAccountLinksEpicRouteImport.update({
+    id: '/profile/account-links/epic',
+    path: '/profile/account-links/epic',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksPlaystationRoute =
+  MainLayoutProfileAccountLinksPlaystationRouteImport.update({
+    id: '/profile/account-links/playstation',
+    path: '/profile/account-links/playstation',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksSteamRoute =
+  MainLayoutProfileAccountLinksSteamRouteImport.update({
+    id: '/profile/account-links/steam',
+    path: '/profile/account-links/steam',
+    getParentRoute: () => MainLayoutRoute,
+  } as any)
+const MainLayoutProfileAccountLinksXboxRoute =
+  MainLayoutProfileAccountLinksXboxRouteImport.update({
+    id: '/profile/account-links/xbox',
+    path: '/profile/account-links/xbox',
     getParentRoute: () => MainLayoutRoute,
   } as any)
 
@@ -277,6 +277,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authLayout': {
+      id: '/_authLayout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_mainLayout': {
       id: '/_mainLayout'
       path: ''
@@ -284,12 +291,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authLayout': {
-      id: '/_authLayout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthLayoutRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authLayout/email-verification': {
+      id: '/_authLayout/email-verification'
+      path: '/email-verification'
+      fullPath: '/email-verification'
+      preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/login': {
+      id: '/_authLayout/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLayoutLoginRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_authLayout/signup': {
+      id: '/_authLayout/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof AuthLayoutSignupRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
     '/_mainLayout/': {
       id: '/_mainLayout/'
@@ -305,53 +326,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutTestRouteImport
       parentRoute: typeof MainLayoutRoute
     }
-    '/_authLayout/signup': {
-      id: '/_authLayout/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof AuthLayoutSignupRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_authLayout/login': {
-      id: '/_authLayout/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLayoutLoginRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_authLayout/email-verification': {
-      id: '/_authLayout/email-verification'
-      path: '/email-verification'
-      fullPath: '/email-verification'
-      preLoaderRoute: typeof AuthLayoutEmailVerificationRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_mainLayout/collection/': {
-      id: '/_mainLayout/collection/'
-      path: '/collection'
-      fullPath: '/collection/'
-      preLoaderRoute: typeof MainLayoutCollectionIndexRouteImport
-      parentRoute: typeof MainLayoutRoute
-    }
     '/_authLayout/forgot-password/': {
       id: '/_authLayout/forgot-password/'
       path: '/forgot-password'
       fullPath: '/forgot-password/'
       preLoaderRoute: typeof AuthLayoutForgotPasswordIndexRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
-    '/_mainLayout/collection/add': {
-      id: '/_mainLayout/collection/add'
-      path: '/collection/add'
-      fullPath: '/collection/add'
-      preLoaderRoute: typeof MainLayoutCollectionAddRouteImport
-      parentRoute: typeof MainLayoutRoute
-    }
-    '/_authLayout/forgot-password/verify-otp': {
-      id: '/_authLayout/forgot-password/verify-otp'
-      path: '/forgot-password/verify-otp'
-      fullPath: '/forgot-password/verify-otp'
-      preLoaderRoute: typeof AuthLayoutForgotPasswordVerifyOtpRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
     '/_authLayout/forgot-password/change-password': {
@@ -361,11 +340,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutForgotPasswordChangePasswordRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
-    '/_mainLayout/profile/account-links/': {
-      id: '/_mainLayout/profile/account-links/'
-      path: '/profile/account-links'
-      fullPath: '/profile/account-links/'
-      preLoaderRoute: typeof MainLayoutProfileAccountLinksIndexRouteImport
+    '/_authLayout/forgot-password/verify-otp': {
+      id: '/_authLayout/forgot-password/verify-otp'
+      path: '/forgot-password/verify-otp'
+      fullPath: '/forgot-password/verify-otp'
+      preLoaderRoute: typeof AuthLayoutForgotPasswordVerifyOtpRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_mainLayout/collection/': {
+      id: '/_mainLayout/collection/'
+      path: '/collection'
+      fullPath: '/collection/'
+      preLoaderRoute: typeof MainLayoutCollectionIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/collection/add': {
+      id: '/_mainLayout/collection/add'
+      path: '/collection/add'
+      fullPath: '/collection/add'
+      preLoaderRoute: typeof MainLayoutCollectionAddRouteImport
       parentRoute: typeof MainLayoutRoute
     }
     '/_mainLayout/collection/$collectionId/': {
@@ -375,32 +368,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutCollectionCollectionIdIndexRouteImport
       parentRoute: typeof MainLayoutRoute
     }
-    '/_mainLayout/profile/account-links/xbox': {
-      id: '/_mainLayout/profile/account-links/xbox'
-      path: '/profile/account-links/xbox'
-      fullPath: '/profile/account-links/xbox'
-      preLoaderRoute: typeof MainLayoutProfileAccountLinksXboxRouteImport
-      parentRoute: typeof MainLayoutRoute
-    }
-    '/_mainLayout/profile/account-links/steam': {
-      id: '/_mainLayout/profile/account-links/steam'
-      path: '/profile/account-links/steam'
-      fullPath: '/profile/account-links/steam'
-      preLoaderRoute: typeof MainLayoutProfileAccountLinksSteamRouteImport
-      parentRoute: typeof MainLayoutRoute
-    }
-    '/_mainLayout/profile/account-links/playstation': {
-      id: '/_mainLayout/profile/account-links/playstation'
-      path: '/profile/account-links/playstation'
-      fullPath: '/profile/account-links/playstation'
-      preLoaderRoute: typeof MainLayoutProfileAccountLinksPlaystationRouteImport
-      parentRoute: typeof MainLayoutRoute
-    }
-    '/_mainLayout/profile/account-links/epic': {
-      id: '/_mainLayout/profile/account-links/epic'
-      path: '/profile/account-links/epic'
-      fullPath: '/profile/account-links/epic'
-      preLoaderRoute: typeof MainLayoutProfileAccountLinksEpicRouteImport
+    '/_mainLayout/collection/$collectionId/change-images': {
+      id: '/_mainLayout/collection/$collectionId/change-images'
+      path: '/collection/$collectionId/change-images'
+      fullPath: '/collection/$collectionId/change-images'
+      preLoaderRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRouteImport
       parentRoute: typeof MainLayoutRoute
     }
     '/_mainLayout/collection/$collectionId/edit': {
@@ -410,11 +382,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainLayoutCollectionCollectionIdEditRouteImport
       parentRoute: typeof MainLayoutRoute
     }
-    '/_mainLayout/collection/$collectionId/change-images': {
-      id: '/_mainLayout/collection/$collectionId/change-images'
-      path: '/collection/$collectionId/change-images'
-      fullPath: '/collection/$collectionId/change-images'
-      preLoaderRoute: typeof MainLayoutCollectionCollectionIdChangeImagesRouteImport
+    '/_mainLayout/profile/account-links/': {
+      id: '/_mainLayout/profile/account-links/'
+      path: '/profile/account-links'
+      fullPath: '/profile/account-links/'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksIndexRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/epic': {
+      id: '/_mainLayout/profile/account-links/epic'
+      path: '/profile/account-links/epic'
+      fullPath: '/profile/account-links/epic'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksEpicRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/playstation': {
+      id: '/_mainLayout/profile/account-links/playstation'
+      path: '/profile/account-links/playstation'
+      fullPath: '/profile/account-links/playstation'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksPlaystationRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/steam': {
+      id: '/_mainLayout/profile/account-links/steam'
+      path: '/profile/account-links/steam'
+      fullPath: '/profile/account-links/steam'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksSteamRouteImport
+      parentRoute: typeof MainLayoutRoute
+    }
+    '/_mainLayout/profile/account-links/xbox': {
+      id: '/_mainLayout/profile/account-links/xbox'
+      path: '/profile/account-links/xbox'
+      fullPath: '/profile/account-links/xbox'
+      preLoaderRoute: typeof MainLayoutProfileAccountLinksXboxRouteImport
       parentRoute: typeof MainLayoutRoute
     }
   }

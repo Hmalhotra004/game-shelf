@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-import { toast } from "sonner";
-
 import {
   Outlet,
   createFileRoute,
@@ -10,7 +7,6 @@ import {
 
 import Navbar from "@/components/Navbar";
 import { authClient } from "@/lib/authClient";
-import { socket } from "@/lib/socket";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_mainLayout")({
@@ -40,17 +36,17 @@ function RouteComponent() {
   const noPaddingRoutes = ["/collection/add"];
   const noPadding = noPaddingRoutes.includes(location.pathname);
 
-  useEffect(() => {
-    const handleError = (error: string) => {
-      toast.error(error);
-    };
+  // useEffect(() => {
+  //   const handleError = (error: string) => {
+  //     toast.error(error);
+  //   };
 
-    socket.on("error_message", handleError);
+  //   socket.on("error_message", handleError);
 
-    return () => {
-      socket.off("error_message", handleError);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("error_message", handleError);
+  //   };
+  // }, []);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">

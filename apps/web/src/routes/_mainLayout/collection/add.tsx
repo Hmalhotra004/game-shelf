@@ -1,15 +1,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { isAxiosError } from "axios";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import type z from "zod";
+
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { createCollectionSchema } from "@repo/schemas/schemas/collection";
 import { DLCs } from "@repo/schemas/types/igdb";
+import { GenericErrorMessage } from "@repo/utils/constants";
+import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
+import { CollectionQueryKeys } from "@repo/utils/queries/collection";
+import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
+import { StatsQueryKeys } from "@repo/utils/queries/stats";
+import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 
 import AddDlcRow from "@/components/collection/add/AddDlcRow";
 import AddGameInfoPanel from "@/components/collection/add/AddGameInfoPanel";
@@ -17,9 +30,11 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 import {
   FormDatePicker,
+  FormGameSelectionCombobox,
   FormInput,
   FormMultiSelect,
   FormSelect,
@@ -52,18 +67,21 @@ function RouteComponent() {
   const [dlcOpen, setDlcOpen] = useState(false);
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: game, isLoading } = useQuery(getByIdQueryOptions(api, id));
   const { data: lists } = useSuspenseQuery(listGetManyQueryOptions(api));
 
   const listOptions = lists.map((d) => ({ label: d.name, value: d.id }));
 
+  const addGame = useMutation(addCollectionMutationOptions(api));
+
   const form = useForm<FormValues>({
     resolver: zodResolver(createCollectionSchema),
     defaultValues: {
       igdbId: id,
       name: "",
-      dateOfPurchase: "",
+      dateOfPurchase: new Date().toISOString(),
       edition: null,
       amount: "",
       platform: "PC",
@@ -87,14 +105,34 @@ function RouteComponent() {
 
   const watchedName = form.watch("name");
   const watchedImage = form.watch("image");
+  const watchedCoverImage = form.watch("coverImage");
+  const steamAppId = form.watch("steamAppId");
+  const isDlc = form.watch("isDLC");
+  const watchedCollectionId = form.watch("collectionId");
 
   if (game?.name && !watchedName) form.setValue("name", game.name);
   if (game?.image && !watchedImage) form.setValue("image", game.image);
+  if (game?.coverImage && !watchedCoverImage)
+    form.setValue("coverImage", game.coverImage);
+  if (game?.steamAppId && !steamAppId)
+    form.setValue("steamAppId", game.steamAppId);
+  if (game?.isDlc && !isDlc) form.setValue("isDLC", game.isDlc);
 
   const selectedPlatform = form.watch("platform");
 
   // Map igdbId → field-array index for O(1) lookup
   const dlcIndexMap = new Map(fields.map((f, i) => [f.igdbId, i]));
+
+  const { data: userGames } = useSuspenseQuery(
+    userGetCollectionQueryOptions(api, isDlc ?? false),
+  );
+
+  const parentGame = isDlc
+    ? userGames.games.find((ug) => ug.igdbId === String(game?.parentGameIgdbId))
+    : undefined;
+
+  if (parentGame && !watchedCollectionId)
+    form.setValue("collectionId", parentGame.id);
 
   function toggleDlc(dlc: DLCs) {
     if (dlcIndexMap.has(dlc.id)) {
@@ -104,20 +142,42 @@ function RouteComponent() {
         igdbId: dlc.id,
         name: dlc.name,
         amount: "",
-        dateOfPurchase: "",
+        dateOfPurchase: new Date().toISOString(),
         image: dlc.image ?? null,
-        coverImage: null, //TODO:Fetch
-        steamAppId: null, //TODO:Fetch
+        coverImage: dlc.coverImage ?? null,
+        steamAppId: String(dlc.steamAppId),
         ownershipType: "Bought",
       });
     }
   }
 
-  function onSubmit(values: FormValues) {
-    console.log(values);
+  async function onSubmit(values: FormValues) {
+    await addGame.mutateAsync(
+      { ...values },
+
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: StatsQueryKeys.getStats(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey: CollectionQueryKeys.getMany(),
+          });
+          router.history.back();
+        },
+
+        onError: (e) => {
+          const msg =
+            isAxiosError(e) && e.response?.data.error
+              ? e.response.data.error
+              : GenericErrorMessage;
+          toast.error("Error", { description: msg });
+        },
+      },
+    );
   }
 
-  const isPending = false;
+  const isPending = addGame.isPending;
 
   if (!id)
     return <div className="p-8 text-muted-foreground">No game selected.</div>;
@@ -134,11 +194,11 @@ function RouteComponent() {
   const selectedCount = fields.length;
 
   return (
-    <div className="grid grid-cols-2 flex-1 gap-4 min-h-0 overflow-hidden">
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-3 h-full min-h-0 overflow-y-auto overflow-x-hidden md:overflow-hidden">
       {game && <AddGameInfoPanel game={game} />}
 
-      <ScrollArea className="h-full min-h-0">
-        <div className="flex flex-col py-4 pr-4">
+      <ScrollArea className="shrink-0 md:shrink md:h-full md:min-h-0 py-2 max-sm:px-2">
+        <div className="flex flex-col pb-4 md:pr-4">
           <div className="mb-6">
             <h1 className="text-2xl font-bold tracking-tight">
               Add to Collection
@@ -154,23 +214,35 @@ function RouteComponent() {
           >
             <div className="space-y-4">
               {/* Name + Edition */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormInput
                   control={form.control}
                   name="name"
                   disabled={isPending}
                   placeholder="Game name"
                 />
-                <FormInput
-                  control={form.control}
-                  name="edition"
-                  placeholder="e.g. Deluxe, GOTY, Standard"
-                  disabled={isPending}
-                />
+                {!isDlc && (
+                  <FormInput
+                    control={form.control}
+                    name="edition"
+                    placeholder="e.g. Deluxe, GOTY, Standard"
+                    disabled={isPending}
+                  />
+                )}
+
+                {isDlc && (
+                  <FormSelect
+                    name="ownershipType"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    <OwnershipTypeSelect />
+                  </FormSelect>
+                )}
               </div>
 
               {/* Date + Amount */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormDatePicker
                   name="dateOfPurchase"
                   control={form.control}
@@ -185,28 +257,30 @@ function RouteComponent() {
               </div>
 
               {/* Platform + Provider */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormSelect
-                  name="platform"
-                  control={form.control}
-                  disabled={isPending}
-                >
-                  <PlatformSelect />
-                </FormSelect>
+              {!isDlc && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormSelect
+                    name="platform"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    <PlatformSelect />
+                  </FormSelect>
 
-                <FormSelect
-                  name="provider"
-                  control={form.control}
-                  disabled={isPending}
-                >
-                  {selectedPlatform === "PS" && <PSProviderSelect />}
-                  {selectedPlatform === "PC" && <PCProviderSelect />}
-                  {selectedPlatform === "XBOX" && <XBOXProviderSelect />}
-                </FormSelect>
-              </div>
+                  <FormSelect
+                    name="provider"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    {selectedPlatform === "PS" && <PSProviderSelect />}
+                    {selectedPlatform === "PC" && <PCProviderSelect />}
+                    {selectedPlatform === "XBOX" && <XBOXProviderSelect />}
+                  </FormSelect>
+                </div>
+              )}
 
               {/* PS Version */}
-              {selectedPlatform === "PS" && (
+              {selectedPlatform === "PS" && !isDlc && (
                 <FormSelect
                   name="PSVersion"
                   control={form.control}
@@ -217,22 +291,45 @@ function RouteComponent() {
               )}
 
               {/* Ownership + Lists */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormSelect
-                  name="ownershipType"
-                  control={form.control}
-                  disabled={isPending}
-                >
-                  <OwnershipTypeSelect />
-                </FormSelect>
+              <div
+                className={cn(
+                  "gap-4",
+                  isDlc ? "flex" : "grid grid-cols-1 sm:grid-cols-2",
+                )}
+              >
+                {!isDlc && (
+                  <FormSelect
+                    name="ownershipType"
+                    control={form.control}
+                    disabled={isPending}
+                  >
+                    <OwnershipTypeSelect />
+                  </FormSelect>
+                )}
 
-                <FormMultiSelect
-                  control={form.control}
-                  name="lists"
-                  options={listOptions}
-                  placeholder="Select Custom Lists"
-                  disabled={isPending}
-                />
+                {!isDlc && (
+                  <FormMultiSelect
+                    control={form.control}
+                    name="lists"
+                    options={listOptions}
+                    placeholder="Select Custom Lists"
+                    disabled={isPending}
+                  />
+                )}
+
+                {isDlc && (
+                  <FormGameSelectionCombobox
+                    control={form.control}
+                    name="collectionId"
+                    data={userGames.games.map((g) => ({
+                      id: g.id,
+                      label: g.name,
+                      value: g.id,
+                      image: g.image,
+                    }))}
+                    disabled={isPending}
+                  />
+                )}
               </div>
             </div>
 
@@ -273,6 +370,9 @@ function RouteComponent() {
                             onToggle={toggleDlc}
                             fieldIndex={fieldIndex}
                             control={form.control}
+                            gamePurchaseDate={form.watch("dateOfPurchase")}
+                            form={form}
+                            isPending={isPending}
                           />
                         );
                       })}
@@ -286,6 +386,7 @@ function RouteComponent() {
               <Button
                 type="submit"
                 className="flex-1 sm:flex-none sm:min-w-32"
+                disabled={isPending}
               >
                 Add to Collection
               </Button>
@@ -293,6 +394,7 @@ function RouteComponent() {
                 type="button"
                 variant="outline"
                 onClick={() => router.history.back()}
+                disabled={isPending}
               >
                 Cancel
               </Button>

@@ -27,8 +27,8 @@ export const getListItems = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "No Items found" });
 
     return res.status(200).json(listItems);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "GET_LIST_ITEMS_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

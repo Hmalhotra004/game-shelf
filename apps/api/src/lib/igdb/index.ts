@@ -1,3 +1,4 @@
+import { Artworks } from "@repo/schemas/types/igdb";
 import axios from "axios";
 import { IGDBCoverSizeType, IGDBGameField } from "./enum";
 
@@ -17,6 +18,8 @@ export const ExcludeGameType = [14, 5];
 
 export const IGDBPlatformIds = [167, 48, 6];
 
+export const IGDBArtworks = [3, 1];
+
 export const IGDBGame = {
   search: [
     IGDBGameField.Id,
@@ -30,6 +33,7 @@ export const IGDBGame = {
   getById: [
     IGDBGameField.Id,
     IGDBGameField.Name,
+    IGDBGameField.ParentGame,
     IGDBGameField.CoverImageId,
     IGDBGameField.PlatformsInfo,
     IGDBGameField.GameType,
@@ -38,6 +42,8 @@ export const IGDBGame = {
     IGDBGameField.GenresName,
     IGDBGameField.DlcsInfo,
     IGDBGameField.ExpansionsInfo,
+    IGDBGameField.ExternalGamesInfo,
+    IGDBGameField.ArtworksInfo,
   ],
 
   test: [
@@ -49,6 +55,7 @@ export const IGDBGame = {
     IGDBGameField.ScreenshotsAll,
     IGDBGameField.ArtworksAll,
     IGDBGameField.FirstReleaseDate,
+    IGDBGameField.ExternalGamesInfo,
   ],
 };
 
@@ -60,3 +67,27 @@ export const getFullYear = (date: number | null) =>
 
 export const getDate = (date: number | null) =>
   date ? new Date(Number(date) * 1000) : null;
+
+export const getBestIGDBArtwork = (
+  artworks: Artworks[] | undefined,
+): Artworks["image_id"] | null => {
+  if (!artworks?.length) return null;
+
+  return (
+    artworks.find(
+      (a) =>
+        IGDBArtworks.includes(a.artwork_type) &&
+        a.width === 1920 &&
+        a.height === 620,
+    )?.image_id ??
+    artworks.find(
+      (a) =>
+        IGDBArtworks.includes(a.artwork_type) &&
+        a.width >= 1000 &&
+        a.height >= 620,
+    )?.image_id ??
+    artworks.find((a) => a.width >= 1000 && a.height >= 620)?.image_id ??
+    artworks[0].image_id ??
+    null
+  );
+};
