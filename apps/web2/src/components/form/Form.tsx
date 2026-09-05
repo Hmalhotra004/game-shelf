@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { type ClassValue } from "clsx";
+import type { ClassValue } from "clsx";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { useState } from "react";
