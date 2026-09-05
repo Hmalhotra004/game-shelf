@@ -47,20 +47,20 @@ const Navbar = () => {
                 pathname === item.href || pathname.startsWith(item.href + "/");
 
               return (
-                <Button
-                  key={idx}
-                  variant="ghost"
-                  size="lg"
-                  className={cn(
-                    "text-base text-muted-foreground",
-                    isActive && "text-foreground",
-                  )}
-                >
-                  <Link to={item.href}>
+                <Link to={item.href}>
+                  <Button
+                    key={idx}
+                    variant="ghost"
+                    size="lg"
+                    className={cn(
+                      "text-base text-muted-foreground cursor-pointer",
+                      isActive && "text-foreground",
+                    )}
+                  >
                     <item.icon className="size-4" />
                     <span className="hidden sm:inline">{item.label}</span>
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               );
             })}
           </div>

@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/authClient";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
@@ -11,7 +12,6 @@ import {
   SettingsIcon,
 } from "lucide-react";
 
-import { Link, useNavigate } from "@tanstack/react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,79 +97,64 @@ const UserButton = () => {
 
         <Separator className="my-1" />
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/profile/manage-lists">
-            <ListIcon className="size-4 mr-1" />
-            Manage Lists
-          </Link>
-        </DropdownMenuItem>
-
-        {user.PSNAccountId && user.PSNAccountUserName && (
+        <Link to="/profile/manage-lists">
           <DropdownMenuItem
             className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-            asChild
+            // asChild
           >
-            <Link to="/profile/platinum-list">
+            <ListIcon className="size-4 mr-1" />
+            Manage Lists
+          </DropdownMenuItem>
+        </Link>
+
+        {user.PSNAccountId && (
+          <Link to="/profile/platinum-list">
+            <DropdownMenuItem className="h-10 flex items-center justify-center font-medium cursor-pointer transition">
               <ListIcon className="size-4 mr-1" />
               Platinum List
-            </Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          </Link>
         )}
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/profile/mastered-games">
+        <Link to="/profile/mastered-games">
+          <DropdownMenuItem className="h-10 flex items-center justify-center font-medium cursor-pointer transition">
             <ListIcon className="size-4 mr-1" />
             Mastered Games
-          </Link>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        </Link>
 
         <Separator className="my-1" />
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/profile/account-links">
+        <Link to="/profile/account-links">
+          <DropdownMenuItem className="h-10 flex items-center justify-center font-medium cursor-pointer transition">
             <KeyRoundIcon className="size-4 mr-1" />
             Account Links
-          </Link>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        </Link>
 
         <Separator className="my-1" />
 
         {user.userAccountType === "Admin" && (
-          <DropdownMenuItem
-            className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-            asChild
-          >
-            <Link to="/backup">
+          <Link to="/backup">
+            <DropdownMenuItem className="h-10 flex items-center justify-center font-medium cursor-pointer transition">
               <DownloadCloudIcon className="size-4 mr-1" />
               Backup Data
-            </Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          </Link>
         )}
 
-        <DropdownMenuItem
-          className="h-10 flex items-center justify-center font-medium cursor-pointer transition"
-          asChild
-        >
-          <Link to="/profile/settings">
+        <Link to="/profile/settings">
+          <DropdownMenuItem className="h-10 flex items-center justify-center font-medium cursor-pointer transition">
             <SettingsIcon className="size-4 mr-1" />
             Settings
-          </Link>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        </Link>
 
         <Separator className="my-1" />
 
         <DropdownMenuItem
           onClick={logout}
-          className="h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer transition"
+          className="h-10 flex items-center justify-center text-destructive font-medium cursor-pointer transition"
         >
           <LogOutIcon className="size-4 mr-1" />
           Log out
