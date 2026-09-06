@@ -129,8 +129,8 @@ export const getMany = async (req: Request, res: Response) => {
     });
 
     return res.status(200).json(result);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "PLAYTHORUGH_GET_MANY_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
