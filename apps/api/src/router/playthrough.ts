@@ -38,14 +38,14 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.delete(
-    "/:playthroughId/delete",
+    "/:playthroughId",
     authenticateUser,
     verifyPlaythrough,
     deletePlaythrough,
   );
 
   router.delete(
-    "/:playthroughId/:playthroughSessionId/delete",
+    "/:playthroughId/:playthroughSessionId",
     authenticateUser,
     verifyPlaythrough,
     verifyPlaythroughSession,
