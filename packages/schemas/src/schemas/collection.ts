@@ -43,9 +43,9 @@ export const createCollectionSchema = z
   .object({
     igdbId: z.number().int().min(1, { error: "id is required" }),
     name: z.string().trim().min(1, { error: "Name is requried" }),
-    dateOfPurchase: z.string().trim().min(1, { error: "Date is required" }),
+    dateOfPurchase: z.string().trim().optional(),
     edition: z.string().trim().nullable(),
-    amount: z.string().trim().min(1, { error: "Amount is requried" }),
+    amount: z.string().trim().optional(),
     platform: platformSchema,
     provider: providerSchema,
     PSVersion: PSVersionSchema,

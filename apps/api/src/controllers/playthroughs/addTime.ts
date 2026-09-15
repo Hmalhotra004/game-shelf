@@ -48,8 +48,8 @@ export const addTime = async (req: Request, res: Response) => {
     });
 
     return res.sendStatus(204);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    req.log.error({ err }, "PLAYTHROUGH_ADD_TIME_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

@@ -42,11 +42,11 @@ export const deletePlaythroughSession = async (req: Request, res: Response) => {
     });
 
     return res.sendStatus(204);
-  } catch (e) {
-    console.error(e);
-    if (e instanceof Error) {
-      if (e.cause === 404) {
-        return res.status(404).json({ error: e.message });
+  } catch (err) {
+    req.log.error({ err }, "PLAYTHROUGH_DELETE_TIME_ERROR");
+    if (err instanceof Error) {
+      if (err.cause === 404) {
+        return res.status(404).json({ error: err.message });
       }
     }
 

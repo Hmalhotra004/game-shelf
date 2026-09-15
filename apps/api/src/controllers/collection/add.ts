@@ -41,7 +41,9 @@ export const addCollection = async (req: Request, res: Response) => {
           name: data.name,
           image: data.image,
           coverImage: data.coverImage,
-          dateOfPurchase: new Date(data.dateOfPurchase),
+          dateOfPurchase: data.dateOfPurchase
+            ? new Date(data.dateOfPurchase)
+            : null,
           amount: data.amount,
           ownershipType: data.ownershipType,
           steamAppId: data.steamAppId ?? null,
@@ -73,7 +75,9 @@ export const addCollection = async (req: Request, res: Response) => {
             platform: data.platform,
             provider: data.provider,
             PSVersion: data.platform === "PS" ? data.PSVersion : null,
-            dateOfPurchase: new Date(data.dateOfPurchase),
+            dateOfPurchase: data.dateOfPurchase
+              ? new Date(data.dateOfPurchase)
+              : null,
             ownershipType: data.ownershipType,
             edition: data.edition,
             steamAppId: data.steamAppId ?? null,
@@ -99,7 +103,9 @@ export const addCollection = async (req: Request, res: Response) => {
               image: value.image,
               coverImage: value.coverImage,
               amount: value.amount,
-              dateOfPurchase: new Date(value.dateOfPurchase),
+              dateOfPurchase: value.dateOfPurchase
+                ? new Date(value.dateOfPurchase)
+                : null,
               ownershipType: value.ownershipType,
               steamAppId: value.steamAppId ?? null,
               collectionId: createdGame.id,
