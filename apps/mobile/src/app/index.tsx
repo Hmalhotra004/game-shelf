@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
   return (
-    <View className="flex-1 items-center justify-center bg-black">
-      <Text className="text-white">
-        Edit src/app/index.tsx to edit this screen.
-      </Text>
+    <View className="flex-1 items-center justify-center">
+      <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      <Button>
+        <Text>hello</Text>
+      </Button>
     </View>
   );
 }
