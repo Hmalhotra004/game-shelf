@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "expo start",
-    "dev:clear": "expo start --clear",
+    "dev:c": "expo start --clear",
     "pre": "npx expo prebuild",
     "pre:c": "npx expo prebuild --clean",
     "android": "expo run:android",
@@ -39,6 +39,7 @@
     "expo-symbols": "~57.0.3",
     "expo-system-ui": "~57.0.4",
     "expo-web-browser": "~57.0.3",
+    "nativewind": "4.2.7",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
@@ -51,6 +52,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "babel-preset-expo": "^57.0.12",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwindcss": "^3.4.19",
     "typescript": "~6.0.3"
   },
   "private": true
