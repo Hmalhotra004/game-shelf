@@ -8,8 +8,14 @@
     },
     "web": {
       "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      "args": ["--cd=D:/Projects/game-shelf/apps/web"],
+      "args": ["--cd=D:/Projects/game-shelf/apps/web2"],
       "icon": "globe",
+      "overrideName": true
+    },
+    "mobile": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--cd=D:/Projects/game-shelf/apps/mobile"],
+      "icon": "device-mobile",
       "overrideName": true
     },
     "@repo/schemas": {

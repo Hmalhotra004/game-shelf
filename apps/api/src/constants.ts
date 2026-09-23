@@ -1,13 +1,17 @@
 export const ORIGINS = [
+  "game-shelf://",
   "http://localhost:3000",
   "http://localhost:1420",
   "http://localhost:4173",
   "https://game-shelf-web-tan.vercel.app",
-  "game-shelf://",
   "http://192.168.1.7:3000",
+  "http://192.168.1.7:8081",
   "http://192.168.1.16:3000",
-  "http://192.168.29.157:3000/",
-  "http://10.209.180.220:3000/",
+  "http://192.168.1.6:8081",
+  "http://192.168.1.16:8081",
+  "http://192.168.29.157:3000",
+  "http://192.168.29.157:8081",
+  "http://10.209.180.220:3000",
 ];
 
 export const GenericErrorMessage = "Something Went Wrong!";
