@@ -1,8 +1,9 @@
+import { BASE_URL } from "@/lib/constants";
 import axios from "axios";
 import { authClient } from "./authClient";
 
 export const api = axios.create({
-  baseURL: `http://192.168.29.157:8080/api`,
+  baseURL: `${BASE_URL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
