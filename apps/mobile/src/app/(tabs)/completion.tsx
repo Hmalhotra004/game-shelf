@@ -1,14 +1,16 @@
+import Header from "@/components/Header";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
-import { Text } from "@/components/ui/text";
 import { View } from "react-native";
 
 const Completion = () => {
   return (
-    <ScreenWrapper>
-      <View>
-        <Text>Completion</Text>
-      </View>
-    </ScreenWrapper>
+    <View className="flex-1">
+      <Header />
+
+      <ScreenWrapper>
+        <View className="flex-1"></View>
+      </ScreenWrapper>
+    </View>
   );
 };
 

@@ -15,8 +15,8 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
   // (tabs)
   "/": { title: "Home", showBack: false },
   "/collection": { title: "Collection", showBack: false },
-  "/playthrough": { title: "Playthrough", showBack: false },
-  "/completion": { title: "Completion", showBack: false },
+  "/playthrough": { title: "Playthroughs", showBack: false },
+  "/completion": { title: "Completions", showBack: false },
 
   // (profile)
   "/profile": { title: "Profile", showAvatar: false },
