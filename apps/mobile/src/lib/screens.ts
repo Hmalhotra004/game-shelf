@@ -13,12 +13,13 @@ export type AppRoute = Extract<
 // Typos and non-existent routes become compile errors, and keys autocomplete.
 export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
   // (tabs)
-  "/": { title: "Home" },
-  "/collection": { title: "Collection" },
-  "/playthrough": { title: "Playthrough" },
-  "/completion": { title: "Completion" },
+  "/": { title: "Home", showBack: false },
+  "/collection": { title: "Collection", showBack: false },
+  "/playthrough": { title: "Playthrough", showBack: false },
+  "/completion": { title: "Completion", showBack: false },
 
   // (profile)
+  "/profile": { title: "Profile", showAvatar: false },
   // "/settings": { title: "Settings", showAvatar: false },
   // "/lists": { title: "Lists" },
 
@@ -37,4 +38,5 @@ export const DEFAULT_META: Required<ScreenMeta> = {
   title: "Game Shelf",
   showHeader: true,
   showAvatar: true,
+  showBack: true,
 };
