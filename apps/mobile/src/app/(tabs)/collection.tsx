@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { View } from "react-native";
 
-export default function Index() {
+const Collection = () => {
   return (
     <View className="flex-1">
       <Header />
@@ -12,4 +12,6 @@ export default function Index() {
       </ScreenWrapper>
     </View>
   );
-}
+};
+
+export default Collection;

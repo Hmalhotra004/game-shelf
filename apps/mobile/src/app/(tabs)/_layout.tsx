@@ -1,5 +1,6 @@
+import TabBar from "@/components/Tabbar/TabBar";
 import { useSession } from "@/hooks/useSession";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 
 export default function TabsLayout() {
   const { session, isPending } = useSession();
@@ -9,11 +10,16 @@ export default function TabsLayout() {
   if (!session) return <Redirect href={{ pathname: "/(auth)" }} />;
 
   return (
-    <Stack
+    <Tabs
       screenOptions={{
         headerShown: false,
-        animation: "slide_from_right",
       }}
-    />
+      tabBar={(props) => <TabBar {...props} />}
+    >
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="collection" />
+      <Tabs.Screen name="playthrough" />
+      <Tabs.Screen name="completion" />
+    </Tabs>
   );
 }
