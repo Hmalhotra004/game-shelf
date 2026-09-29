@@ -23,15 +23,24 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
   // "/settings": { title: "Settings", showAvatar: false },
   // "/lists": { title: "Lists" },
 
+  // (collection)
+  "/add": { title: "Add Collection", showHeader: false },
+
   // (collection)/[id]
-  // "/[id]": { title: "Game", showHeader: false },
-  // "/[id]/edit": { title: "Edit Game", showAvatar: false },
-  // "/[id]/edit-images": { title: "Edit Images", showAvatar: false },
-  // "/[id]/manage-dlcs": { title: "Manage DLCs", showAvatar: false },
-  // "/[id]/manage-micro": {
-  //   title: "Manage Microtransactions",
-  //   showAvatar: false,
-  // },
+  "/[collectionId]/index": { title: "Game", showHeader: false },
+  "/[collectionId]/edit": { title: "Edit Game", showAvatar: false },
+  "/(collection)/[collectionId]/edit-images": {
+    title: "Edit Images",
+    showAvatar: false,
+  },
+  "/(collection)/[collectionId]/manage-dlcs": {
+    title: "Manage DLCs",
+    showAvatar: false,
+  },
+  "/(collection)/[collectionId]/manage-micro": {
+    title: "Manage Microtransactions",
+    showAvatar: false,
+  },
 };
 
 export const DEFAULT_META: Required<ScreenMeta> = {
