@@ -1,4 +1,4 @@
-import SearchBottomSheet from "@/components/collection/SearchBottomSheet";
+import SearchBottomSheet from "@/components/collection/search/SearchBottomSheet";
 import TabBar from "@/components/Tabbar/TabBar";
 import { useSession } from "@/hooks/useSession";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";

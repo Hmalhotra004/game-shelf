@@ -1,0 +1,172 @@
+import GameSearchCard from "@/components/collection/search/GameSearchCard";
+import SearchBar from "@/components/SearchBar";
+import { api } from "@/lib/api";
+import { THEME } from "@/lib/theme";
+import { useThemeStore } from "@/store/useThemeStore";
+import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
+import { useDebounce } from "@repo/utils/hooks/useDebounce";
+import { searchGameQueryOptions } from "@repo/utils/queries/igdb";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, BackHandler, Text, View } from "react-native";
+
+import {
+  BottomSheetBackdrop,
+  BottomSheetFlatList,
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+
+type Game = SearchGameClientResponse[number];
+
+interface Props {
+  sheetRef: RefObject<BottomSheetModal | null>;
+}
+
+const MIN_QUERY_LENGTH = 2;
+
+const SearchBottomSheet = ({ sheetRef }: Props) => {
+  const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const theme = useThemeStore((s) => s.theme);
+
+  const debouncedSearch = useDebounce(search.trim(), 400);
+  const canSearch = debouncedSearch.length >= MIN_QUERY_LENGTH;
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        sheetRef.current?.dismiss();
+        return true;
+      },
+    );
+
+    return () => subscription.remove();
+  }, [isOpen, sheetRef]);
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close"
+      />
+    ),
+    [],
+  );
+
+  const snapPoints = useMemo(() => ["90%"], []);
+
+  const { data, isFetching, isError, error } = useQuery({
+    ...searchGameQueryOptions(api, true, debouncedSearch),
+    enabled: canSearch,
+    placeholderData: keepPreviousData, // avoids list flicker between queries
+  });
+
+  // Clear selection whenever the results change
+  useEffect(() => {
+    setSelectedId(null);
+  }, [debouncedSearch]);
+
+  const handlePress = useCallback((id: number) => {
+    setSelectedId((prev) => (prev === id ? null : id));
+  }, []);
+
+  const handleAddToWishlist = useCallback((game: Game) => {
+    // TODO: wishlist mutation
+    console.log("wishlist", game.id);
+  }, []);
+
+  const handleAddToCollection = useCallback((game: Game) => {
+    // TODO: collection mutation
+    console.log("collection", game.id);
+  }, []);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Game }) => (
+      <GameSearchCard
+        game={item}
+        selected={item.id === selectedId}
+        onPress={handlePress}
+        onAddToWishlist={handleAddToWishlist}
+        onAddToCollection={handleAddToCollection}
+      />
+    ),
+    [selectedId, handlePress, handleAddToWishlist, handleAddToCollection],
+  );
+
+  const renderEmpty = () => {
+    if (!canSearch) {
+      return (
+        <Text className="mt-8 text-center text-muted-foreground">
+          Type at least {MIN_QUERY_LENGTH} characters to search
+        </Text>
+      );
+    }
+
+    if (isFetching) return null;
+
+    if (isError) {
+      return (
+        <Text className="mt-8 text-center text-destructive">
+          {error instanceof Error ? error.message : "Something went wrong"}
+        </Text>
+      );
+    }
+    return (
+      <Text className="mt-8 text-center text-muted-foreground">
+        No games found
+      </Text>
+    );
+  };
+
+  return (
+    <BottomSheetModal
+      ref={sheetRef}
+      snapPoints={snapPoints}
+      enableDynamicSizing={false}
+      enablePanDownToClose
+      backdropComponent={renderBackdrop}
+      onChange={(index) => setIsOpen(index >= 0)}
+      onDismiss={() => {
+        setIsOpen(false);
+        setSelectedId(null);
+      }}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
+      backgroundStyle={{ backgroundColor: THEME[theme].background }}
+      handleIndicatorStyle={{ backgroundColor: THEME[theme].mutedForeground }}
+    >
+      <BottomSheetView className="flex-1 px-4">
+        <SearchBar
+          onChangeText={setSearch}
+          value={search}
+        />
+
+        {isFetching && (
+          <View className="py-2">
+            <ActivityIndicator color={THEME[theme].mutedForeground} />
+          </View>
+        )}
+
+        <BottomSheetFlatList
+          data={canSearch ? (data ?? []) : []}
+          keyExtractor={(item: Game) => String(item.id)}
+          renderItem={renderItem}
+          ListEmptyComponent={renderEmpty}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingTop: 12, paddingBottom: 32 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </BottomSheetView>
+    </BottomSheetModal>
+  );
+};
+
+export default SearchBottomSheet;
