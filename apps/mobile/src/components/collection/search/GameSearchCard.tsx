@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
 import { Image } from "expo-image";
 import { memo } from "react";
@@ -29,11 +30,12 @@ const GameSearchCard = ({
   return (
     <Pressable
       onPress={() => onPress(game.id)}
-      className={`mb-3 overflow-hidden rounded-xl border bg-card ${
-        selected ? "border-primary" : "border-border"
-      }`}
+      className={cn(
+        "mb-3 overflow-hidden rounded-xl border bg-card",
+        selected ? "border-primary" : "border-border",
+      )}
     >
-      <View className="flex-row gap-3 p-3">
+      <View className="flex-row gap-3 p-2 items-center">
         <Image
           source={game.coverUrl ? { uri: game.coverUrl } : undefined}
           style={{ width: 64, height: 86, borderRadius: 8 }}
@@ -63,10 +65,11 @@ const GameSearchCard = ({
       </View>
 
       {selected && (
-        <View className="flex-row gap-2 px-3 pb-3">
+        <View className="flex-row gap-2 px-2 pb-2">
           <Pressable
             onPress={() => onAddToWishlist(game)}
             className="flex-1 items-center rounded-lg border border-border py-2.5 active:opacity-70"
+            disabled
           >
             <Text className="text-sm font-medium text-foreground">
               Add to Wishlist

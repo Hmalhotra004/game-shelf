@@ -1,5 +1,6 @@
 import GameSearchCard from "@/components/collection/search/GameSearchCard";
 import SearchBar from "@/components/SearchBar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
@@ -7,14 +8,14 @@ import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
 import { useDebounce } from "@repo/utils/hooks/useDebounce";
 import { searchGameQueryOptions } from "@repo/utils/queries/igdb";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useRouter } from "expo-router";
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, BackHandler, Text, View } from "react-native";
+import { BackHandler, Text, View } from "react-native";
 
 import {
   BottomSheetBackdrop,
   BottomSheetFlatList,
   BottomSheetModal,
-  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
 type Game = SearchGameClientResponse[number];
@@ -30,6 +31,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const theme = useThemeStore((s) => s.theme);
+  const router = useRouter();
 
   const debouncedSearch = useDebounce(search.trim(), 400);
   const canSearch = debouncedSearch.length >= MIN_QUERY_LENGTH;
@@ -63,8 +65,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
   const snapPoints = useMemo(() => ["90%"], []);
 
   const { data, isFetching, isError, error } = useQuery({
-    ...searchGameQueryOptions(api, true, debouncedSearch),
-    enabled: canSearch,
+    ...searchGameQueryOptions(api, canSearch, debouncedSearch),
     placeholderData: keepPreviousData, // avoids list flicker between queries
   });
 
@@ -83,8 +84,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
   }, []);
 
   const handleAddToCollection = useCallback((game: Game) => {
-    // TODO: collection mutation
-    console.log("collection", game.id);
+    router.push({ pathname: "/(collection)/add", params: { igdbId: game.id } });
   }, []);
 
   const renderItem = useCallback(
@@ -133,25 +133,30 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
       enablePanDownToClose
       backdropComponent={renderBackdrop}
       onChange={(index) => setIsOpen(index >= 0)}
-      onDismiss={() => {
-        setIsOpen(false);
-        setSelectedId(null);
-      }}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       android_keyboardInputMode="adjustResize"
       backgroundStyle={{ backgroundColor: THEME[theme].background }}
       handleIndicatorStyle={{ backgroundColor: THEME[theme].mutedForeground }}
+      onDismiss={() => {
+        setIsOpen(false);
+        setSelectedId(null);
+      }}
     >
-      <BottomSheetView className="flex-1 px-4">
+      <View className="flex-1 px-4">
         <SearchBar
           onChangeText={setSearch}
           value={search}
         />
 
         {isFetching && (
-          <View className="py-2">
-            <ActivityIndicator color={THEME[theme].mutedForeground} />
+          <View className="py-2 gap-2">
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <Skeleton
+                key={idx}
+                className="h-24 rounded-xl"
+              />
+            ))}
           </View>
         )}
 
@@ -164,7 +169,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
           contentContainerStyle={{ paddingTop: 12, paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}
         />
-      </BottomSheetView>
+      </View>
     </BottomSheetModal>
   );
 };
