@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
 import { Image } from "expo-image";
@@ -13,12 +14,6 @@ interface Props {
   onAddToWishlist: (game: Game) => void;
   onAddToCollection: (game: Game) => void;
 }
-
-const Badge = ({ label }: { label: string }) => (
-  <View className="rounded-md bg-muted px-2 py-0.5">
-    <Text className="text-xs font-medium text-muted-foreground">{label}</Text>
-  </View>
-);
 
 const GameSearchCard = ({
   game,
@@ -57,8 +52,16 @@ const GameSearchCard = ({
 
           {(game.isDLC || game.isBundle) && (
             <View className="flex-row gap-2">
-              {game.isDLC && <Badge label="DLC" />}
-              {game.isBundle && <Badge label="Bundle" />}
+              {game.isDLC && (
+                <Badge variant="secondary">
+                  <Text className="text-foreground">DLC</Text>
+                </Badge>
+              )}
+              {game.isBundle && (
+                <Badge variant="secondary">
+                  <Text className="text-foreground">Bundle</Text>
+                </Badge>
+              )}
             </View>
           )}
         </View>

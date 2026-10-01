@@ -1,8 +1,11 @@
 import Header from "@/components/Header";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
+import { useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 
-export default function AddCollection() {
+const AddCollection = () => {
+  const { igdbId } = useLocalSearchParams<{ igdbId: string }>();
+
   return (
     <View className="flex-1">
       <Header />
@@ -12,4 +15,6 @@ export default function AddCollection() {
       </ScreenWrapper>
     </View>
   );
-}
+};
+
+export default AddCollection;
