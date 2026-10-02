@@ -1,6 +1,3 @@
-import SelectValueBottomSheet, {
-  type Option,
-} from "@/components/form/SelectValueBottomSheet";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input as TextInput } from "@/components/ui/input";
@@ -12,8 +9,14 @@ import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import type { ClassValue } from "clsx";
-import { ChevronDownIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
 import { ReactNode, useRef, useState } from "react";
+import MultiSelectBottomSheet from "./MultiSelectBottomSheet";
+
+import { ChevronDownIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
+
+import SelectValueBottomSheet, {
+  type Option,
+} from "@/components/form/SelectValueBottomSheet";
 
 import {
   KeyboardTypeOptions,
@@ -405,3 +408,122 @@ export const FormSelectSheet: FormControlFunc<{
     </FormBase>
   );
 };
+
+// ─── FormMultiSelectSheet ─────────────────────────────────────────────────────
+export const FormMultiSelectSheet: FormControlFunc<{
+  options: Option[];
+  placeholder?: string;
+  className?: ClassValue;
+}> = ({ disabled, options, placeholder = "Select", className, ...props }) => {
+  const theme = useThemeStore((s) => s.theme);
+  const sheetRef = useRef<BottomSheetModal>(null);
+
+  return (
+    <FormBase {...props}>
+      {({ onChange, value, invalid }) => {
+        const selected = (value as string[] | null | undefined) ?? [];
+        const text = selected.length
+          ? options
+              .filter((o) => selected.includes(o.value))
+              .map((o) => o.label)
+              .join(", ")
+          : placeholder;
+
+        return (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              onPress={() => sheetRef.current?.present()}
+              className={cn(
+                "h-10 justify-between",
+                invalid && "border-destructive",
+                className,
+              )}
+            >
+              <Text
+                numberOfLines={1}
+                className={cn(
+                  "flex-1 text-sm",
+                  !selected.length && "text-muted-foreground",
+                )}
+              >
+                {text}
+              </Text>
+              <ChevronDownIcon
+                size={16}
+                color={THEME[theme].mutedForeground}
+              />
+            </Button>
+
+            <MultiSelectBottomSheet
+              title={props.label ?? placeholder}
+              options={options}
+              value={selected}
+              onChange={(v) => onChange(v.length ? v : null)}
+              sheetRef={sheetRef}
+            />
+          </>
+        );
+      }}
+    </FormBase>
+  );
+};
+
+// export const FormDatePicker: FormControlFunc<{
+//   placeholder?: string;
+//   maximumDate?: Date;
+//   className?: ClassValue;
+// }> = ({
+//   disabled,
+//   placeholder = "Pick a date",
+//   maximumDate,
+//   className,
+//   ...props
+// }) => {
+//   const [open, setOpen] = useState(false);
+//   const theme = useThemeStore((s) => s.theme);
+
+//   return (
+//     <FormBase {...props}>
+//       {({ onChange, value, invalid }) => {
+//         const date = value ? new Date(value as string) : null;
+//         return (
+//           <>
+//             <Pressable
+//               disabled={disabled}
+//               onPress={() => setOpen(true)}
+//               className={cn(
+//                 "h-10 flex-row items-center justify-between rounded-md border border-border bg-card px-3 active:opacity-70",
+//                 invalid && "border-destructive",
+//                 disabled && "opacity-50",
+//                 className,
+//               )}
+//             >
+//               <Text className={cn("text-sm", !date && "text-muted-foreground")}>
+//                 {date ? date.toLocaleDateString() : placeholder}
+//               </Text>
+//               <CalendarIcon
+//                 size={16}
+//                 color={THEME[theme].mutedForeground}
+//               />
+//             </Pressable>
+
+//             <DateTimePickerModal
+//               isVisible={open}
+//               mode="date"
+//               date={date ?? new Date()}
+//               maximumDate={maximumDate}
+//               onConfirm={(d) => {
+//                 setOpen(false);
+//                 onChange(d.toISOString());
+//               }}
+//               onCancel={() => setOpen(false)}
+//             />
+//           </>
+//         );
+//       }}
+//     </FormBase>
+//   );
+// };

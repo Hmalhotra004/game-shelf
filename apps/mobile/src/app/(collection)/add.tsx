@@ -1,10 +1,12 @@
-import { FormInput, FormSelectSheet } from "@/components/form/form";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
+import { THEME } from "@/lib/theme";
 import { handleError, showToast } from "@/lib/utils";
+import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DLCs } from "@repo/schemas/types/igdb";
 import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
@@ -15,9 +17,24 @@ import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { ScrollView, View } from "react-native";
+
+import {
+  // FormDatePicker,
+  FormInput,
+  FormMultiSelectSheet,
+  FormSelectSheet,
+} from "@/components/form/form";
+
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 
 import {
   getOwnershipTypeOptions,
@@ -42,6 +59,7 @@ const PROVIDERS = {
 const AddCollection = () => {
   const { igdbId } = useLocalSearchParams<{ igdbId: string }>();
   const [dlcOpen, setDlcOpen] = useState(false);
+  const theme = useThemeStore((s) => s.theme);
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -53,7 +71,10 @@ const AddCollection = () => {
     getByIdQueryOptions(api, Number(igdbId)),
   );
 
-  const listOptions = lists?.map((d) => ({ label: d.name, value: d.id }));
+  const listOptions = (lists ?? []).map((d) => ({
+    label: d.name,
+    value: d.id,
+  }));
 
   const addGame = useMutation(addCollectionMutationOptions(api));
 
@@ -155,85 +176,281 @@ const AddCollection = () => {
   const isPending = addGame.isPending;
   const isLoading = isLoadingGame || isLoadingLists || isLoadingUserGames;
 
+  if (isLoadingGame || !game) {
+    return (
+      <View className="flex-1">
+        <Header />
+
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator />
+        </View>
+      </View>
+    );
+  }
+
+  const dlcs = game.dlcs ?? [];
+  const hasDlcs = dlcs.length > 0;
+  const selectedCount = fields.length;
+
   return (
     <View className="flex-1">
       <Header />
 
       <ScreenWrapper>
         <ScrollView
-          contentContainerClassName="gap-4 pb-10"
+          contentContainerClassName="gap-6 pb-10"
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <FormInput
-            control={form.control}
-            name="name"
-            label="Name"
-            disabled={isLoading}
-          />
+          {/* Game summary */}
+          <View className="flex-row items-center gap-4">
+            {game.coverImage && (
+              <Image
+                source={{ uri: game.image }}
+                className="h-24 w-[72px] rounded-md bg-muted"
+                resizeMode="cover"
+              />
+            )}
+            <View className="flex-1 gap-1">
+              <Text className="text-2xl font-bold tracking-tight">
+                Add to Collection
+              </Text>
+              <Text className="text-sm text-muted-foreground">
+                Fill in the details below to add this game to your collection.
+              </Text>
+            </View>
+          </View>
 
-          <FormSelectSheet
-            control={form.control}
-            name="platform"
-            label="Platform"
-            options={PLATFORM_OPTIONS}
-            onValueChange={(p) =>
-              form.setValue(
-                "provider",
-                PROVIDERS[p as keyof typeof PROVIDERS].default,
-              )
-            }
-          />
-
-          <FormSelectSheet
-            control={form.control}
-            name="provider"
-            label="Provider"
-            options={[...PROVIDERS[selectedPlatform].options]}
-          />
-
-          {selectedPlatform === "PS" && (
-            <FormSelectSheet
+          <View className="gap-4">
+            {/* Name + Edition / Ownership (DLC) */}
+            <FormInput
               control={form.control}
-              name="PSVersion"
-              label="PS Version"
-              options={PS_VERSION_OPTIONS}
+              name="name"
+              label="Name"
+              placeholder="Game name"
+              disabled={isPending}
             />
+
+            {!isDlc ? (
+              <FormInput
+                control={form.control}
+                name="edition"
+                label="Edition"
+                placeholder="e.g. Deluxe, GOTY, Standard"
+                disabled={isPending}
+              />
+            ) : (
+              <FormSelectSheet
+                control={form.control}
+                name="ownershipType"
+                label="Ownership Type"
+                options={getOwnershipTypeOptions(true)}
+                disabled={isPending}
+              />
+            )}
+
+            {/* Date + Amount */}
+            <View className="flex-row gap-4">
+              <View className="flex-1">
+                <Text>Date picker</Text>
+                {/* <FormDatePicker
+                  control={form.control}
+                  name="dateOfPurchase"
+                  label="Date of Purchase"
+                  disabled={isPending}
+                /> */}
+              </View>
+              <View className="flex-1">
+                <FormInput
+                  control={form.control}
+                  name="amount"
+                  label="Amount"
+                  placeholder="e.g. 59.99"
+                  keyboardType="decimal-pad"
+                  disabled={isPending}
+                />
+              </View>
+            </View>
+
+            {/* Platform + Provider */}
+            {!isDlc && (
+              <View className="flex-row gap-4">
+                <View className="flex-1">
+                  <FormSelectSheet
+                    control={form.control}
+                    name="platform"
+                    label="Platform"
+                    options={PLATFORM_OPTIONS}
+                    disabled={isPending}
+                    onValueChange={(p) =>
+                      form.setValue(
+                        "provider",
+                        PROVIDERS[p as keyof typeof PROVIDERS].default,
+                      )
+                    }
+                  />
+                </View>
+                <View className="flex-1">
+                  <FormSelectSheet
+                    control={form.control}
+                    name="provider"
+                    label="Provider"
+                    options={[...PROVIDERS[selectedPlatform].options]}
+                    disabled={isPending}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* PS Version */}
+            {selectedPlatform === "PS" && !isDlc && (
+              <FormSelectSheet
+                control={form.control}
+                name="PSVersion"
+                label="PS Version"
+                options={PS_VERSION_OPTIONS}
+                disabled={isPending}
+              />
+            )}
+
+            {/* Ownership + Lists / Parent game (DLC) */}
+            {!isDlc && (
+              <>
+                <FormSelectSheet
+                  control={form.control}
+                  name="ownershipType"
+                  label="Ownership Type"
+                  options={getOwnershipTypeOptions(false)}
+                  disabled={isPending}
+                />
+                <FormMultiSelectSheet
+                  control={form.control}
+                  name="lists"
+                  label="Custom Lists"
+                  placeholder="Select custom lists"
+                  options={listOptions}
+                  disabled={isPending}
+                />
+              </>
+            )}
+
+            {isDlc && (
+              <FormSelectSheet
+                control={form.control}
+                name="collectionId"
+                label="Parent Game"
+                placeholder="Select parent game"
+                options={(userGames?.games ?? []).map((g) => ({
+                  value: g.id,
+                  label: g.name,
+                }))}
+                disabled={isPending}
+              />
+            )}
+          </View>
+
+          {/* DLCs */}
+          {hasDlcs && (
+            <View className="gap-3 border-t border-border pt-4">
+              <Pressable
+                onPress={() => setDlcOpen((o) => !o)}
+                className="flex-row items-center gap-2 active:opacity-70"
+              >
+                {dlcOpen ? (
+                  <ChevronUpIcon
+                    size={16}
+                    color={THEME[theme].mutedForeground}
+                  />
+                ) : (
+                  <ChevronDownIcon
+                    size={16}
+                    color={THEME[theme].mutedForeground}
+                  />
+                )}
+                <Text className="text-sm font-medium text-muted-foreground">
+                  DLCs ({dlcs.length} available
+                  {selectedCount > 0 && `, ${selectedCount} selected`})
+                </Text>
+              </Pressable>
+
+              {dlcOpen &&
+                dlcs.map((dlc) => {
+                  const index = dlcIndexMap.get(dlc.id);
+                  const checked = index !== undefined;
+
+                  return (
+                    <View
+                      key={dlc.id}
+                      className="gap-3 rounded-md border border-border bg-card p-3"
+                    >
+                      <Pressable
+                        onPress={() => toggleDlc(dlc)}
+                        disabled={isPending}
+                        className="flex-row items-center gap-3"
+                      >
+                        <Checkbox
+                          checked={checked}
+                          onCheckedChange={() => toggleDlc(dlc)}
+                          disabled={isPending}
+                        />
+                        <Text className="flex-1 text-sm">{dlc.name}</Text>
+                      </Pressable>
+
+                      {checked && (
+                        <View className="gap-3">
+                          <View className="flex-row gap-4">
+                            <View className="flex-1">
+                              <Text>Date Pciker</Text>
+                              {/* <FormDatePicker
+                                control={form.control}
+                                name={`DLCs.${index}.dateOfPurchase`}
+                                label="Date"
+                                disabled={isPending}
+                              /> */}
+                            </View>
+                            <View className="flex-1">
+                              <FormInput
+                                control={form.control}
+                                name={`DLCs.${index}.amount`}
+                                label="Amount"
+                                placeholder="0"
+                                keyboardType="decimal-pad"
+                                disabled={isPending}
+                              />
+                            </View>
+                          </View>
+                          <FormSelectSheet
+                            control={form.control}
+                            name={`DLCs.${index}.ownershipType`}
+                            label="Ownership Type"
+                            options={getOwnershipTypeOptions(true)}
+                            disabled={isPending}
+                          />
+                        </View>
+                      )}
+                    </View>
+                  );
+                })}
+            </View>
           )}
 
-          <FormSelectSheet
-            control={form.control}
-            name="ownershipType"
-            label="Ownership Type"
-            options={getOwnershipTypeOptions(isDlc)}
-          />
-
-          {isDlc && (
-            <FormSelectSheet
-              control={form.control}
-              name="collectionId"
-              label="Parent Game"
-              placeholder="Select parent game"
-              options={(userGames?.games ?? []).map((g) => ({
-                value: g.id,
-                label: g.name,
-              }))}
-            />
-          )}
-
-          <FormInput
-            control={form.control}
-            name="amount"
-            label="Amount"
-            keyboardType="decimal-pad"
-            placeholder="0"
-          />
-
-          <Button
-            onPress={form.handleSubmit(onSubmit)}
-            disabled={isPending || isLoading}
-          >
-            <Text>{isPending ? "Adding..." : "Add Game"}</Text>
-          </Button>
+          {/* Actions */}
+          <View className="flex-row gap-3">
+            <Button
+              className="flex-1"
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={isPending || isLoading}
+            >
+              <Text>{isPending ? "Adding..." : "Add to Collection"}</Text>
+            </Button>
+            <Button
+              variant="outline"
+              onPress={() => router.back()}
+              disabled={isPending}
+            >
+              <Text>Cancel</Text>
+            </Button>
+          </View>
         </ScrollView>
       </ScreenWrapper>
     </View>
