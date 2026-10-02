@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc && tsc-alias",
-    "start": "node --env-file=.env -e \"process.env.NODE_ENV='production'; import('./dist/index.js')\"",
+    "start": "node --env-file-if-exists=.env -e \"process.env.NODE_ENV='production'; import('./dist/index.js')\"",
     "db": "drizzle-kit studio",
     "db:old": "drizzle-kit studio --config=drizzle.old.config.ts",
     "db:prod": "drizzle-kit studio --config=drizzle.prod.config.ts",
