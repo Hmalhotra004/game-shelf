@@ -42,6 +42,10 @@ app.use(express.urlencoded({ extended: true }));
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api", router());
 
+app.get("/api/health", (req, res) => {
+  return res.status(200).json({ message: "Health Verified!!" });
+});
+
 const server = http.createServer(app);
 
 async function start() {
