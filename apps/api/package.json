@@ -8,7 +8,6 @@
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc && tsc-alias",
     "start": "node --env-file=.env -e \"process.env.NODE_ENV='production'; import('./dist/index.js')\"",
-    "inngest:dev": "pnpm dlx inngest-cli@latest dev",
     "db": "drizzle-kit studio",
     "db:prod": "drizzle-kit studio --config=drizzle.prod.config.ts",
     "db:push": "drizzle-kit push",
