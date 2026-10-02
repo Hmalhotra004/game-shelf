@@ -1,11 +1,10 @@
+import { isProd } from "@/lib/isProd";
 import { Pool } from "pg";
 import * as relations from "./relation";
 import * as schema from "./schema/index";
 
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import { drizzle as drizzleNode } from "drizzle-orm/node-postgres";
-
-const isProd = process.env.NODE_ENV === "production";
 
 const schemaWithRelations = {
   ...schema,
