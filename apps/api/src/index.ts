@@ -12,6 +12,7 @@ import http from "node:http";
 import { ORIGINS } from "./constants";
 import { boss, startBoss } from "./lib/boss";
 import { logger } from "./lib/logger";
+import { redis } from "./lib/redis";
 import { requestLogger } from "./middlewares/logger";
 
 import {
@@ -43,6 +44,9 @@ app.use("/api", router());
 const server = http.createServer(app);
 
 async function start() {
+  await redis.connect();
+  logger.info("Redis connected");
+
   await db.execute(sql`SELECT 1`);
   logger.info("Database Connected");
 
@@ -70,6 +74,8 @@ process.on("SIGINT", () => void shutdown("SIGINT"));
 
 try {
   await start();
+
+  // await resolvePlatformIds();
 } catch (err) {
   logger.fatal({ err }, "Failed to start server");
   process.exit(1);
