@@ -17,7 +17,7 @@ type DB =
 
 let db: DB;
 
-if (isProd) {
+if (isProd()) {
   db = drizzleNeon(process.env.DATABASE_URL_PROD!, {
     schema: schemaWithRelations,
   });

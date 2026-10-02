@@ -5,7 +5,7 @@ import pinoHttp from "pino-http";
 
 export const requestLogger = pinoHttp({
   logger,
-  autoLogging: isProd,
+  autoLogging: isProd(),
 
   genReqId: (req, res) => {
     const id = randomUUID();

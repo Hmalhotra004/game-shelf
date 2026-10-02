@@ -11,6 +11,7 @@ import helmet from "helmet";
 import http from "node:http";
 import { ORIGINS } from "./constants";
 import { boss, startBoss } from "./lib/boss";
+import { isProd } from "./lib/isProd";
 import { logger } from "./lib/logger";
 import { redis } from "./lib/redis";
 import { requestLogger } from "./middlewares/logger";
@@ -74,6 +75,10 @@ process.on("SIGINT", () => void shutdown("SIGINT"));
 
 try {
   await start();
+
+  logger.info({
+    prod: isProd(),
+  });
 
   // await resolvePlatformIds();
 } catch (err) {
