@@ -18,13 +18,10 @@ type DB =
 let db: DB;
 
 if (isProd) {
-  db = drizzleNeon(process.env.DATABASE_URL_NEON!, {
+  db = drizzleNeon(process.env.DATABASE_URL_PROD!, {
     schema: schemaWithRelations,
   });
 } else {
-  // db = drizzleNeon(process.env.DATABASE_URL_NEON_TEST!, {
-  //   schema: schemaWithRelations,
-  // });
   const pool =
     globalThis.pgPool ??
     new Pool({
