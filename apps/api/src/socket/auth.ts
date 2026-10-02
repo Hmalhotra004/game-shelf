@@ -25,7 +25,6 @@ export const socketAuthMiddleware = async (
       id: session.user.id,
       steamId: session.user.steamId,
       PSNAccountId: session.user.PSNAccountId,
-      PSNAccountUserName: session.user.PSNAccountUserName,
     };
 
     next();
