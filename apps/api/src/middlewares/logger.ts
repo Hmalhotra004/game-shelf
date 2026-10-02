@@ -1,10 +1,11 @@
+import { isProd } from "@/lib/isProd";
 import { logger } from "@/lib/logger";
 import { randomUUID } from "crypto";
 import pinoHttp from "pino-http";
 
 export const requestLogger = pinoHttp({
   logger,
-  autoLogging: false,
+  autoLogging: isProd(),
 
   genReqId: (req, res) => {
     const id = randomUUID();

@@ -126,6 +126,8 @@ export const addCollection = async (req: Request, res: Response) => {
       });
     }
 
+    // TODO: add BGT to sync npcommunicationId or SteamAppId
+
     return res.sendStatus(204);
   } catch (err) {
     req.log.error({ err }, "ADD_COLLECTION_ERROR");
