@@ -2,7 +2,8 @@ import { Input } from "@/components/ui/input";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
 import { SearchIcon, XIcon } from "lucide-react-native";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
+import { Button } from "./ui/button";
 
 type Props = {
   value: string;
@@ -33,15 +34,17 @@ const SearchBar = ({
       />
 
       {value.length > 0 && (
-        <Pressable
+        <Button
+          variant="ghost"
+          size="icon"
           onPress={() => onChangeText("")}
-          className="absolute right-3 top-0 bottom-0 items-center justify-center z-10"
+          className="absolute right-0 top-0 bottom-0 items-center justify-center z-10"
         >
           <XIcon
             size={16}
             color={THEME[theme].foreground}
           />
-        </Pressable>
+        </Button>
       )}
     </View>
   );

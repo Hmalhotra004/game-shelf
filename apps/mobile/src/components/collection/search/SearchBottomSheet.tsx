@@ -62,7 +62,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
     [],
   );
 
-  const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints = useMemo(() => ["91%"], []);
 
   const { data, isFetching, isError, error } = useQuery({
     ...searchGameQueryOptions(api, canSearch, debouncedSearch),

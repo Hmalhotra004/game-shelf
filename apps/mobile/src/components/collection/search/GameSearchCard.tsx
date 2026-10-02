@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
 import { Image } from "expo-image";
@@ -69,24 +70,21 @@ const GameSearchCard = ({
 
       {selected && (
         <View className="flex-row gap-2 px-2 pb-2">
-          <Pressable
+          <Button
+            variant="outline"
             onPress={() => onAddToWishlist(game)}
-            className="flex-1 items-center rounded-lg border border-border py-2.5 active:opacity-70"
-            disabled
+            disabled={true}
+            className="flex-1"
           >
-            <Text className="text-sm font-medium text-foreground">
-              Add to Wishlist
-            </Text>
-          </Pressable>
+            <Text className="text-foreground">Add to Wishlist</Text>
+          </Button>
 
-          <Pressable
+          <Button
             onPress={() => onAddToCollection(game)}
-            className="flex-1 items-center rounded-lg bg-primary py-2.5 active:opacity-70"
+            className="flex-1"
           >
-            <Text className="text-sm font-medium text-primary-foreground">
-              Add to Collection
-            </Text>
-          </Pressable>
+            <Text className="text-primary-foreground">Add to Collection</Text>
+          </Button>
         </View>
       )}
     </Pressable>
