@@ -10,8 +10,14 @@ import express from "express";
 import helmet from "helmet";
 import http from "node:http";
 import { ORIGINS } from "./constants";
+import { boss, startBoss } from "./lib/boss";
 import { logger } from "./lib/logger";
 import { requestLogger } from "./middlewares/logger";
+
+import {
+  ensureResolvePlatformIdsQueue,
+  registerResolvePlatformIds,
+} from "@/jobs/resolvePlatformIds";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
@@ -42,10 +48,25 @@ async function start() {
 
   // initSocket(server);
 
+  // Boss + queues BEFORE accepting traffic
+  await startBoss();
+  await ensureResolvePlatformIdsQueue();
+  await registerResolvePlatformIds();
+
   server.listen(PORT, "0.0.0.0", () => {
     logger.info(`Server running on port ${PORT}`);
   });
 }
+
+async function shutdown(signal: string) {
+  logger.info({ signal }, "Shutting down");
+  server.close();
+  await boss.stop({ graceful: true, timeout: 30_000 });
+  process.exit(0);
+}
+
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));
 
 try {
   await start();
