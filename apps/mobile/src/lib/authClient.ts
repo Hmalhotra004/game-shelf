@@ -1,5 +1,5 @@
-import { BASE_URL } from "@/lib/constants";
 import { expoClient } from "@better-auth/expo/client";
+import { BASE_URL } from "@repo/utils/constants";
 import { createAuthClient } from "better-auth/react";
 import * as SecureStore from "expo-secure-store";
 

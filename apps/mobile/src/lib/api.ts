@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/lib/constants";
+import { BASE_URL } from "@repo/utils/constants";
 import axios from "axios";
 import { authClient } from "./authClient";
 
