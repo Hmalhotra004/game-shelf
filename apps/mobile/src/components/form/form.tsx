@@ -1,14 +1,19 @@
+import SelectValueBottomSheet, {
+  type Option,
+} from "@/components/form/SelectValueBottomSheet";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input as TextInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
+import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import type { ClassValue } from "clsx";
-import { EyeIcon, EyeOffIcon } from "lucide-react-native";
-import { ReactNode, useState } from "react";
+import { ChevronDownIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
+import { ReactNode, useRef, useState } from "react";
 
 import {
   KeyboardTypeOptions,
@@ -334,3 +339,69 @@ export const FormCheckbox: FormControlFunc<{
 //     )}
 //   </FormBase>
 // );
+
+export const FormSelectSheet: FormControlFunc<{
+  options: Option[];
+  placeholder?: string;
+  className?: ClassValue;
+  onValueChange?: (value: string) => void;
+}> = ({
+  disabled,
+  options,
+  placeholder = "Select",
+  className,
+  onValueChange,
+  ...props
+}) => {
+  const theme = useThemeStore((s) => s.theme);
+  const sheetRef = useRef<BottomSheetModal>(null);
+
+  return (
+    <FormBase {...props}>
+      {({ onChange, value, invalid }) => {
+        const current = value as string | null | undefined;
+        const selectedLabel = options.find((o) => o.value === current)?.label;
+
+        return (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              onPress={() => sheetRef.current?.present()}
+              className={cn(
+                "h-10 justify-between",
+                invalid && "border-destructive",
+                className,
+              )}
+            >
+              <Text
+                className={cn(
+                  "text-sm",
+                  !selectedLabel && "text-muted-foreground",
+                )}
+              >
+                {selectedLabel ?? placeholder}
+              </Text>
+              <ChevronDownIcon
+                size={16}
+                color={THEME[theme].mutedForeground}
+              />
+            </Button>
+
+            <SelectValueBottomSheet
+              title={props.label ?? placeholder}
+              options={options}
+              value={current}
+              sheetRef={sheetRef}
+              onChange={(v) => {
+                onChange(v);
+                onValueChange?.(v);
+              }}
+            />
+          </>
+        );
+      }}
+    </FormBase>
+  );
+};

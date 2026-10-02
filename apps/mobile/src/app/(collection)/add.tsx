@@ -1,5 +1,8 @@
+import { FormInput, FormSelectSheet } from "@/components/form/form";
 import Header from "@/components/Header";
+import { Button } from "@/components/ui/button";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
+import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { handleError, showToast } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,14 +15,29 @@ import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
+
+import {
+  getOwnershipTypeOptions,
+  PC_PROVIDER_OPTIONS,
+  PLATFORM_OPTIONS,
+  PS_PROVIDER_OPTIONS,
+  PS_VERSION_OPTIONS,
+  XBOX_PROVIDER_OPTIONS,
+} from "@repo/utils/lib/gameOptions";
 
 import {
   createCollectionSchema,
   CreateCollectionSchemaType,
 } from "@repo/schemas/schemas/collection";
+
+const PROVIDERS = {
+  PC: { options: PC_PROVIDER_OPTIONS, default: "Steam" },
+  PS: { options: PS_PROVIDER_OPTIONS, default: "PSN" },
+  XBOX: { options: XBOX_PROVIDER_OPTIONS, default: "XBOX" },
+} as const;
 
 const AddCollection = () => {
   const { igdbId } = useLocalSearchParams<{ igdbId: string }>();
@@ -66,28 +84,11 @@ const AddCollection = () => {
     name: "DLCs",
   });
 
-  const watchedName = form.watch("name");
-  const watchedImage = form.watch("image");
-  const watchedCoverImage = form.watch("coverImage");
-  const steamAppId = form.watch("steamAppId");
-  const isDlc = form.watch("isDLC");
-  const watchedCollectionId = form.watch("collectionId");
-
-  if (game?.name && !watchedName) form.setValue("name", game.name);
-  if (game?.image && !watchedImage) form.setValue("image", game.image);
-  if (game?.coverImage && !watchedCoverImage)
-    form.setValue("coverImage", game.coverImage);
-  if (game?.steamAppId && !steamAppId)
-    form.setValue("steamAppId", game.steamAppId);
-  if (game?.isDlc && !isDlc) form.setValue("isDLC", game.isDlc);
-
+  const isDlc = form.watch("isDLC") ?? false;
   const selectedPlatform = form.watch("platform");
 
-  // Map igdbId → field-array index for O(1) lookup
-  const dlcIndexMap = new Map(fields.map((f, i) => [f.igdbId, i]));
-
   const { data: userGames, isLoading: isLoadingUserGames } = useQuery(
-    userGetCollectionQueryOptions(api, isDlc ?? false),
+    userGetCollectionQueryOptions(api, isDlc),
   );
 
   const parentGame = isDlc
@@ -96,8 +97,24 @@ const AddCollection = () => {
       )
     : undefined;
 
-  if (parentGame && !watchedCollectionId)
-    form.setValue("collectionId", parentGame.id);
+  // Prefill from IGDB once the game loads (was running on every render)
+  useEffect(() => {
+    if (!game) return;
+    if (game.name) form.setValue("name", game.name);
+    if (game.image) form.setValue("image", game.image);
+    if (game.coverImage) form.setValue("coverImage", game.coverImage);
+    if (game.steamAppId) form.setValue("steamAppId", game.steamAppId);
+    if (game.isDlc) form.setValue("isDLC", game.isDlc);
+  }, [game, form]);
+
+  // Preselect the parent game when this is a DLC we already own
+  useEffect(() => {
+    if (parentGame && !form.getValues("collectionId")) {
+      form.setValue("collectionId", parentGame.id);
+    }
+  }, [parentGame, form]);
+
+  const dlcIndexMap = new Map(fields.map((f, i) => [f.igdbId, i]));
 
   function toggleDlc(dlc: DLCs) {
     if (dlcIndexMap.has(dlc.id)) {
@@ -119,7 +136,6 @@ const AddCollection = () => {
   async function onSubmit(values: CreateCollectionSchemaType) {
     await addGame.mutateAsync(
       { ...values },
-
       {
         onSuccess: async () => {
           showToast("success", "Game Added");
@@ -131,10 +147,7 @@ const AddCollection = () => {
           });
           router.back();
         },
-
-        onError: (e) => {
-          handleError(e);
-        },
+        onError: (e) => handleError(e),
       },
     );
   }
@@ -147,7 +160,81 @@ const AddCollection = () => {
       <Header />
 
       <ScreenWrapper>
-        <View className="flex-1"></View>
+        <ScrollView
+          contentContainerClassName="gap-4 pb-10"
+          keyboardShouldPersistTaps="handled"
+        >
+          <FormInput
+            control={form.control}
+            name="name"
+            label="Name"
+            disabled={isLoading}
+          />
+
+          <FormSelectSheet
+            control={form.control}
+            name="platform"
+            label="Platform"
+            options={PLATFORM_OPTIONS}
+            onValueChange={(p) =>
+              form.setValue(
+                "provider",
+                PROVIDERS[p as keyof typeof PROVIDERS].default,
+              )
+            }
+          />
+
+          <FormSelectSheet
+            control={form.control}
+            name="provider"
+            label="Provider"
+            options={[...PROVIDERS[selectedPlatform].options]}
+          />
+
+          {selectedPlatform === "PS" && (
+            <FormSelectSheet
+              control={form.control}
+              name="PSVersion"
+              label="PS Version"
+              options={PS_VERSION_OPTIONS}
+            />
+          )}
+
+          <FormSelectSheet
+            control={form.control}
+            name="ownershipType"
+            label="Ownership Type"
+            options={getOwnershipTypeOptions(isDlc)}
+          />
+
+          {isDlc && (
+            <FormSelectSheet
+              control={form.control}
+              name="collectionId"
+              label="Parent Game"
+              placeholder="Select parent game"
+              options={(userGames?.games ?? []).map((g) => ({
+                value: g.id,
+                label: g.name,
+              }))}
+            />
+          )}
+
+          <FormInput
+            control={form.control}
+            name="amount"
+            label="Amount"
+            keyboardType="decimal-pad"
+            placeholder="0"
+          />
+
+          <Button
+            onPress={form.handleSubmit(onSubmit)}
+            disabled={isPending || isLoading}
+          >
+            <Text>{isPending ? "Adding..." : "Add Game"}</Text>
+          </Button>
+        </ScrollView>
       </ScreenWrapper>
     </View>
   );
