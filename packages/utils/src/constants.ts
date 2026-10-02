@@ -1,7 +1,7 @@
 // export const BASEURL =
 //   process.env.NODE_ENV === "development"
 //     ? "http://localhost:8080"
-//     : "https://game-shelf-ssj1.onrender.com";
+//     : "https://game-shelf-prod.onrender.com";
 
 export const BASE_URL = "http://192.168.0.101:8080";
 
