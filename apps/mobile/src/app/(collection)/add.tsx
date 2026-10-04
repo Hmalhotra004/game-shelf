@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
 import {
-  // FormDatePicker,
+  FormDatePicker,
   FormInput,
   FormMultiSelectSheet,
   FormSelectSheet,
@@ -224,8 +224,8 @@ const AddCollection = () => {
           <View className="gap-4">
             {/* Name + Edition / Ownership (DLC) */}
             <FormInput
-              control={form.control}
               name="name"
+              control={form.control}
               label="Name"
               placeholder="Game name"
               disabled={isPending}
@@ -233,16 +233,16 @@ const AddCollection = () => {
 
             {!isDlc ? (
               <FormInput
-                control={form.control}
                 name="edition"
+                control={form.control}
                 label="Edition"
                 placeholder="e.g. Deluxe, GOTY, Standard"
                 disabled={isPending}
               />
             ) : (
               <FormSelectSheet
-                control={form.control}
                 name="ownershipType"
+                control={form.control}
                 label="Ownership Type"
                 options={getOwnershipTypeOptions(true)}
                 disabled={isPending}
@@ -252,18 +252,17 @@ const AddCollection = () => {
             {/* Date + Amount */}
             <View className="flex-row gap-4">
               <View className="flex-1">
-                <Text>Date picker</Text>
-                {/* <FormDatePicker
-                  control={form.control}
+                <FormDatePicker
                   name="dateOfPurchase"
+                  control={form.control}
                   label="Date of Purchase"
                   disabled={isPending}
-                /> */}
+                />
               </View>
               <View className="flex-1">
                 <FormInput
-                  control={form.control}
                   name="amount"
+                  control={form.control}
                   label="Amount"
                   placeholder="e.g. 59.99"
                   keyboardType="decimal-pad"
@@ -277,8 +276,8 @@ const AddCollection = () => {
               <View className="flex-row gap-4">
                 <View className="flex-1">
                   <FormSelectSheet
-                    control={form.control}
                     name="platform"
+                    control={form.control}
                     label="Platform"
                     options={PLATFORM_OPTIONS}
                     disabled={isPending}
@@ -292,8 +291,8 @@ const AddCollection = () => {
                 </View>
                 <View className="flex-1">
                   <FormSelectSheet
-                    control={form.control}
                     name="provider"
+                    control={form.control}
                     label="Provider"
                     options={[...PROVIDERS[selectedPlatform].options]}
                     disabled={isPending}
@@ -305,8 +304,8 @@ const AddCollection = () => {
             {/* PS Version */}
             {selectedPlatform === "PS" && !isDlc && (
               <FormSelectSheet
-                control={form.control}
                 name="PSVersion"
+                control={form.control}
                 label="PS Version"
                 options={PS_VERSION_OPTIONS}
                 disabled={isPending}
@@ -317,15 +316,15 @@ const AddCollection = () => {
             {!isDlc && (
               <>
                 <FormSelectSheet
-                  control={form.control}
                   name="ownershipType"
+                  control={form.control}
                   label="Ownership Type"
                   options={getOwnershipTypeOptions(false)}
                   disabled={isPending}
                 />
                 <FormMultiSelectSheet
-                  control={form.control}
                   name="lists"
+                  control={form.control}
                   label="Custom Lists"
                   placeholder="Select custom lists"
                   options={listOptions}
@@ -336,8 +335,8 @@ const AddCollection = () => {
 
             {isDlc && (
               <FormSelectSheet
-                control={form.control}
                 name="collectionId"
+                control={form.control}
                 label="Parent Game"
                 placeholder="Select parent game"
                 options={(userGames?.games ?? []).map((g) => ({
@@ -400,18 +399,17 @@ const AddCollection = () => {
                         <View className="gap-3">
                           <View className="flex-row gap-4">
                             <View className="flex-1">
-                              <Text>Date Pciker</Text>
-                              {/* <FormDatePicker
-                                control={form.control}
+                              <FormDatePicker
                                 name={`DLCs.${index}.dateOfPurchase`}
+                                control={form.control}
                                 label="Date"
                                 disabled={isPending}
-                              /> */}
+                              />
                             </View>
                             <View className="flex-1">
                               <FormInput
-                                control={form.control}
                                 name={`DLCs.${index}.amount`}
+                                control={form.control}
                                 label="Amount"
                                 placeholder="0"
                                 keyboardType="decimal-pad"
@@ -420,8 +418,8 @@ const AddCollection = () => {
                             </View>
                           </View>
                           <FormSelectSheet
-                            control={form.control}
                             name={`DLCs.${index}.ownershipType`}
+                            control={form.control}
                             label="Ownership Type"
                             options={getOwnershipTypeOptions(true)}
                             disabled={isPending}
@@ -443,6 +441,7 @@ const AddCollection = () => {
             >
               <Text>{isPending ? "Adding..." : "Add to Collection"}</Text>
             </Button>
+
             <Button
               variant="outline"
               onPress={() => router.back()}

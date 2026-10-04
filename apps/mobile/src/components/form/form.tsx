@@ -1,3 +1,4 @@
+import DatePickerModal from "@/components/DatePicker/DatePickerModal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input as TextInput } from "@/components/ui/input";
@@ -9,10 +10,16 @@ import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import type { ClassValue } from "clsx";
+import { formatDate } from "date-fns";
 import { ReactNode, useRef, useState } from "react";
 import MultiSelectBottomSheet from "./MultiSelectBottomSheet";
 
-import { ChevronDownIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
+import {
+  CalendarIcon,
+  ChevronDownIcon,
+  EyeIcon,
+  EyeOffIcon,
+} from "lucide-react-native";
 
 import SelectValueBottomSheet, {
   type Option,
@@ -34,7 +41,6 @@ import {
 } from "react-hook-form";
 
 // ─── Core types ──────────────────────────────────────────────────────────────
-
 type FormControlProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -71,7 +77,6 @@ type FormControlFunc<
 ) => ReactNode;
 
 // ─── FormBase ─────────────────────────────────────────────────────────────────
-
 function FormBase<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -111,7 +116,6 @@ function FormBase<
 }
 
 // ─── FormInput ────────────────────────────────────────────────────────────────
-
 export const FormInput: FormControlFunc<{
   placeholder?: string;
   autoComplete?: TextInputProps["autoComplete"];
@@ -154,7 +158,6 @@ export const FormInput: FormControlFunc<{
 );
 
 // ─── FormInputPassword ────────────────────────────────────────────────────────
-
 export const FormInputPassword: FormControlFunc<{
   placeholder?: string;
   className?: ClassValue;
@@ -213,7 +216,6 @@ export const FormInputPassword: FormControlFunc<{
 };
 
 // ─── FormTextarea ─────────────────────────────────────────────────────────────
-
 export const FormTextarea: FormControlFunc<{
   placeholder?: string;
   numberOfLines?: number;
@@ -262,7 +264,6 @@ export const FormTextarea: FormControlFunc<{
 );
 
 // ─── FormSwitch  (checkbox equivalent on native) ──────────────────────────────
-
 export const FormSwitch: FormControlFunc<{
   label: string; // required for switch — it IS the label
 }> = ({ disabled, ...props }) => (
@@ -280,7 +281,6 @@ export const FormSwitch: FormControlFunc<{
 );
 
 // ─── FormCheckbox ─────────────────────────────────────────────────────────────
-
 export const FormCheckbox: FormControlFunc<{
   label: string;
   className?: ClassValue;
@@ -305,7 +305,6 @@ export const FormCheckbox: FormControlFunc<{
 );
 
 // ─── FormRadioGroup ───────────────────────────────────────────────────────────
-
 // type RadioOption = { value: string; label: string };
 
 // export const FormRadioGroup: FormControlFunc<{
@@ -343,6 +342,7 @@ export const FormCheckbox: FormControlFunc<{
 //   </FormBase>
 // );
 
+// ─── FormSelectSheet ─────────────────────────────────────────────────────────────
 export const FormSelectSheet: FormControlFunc<{
   options: Option[];
   placeholder?: string;
@@ -471,59 +471,63 @@ export const FormMultiSelectSheet: FormControlFunc<{
   );
 };
 
-// export const FormDatePicker: FormControlFunc<{
-//   placeholder?: string;
-//   maximumDate?: Date;
-//   className?: ClassValue;
-// }> = ({
-//   disabled,
-//   placeholder = "Pick a date",
-//   maximumDate,
-//   className,
-//   ...props
-// }) => {
-//   const [open, setOpen] = useState(false);
-//   const theme = useThemeStore((s) => s.theme);
+// ─── FormDatePicker ─────────────────────────────────────────────────────────────
+export const FormDatePicker: FormControlFunc<{
+  placeholder?: string;
+  className?: ClassValue;
+  format?: string;
+}> = ({
+  disabled,
+  placeholder = "Select date",
+  className,
+  format = "PP",
+  ...props
+}) => {
+  const theme = useThemeStore((s) => s.theme);
+  const [open, setOpen] = useState(false);
 
-//   return (
-//     <FormBase {...props}>
-//       {({ onChange, value, invalid }) => {
-//         const date = value ? new Date(value as string) : null;
-//         return (
-//           <>
-//             <Pressable
-//               disabled={disabled}
-//               onPress={() => setOpen(true)}
-//               className={cn(
-//                 "h-10 flex-row items-center justify-between rounded-md border border-border bg-card px-3 active:opacity-70",
-//                 invalid && "border-destructive",
-//                 disabled && "opacity-50",
-//                 className,
-//               )}
-//             >
-//               <Text className={cn("text-sm", !date && "text-muted-foreground")}>
-//                 {date ? date.toLocaleDateString() : placeholder}
-//               </Text>
-//               <CalendarIcon
-//                 size={16}
-//                 color={THEME[theme].mutedForeground}
-//               />
-//             </Pressable>
+  return (
+    <FormBase {...props}>
+      {({ onChange, value, invalid }) => {
+        const date = value ? new Date(value) : null;
 
-//             <DateTimePickerModal
-//               isVisible={open}
-//               mode="date"
-//               date={date ?? new Date()}
-//               maximumDate={maximumDate}
-//               onConfirm={(d) => {
-//                 setOpen(false);
-//                 onChange(d.toISOString());
-//               }}
-//               onCancel={() => setOpen(false)}
-//             />
-//           </>
-//         );
-//       }}
-//     </FormBase>
-//   );
-// };
+        return (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              onPress={() => setOpen(true)}
+              className={cn(
+                "h-10 justify-between",
+                invalid && "border-destructive",
+                className,
+              )}
+            >
+              <Text className={cn("text-sm", !date && "text-muted-foreground")}>
+                {date ? formatDate(date, format) : placeholder}
+              </Text>
+
+              <CalendarIcon
+                size={16}
+                color={THEME[theme].mutedForeground}
+              />
+            </Button>
+
+            {open && (
+              <DatePickerModal
+                value={date ?? new Date()}
+                onClose={() => setOpen(false)}
+                onConfirm={(d) => {
+                  // store ISO string, same shape as the form's default value
+                  onChange(d.toISOString());
+                  setOpen(false);
+                }}
+              />
+            )}
+          </>
+        );
+      }}
+    </FormBase>
+  );
+};
