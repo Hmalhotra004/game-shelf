@@ -83,7 +83,7 @@ const AddCollection = () => {
     defaultValues: {
       igdbId: Number(igdbId),
       name: "",
-      dateOfPurchase: new Date().toISOString(),
+      dateOfPurchase: null,
       edition: null,
       amount: null,
       platform: "PC",
@@ -156,7 +156,7 @@ const AddCollection = () => {
         igdbId: dlc.id,
         name: dlc.name,
         amount: null,
-        dateOfPurchase: new Date().toISOString(),
+        dateOfPurchase: null,
         image: dlc.image ?? null,
         coverImage: dlc.coverImage ?? null,
         steamAppId: String(dlc.steamAppId),
