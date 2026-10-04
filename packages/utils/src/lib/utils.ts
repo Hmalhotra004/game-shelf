@@ -10,6 +10,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function capitalizeName(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(" ");
+}
+
 export const statusColorMap: Record<CollectionStatusType, string> = {
   Dropped: "border-red-500",
   Backlog: "border-yellow-500",

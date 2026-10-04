@@ -17,6 +17,7 @@ import {
 interface Props {
   state: { index: number; routes: { key: string; name: string }[] };
   navigation: { navigate: (name: string) => void };
+  onAddPress?: (routeName: string) => void;
 }
 
 const TAB_CONFIG: Record<string, { label: string; icon: LucideIcon }> = {
@@ -59,7 +60,7 @@ const buildPath = (w: number, h: number) => {
   ].join(" ");
 };
 
-const TabBar = ({ navigation, state }: Props) => {
+const TabBar = ({ navigation, state, onAddPress }: Props) => {
   const insets = useSafeAreaInsets();
   const theme = useThemeStore((s) => s.theme);
   const { width: screenWidth } = useWindowDimensions();
@@ -73,7 +74,7 @@ const TabBar = ({ navigation, state }: Props) => {
   const rightRoutes = visibleRoutes.slice(half);
 
   const handleAdd = () => {
-    // TODO: point this at your "add game" route / modal
+    onAddPress?.(state.routes[state.index].name);
   };
 
   const renderTab = (route: { key: string; name: string }) => {
