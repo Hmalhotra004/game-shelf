@@ -24,8 +24,7 @@ export const collectionGetManyQueryOptions = (api: AxiosInstance) =>
   queryOptions({
     queryKey: CollectionQueryKeys.getMany(),
     queryFn: async () => {
-      const response =
-        await api.get<Array<CollectionGetMany>>(`/collection/getMany`);
+      const response = await api.get<Array<CollectionGetMany>>(`/collection`);
 
       return response.data;
     },

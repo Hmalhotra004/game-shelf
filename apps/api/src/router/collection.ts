@@ -19,11 +19,11 @@ import {
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
-  router.get("/getMany", authenticateUser, getMany);
+  router.get("/", authenticateUser, getMany);
   router.get("/:collectionId", authenticateUser, verifyCollection, getById);
 
   router.post(
-    "/add",
+    "/",
     authenticateUser,
     validateData(createCollectionSchema),
     addCollection,
@@ -53,7 +53,7 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.delete(
-    "/:collectionId/delete",
+    "/:collectionId",
     authenticateUser,
     verifyCollection,
     deleteCollection,

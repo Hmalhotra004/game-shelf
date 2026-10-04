@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 
 export const addCollectionMutationOptions = (api: AxiosInstance) =>
   mutationOptions({
-    mutationFn: async (data:any) => {
-      await api.post("/collection/add", data);
+    mutationFn: async (data: any) => {
+      await api.post("/collection", data);
     },
   });
