@@ -74,7 +74,7 @@ export const addCollection = async (req: Request, res: Response) => {
             coverImage: data.coverImage,
             platform: data.platform,
             provider: data.provider,
-            PSVersion: data.platform === "PS" ? data.PSVersion : null,
+            PSVersion: data.platform === "PS" ? data.PSVersion : [],
             dateOfPurchase: data.dateOfPurchase
               ? new Date(data.dateOfPurchase)
               : null,
