@@ -88,7 +88,7 @@ const AddCollection = () => {
       amount: "",
       platform: "PC",
       provider: "Steam",
-      PSVersion: "PS5",
+      PSVersion: [],
       ownershipType: "Bought",
       image: null,
       coverImage: null,
@@ -303,7 +303,7 @@ const AddCollection = () => {
 
             {/* PS Version */}
             {selectedPlatform === "PS" && !isDlc && (
-              <FormSelectSheet
+              <FormMultiSelectSheet
                 name="PSVersion"
                 control={form.control}
                 label="PS Version"
