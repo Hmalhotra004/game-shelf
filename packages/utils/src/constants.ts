@@ -3,7 +3,7 @@
 //     ? "http://localhost:8080"
 //     : "https://game-shelf-prod.onrender.com";
 
-export const BASE_URL = "http://192.168.0.101:8080";
+export const BASE_URL = "http://192.168.0.104:8080";
 
 export const overviewLabels = [
   "Games",
