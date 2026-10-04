@@ -43,12 +43,12 @@ export const createCollectionSchema = z
   .object({
     igdbId: z.number().int().min(1, { error: "id is required" }),
     name: z.string().trim().min(1, { error: "Name is requried" }),
-    dateOfPurchase: z.string().trim().optional(),
+    dateOfPurchase: z.string().trim().nullable(),
     edition: z.string().trim().nullable(),
-    amount: z.string().trim().optional(),
+    amount: z.string().trim().nullable(),
     platform: platformSchema,
     provider: providerSchema,
-    PSVersion: PSVersionSchema,
+    PSVersion: z.array(PSVersionSchema),
     ownershipType: ownershipTypeSchema,
     image: z.url().trim().nullable(),
     coverImage: z.url().trim().nullable(),
@@ -81,7 +81,7 @@ export const createCollectionSchema = z
   .refine(
     (data) => {
       if (data.platform === "PS") {
-        return !!data.PSVersion;
+        return data.PSVersion.length >= 1;
       }
       return true;
     },
