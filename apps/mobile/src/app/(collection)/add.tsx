@@ -85,7 +85,7 @@ const AddCollection = () => {
       name: "",
       dateOfPurchase: new Date().toISOString(),
       edition: null,
-      amount: "",
+      amount: null,
       platform: "PC",
       provider: "Steam",
       PSVersion: [],
@@ -107,6 +107,8 @@ const AddCollection = () => {
 
   const isDlc = form.watch("isDLC") ?? false;
   const selectedPlatform = form.watch("platform");
+  const dlcValues = form.watch("DLCs");
+  const baseDate = form.watch("dateOfPurchase");
 
   const { data: userGames, isLoading: isLoadingUserGames } = useQuery(
     userGetCollectionQueryOptions(api, isDlc),
@@ -135,6 +137,15 @@ const AddCollection = () => {
     }
   }, [parentGame, form]);
 
+  useEffect(() => {
+    if (!baseDate) return;
+    dlcValues?.forEach((d, i) => {
+      if (d.ownershipType === "Included" && d.dateOfPurchase !== baseDate) {
+        form.setValue(`DLCs.${i}.dateOfPurchase`, baseDate);
+      }
+    });
+  }, [baseDate, dlcValues, form]);
+
   const dlcIndexMap = new Map(fields.map((f, i) => [f.igdbId, i]));
 
   function toggleDlc(dlc: DLCs) {
@@ -144,7 +155,7 @@ const AddCollection = () => {
       append({
         igdbId: dlc.id,
         name: dlc.name,
-        amount: "",
+        amount: null,
         dateOfPurchase: new Date().toISOString(),
         image: dlc.image ?? null,
         coverImage: dlc.coverImage ?? null,
@@ -155,22 +166,28 @@ const AddCollection = () => {
   }
 
   async function onSubmit(values: CreateCollectionSchemaType) {
-    await addGame.mutateAsync(
-      { ...values },
-      {
-        onSuccess: async () => {
-          showToast("success", "Game Added");
-          await queryClient.invalidateQueries({
-            queryKey: StatsQueryKeys.getStats(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey: CollectionQueryKeys.getMany(),
-          });
-          router.back();
-        },
-        onError: (e) => handleError(e),
+    const payload = {
+      ...values,
+      DLCs: values.DLCs?.map((d) =>
+        d.ownershipType === "Included"
+          ? { ...d, amount: null, dateOfPurchase: values.dateOfPurchase }
+          : d,
+      ),
+    };
+
+    await addGame.mutateAsync(payload, {
+      onSuccess: async () => {
+        showToast("success", "Game Added");
+        await queryClient.invalidateQueries({
+          queryKey: StatsQueryKeys.getStats(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: CollectionQueryKeys.getMany(),
+        });
+        router.back();
       },
-    );
+      onError: (e) => handleError(e),
+    });
   }
 
   const isPending = addGame.isPending;
@@ -226,7 +243,7 @@ const AddCollection = () => {
             <FormInput
               name="name"
               control={form.control}
-              label="Name"
+              label="Name*"
               placeholder="Game name"
               disabled={isPending}
             />
@@ -243,7 +260,7 @@ const AddCollection = () => {
               <FormSelectSheet
                 name="ownershipType"
                 control={form.control}
-                label="Ownership Type"
+                label="Ownership Type*"
                 options={getOwnershipTypeOptions(true)}
                 disabled={isPending}
               />
@@ -263,7 +280,7 @@ const AddCollection = () => {
                 <FormInput
                   name="amount"
                   control={form.control}
-                  label="Amount"
+                  label="Amount (Defaults to 0)"
                   placeholder="e.g. 59.99"
                   keyboardType="decimal-pad"
                   disabled={isPending}
@@ -278,7 +295,7 @@ const AddCollection = () => {
                   <FormSelectSheet
                     name="platform"
                     control={form.control}
-                    label="Platform"
+                    label="Platform*"
                     options={PLATFORM_OPTIONS}
                     disabled={isPending}
                     onValueChange={(p) =>
@@ -293,7 +310,7 @@ const AddCollection = () => {
                   <FormSelectSheet
                     name="provider"
                     control={form.control}
-                    label="Provider"
+                    label="Provider*"
                     options={[...PROVIDERS[selectedPlatform].options]}
                     disabled={isPending}
                   />
@@ -306,7 +323,7 @@ const AddCollection = () => {
               <FormMultiSelectSheet
                 name="PSVersion"
                 control={form.control}
-                label="PS Version"
+                label="PS Version*"
                 options={PS_VERSION_OPTIONS}
                 disabled={isPending}
               />
@@ -318,7 +335,7 @@ const AddCollection = () => {
                 <FormSelectSheet
                   name="ownershipType"
                   control={form.control}
-                  label="Ownership Type"
+                  label="Ownership Type*"
                   options={getOwnershipTypeOptions(false)}
                   disabled={isPending}
                 />
@@ -337,7 +354,7 @@ const AddCollection = () => {
               <FormSelectSheet
                 name="collectionId"
                 control={form.control}
-                label="Parent Game"
+                label="Parent Game*"
                 placeholder="Select parent game"
                 options={(userGames?.games ?? []).map((g) => ({
                   value: g.id,
@@ -403,26 +420,45 @@ const AddCollection = () => {
                                 name={`DLCs.${index}.dateOfPurchase`}
                                 control={form.control}
                                 label="Date"
-                                disabled={isPending}
+                                disabled={
+                                  isPending ||
+                                  dlcValues?.[index]?.ownershipType ===
+                                    "Included"
+                                }
                               />
                             </View>
                             <View className="flex-1">
                               <FormInput
                                 name={`DLCs.${index}.amount`}
                                 control={form.control}
-                                label="Amount"
+                                label="Amount (Defaults to 0)"
                                 placeholder="0"
                                 keyboardType="decimal-pad"
-                                disabled={isPending}
+                                disabled={
+                                  isPending ||
+                                  dlcValues?.[index]?.ownershipType ===
+                                    "Included"
+                                }
                               />
                             </View>
                           </View>
                           <FormSelectSheet
                             name={`DLCs.${index}.ownershipType`}
                             control={form.control}
-                            label="Ownership Type"
+                            label="Ownership Type*"
                             options={getOwnershipTypeOptions(true)}
                             disabled={isPending}
+                            onValueChange={(v) => {
+                              if (v === "Included") {
+                                form.setValue(`DLCs.${index}.amount`, "", {
+                                  shouldValidate: true,
+                                });
+                                form.setValue(
+                                  `DLCs.${index}.dateOfPurchase`,
+                                  form.getValues("dateOfPurchase") ?? "",
+                                );
+                              }
+                            }}
                           />
                         </View>
                       )}
