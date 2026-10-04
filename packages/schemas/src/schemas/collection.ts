@@ -48,7 +48,7 @@ export const createCollectionSchema = z
     amount: z.string().trim().optional(),
     platform: platformSchema,
     provider: providerSchema,
-    PSVersion: PSVersionSchema,
+    PSVersion: z.array(PSVersionSchema),
     ownershipType: ownershipTypeSchema,
     image: z.url().trim().nullable(),
     coverImage: z.url().trim().nullable(),
@@ -81,7 +81,7 @@ export const createCollectionSchema = z
   .refine(
     (data) => {
       if (data.platform === "PS") {
-        return !!data.PSVersion;
+        return data.PSVersion.length >= 1;
       }
       return true;
     },

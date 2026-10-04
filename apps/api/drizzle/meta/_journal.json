@@ -15,6 +15,13 @@
       "when": 1788175293451,
       "tag": "0001_account_issuer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791127662799,
+      "tag": "0002_ps_version_array",
+      "breakpoints": true
     }
   ]
 }

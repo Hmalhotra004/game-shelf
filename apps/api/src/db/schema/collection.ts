@@ -36,7 +36,11 @@ export const collection = pgTable(
     status: status("status").notNull().default("Backlog"),
     platform: platform("platform").notNull().default("PC"),
     provider: provider("provider").notNull().default("Steam"),
-    PSVersion: PSVersion("ps_version"),
+    PSVersion: PSVersion("ps_version")
+      .array()
+      .notNull()
+      .default([])
+      .$defaultFn(() => []),
 
     completions: integer("completions").notNull().default(0),
     dlcCount: integer("dlc_count").notNull().default(0),
