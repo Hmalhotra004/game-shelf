@@ -18,30 +18,30 @@ export const GameType = {
   3: "Bundle",
   4: "Standalone Expansion",
   5: "Mod",
-  // 6:"",
-  // 7:"",
+  6: "Episode",
+  7: "Season",
   8: "Remake",
   9: "Remaster",
   // 10:"",
-  // 11:"",
-  // 12:"",
+  11: "Port",
+  12: "Fork",
   // 13:"",
   14: "Update",
 };
 
 export enum IGDBCoverSizeType {
-  "t_micro" = "t_micro",
-  "t_thumb" = "t_thumb",
-  "t_cover_small" = "t_cover_small",
-  "t_cover_big" = "t_cover_big",
-  "t_logo_med" = "t_logo_med",
+  t_micro = "t_micro",
+  t_thumb = "t_thumb",
+  t_cover_small = "t_cover_small",
+  t_cover_big = "t_cover_big",
+  t_logo_med = "t_logo_med",
 
-  "t_screenshot_med" = "t_screenshot_med",
-  "t_screenshot_big" = "t_screenshot_big",
+  t_screenshot_med = "t_screenshot_med",
+  t_screenshot_big = "t_screenshot_big",
 
-  "t_720p" = "t_720p",
-  "t_1080p" = "t_1080p",
-  "t_original" = "t_original",
+  t_720p = "t_720p",
+  t_1080p = "t_1080p",
+  t_original = "t_original",
 }
 
 export enum IGDBGameField {
@@ -119,6 +119,9 @@ export enum IGDBGameField {
   ArtworksInfo = "artworks.id,artworks.game,artworks.height,artworks.width,artworks.image_id,artworks.artwork_type",
   ArtworksUrl = "artworks.url",
   ArtworksImageId = "artworks.image_id",
+
+  // bundles
+  BundlesAll = "bundles.*",
 
   ExpandedGamesAll = "expanded_games.*",
   StandaloneExpansions = "standalone_expansions.*",
