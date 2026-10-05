@@ -11,6 +11,7 @@ import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
 
 import {
+  collectionListQuerySchema,
   createCollectionSchema,
   externalIdsSchema,
   updateImagesSchema,
@@ -19,7 +20,13 @@ import {
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
-  router.get("/", authenticateUser, getMany);
+  router.query!(
+    "/",
+    authenticateUser,
+    validateData(collectionListQuerySchema),
+    getMany,
+  );
+
   router.get("/:collectionId", authenticateUser, verifyCollection, getById);
 
   router.post(
