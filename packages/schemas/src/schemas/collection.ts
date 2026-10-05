@@ -1,14 +1,14 @@
 import z from "zod";
+import type { PlatformType, ProviderType } from "../types/index";
+import { createDLCSchema } from "./dlc";
+import { ownershipTypeSchema } from "./index";
+
 import {
   CollectionStatusValues,
   PlatformValues,
   ProviderValues,
   PSVersionValues,
 } from "../enums";
-
-import type { PlatformType, ProviderType } from "../types/index";
-import { createDLCSchema } from "./dlc";
-import { ownershipTypeSchema } from "./index";
 
 export const platformSchema = z.enum(PlatformValues, {
   error: "Platform is requried",
@@ -124,7 +124,25 @@ export const updateImagesSchema = z.object({
   customCoverImage: steamGridDbImageUrl("hero"),
 });
 
-// types
+// ------------------------------- Types -------------------------------------------
 export type ExternalIdsSchemaType = z.infer<typeof externalIdsSchema>;
 export type UpdateImagesSchemaType = z.infer<typeof updateImagesSchema>;
 export type CreateCollectionSchemaType = z.infer<typeof createCollectionSchema>;
+
+// ------------------------------- Query Schema -------------------------------------------
+export const collectionListQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().optional(),
+  platform: z.array(platformSchema).optional(),
+  status: z.array(statusSchema).optional(),
+  lists: z.array(z.string()).optional(),
+});
+
+// ------------------------------- Types -------------------------------------------
+export type collectionListQuerySchemaInput = z.input<
+  typeof collectionListQuerySchema
+>;
+export type CollectionListQuerySchemaType = z.infer<
+  typeof collectionListQuerySchema
+>;
