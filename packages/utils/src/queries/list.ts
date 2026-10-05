@@ -12,7 +12,7 @@ export const listGetManyQueryOptions = (api: AxiosInstance) =>
   queryOptions({
     queryKey: ListQueryKeys.getMany(),
     queryFn: async () => {
-      const response = await api.get<Array<ListType>>(`/list/getMany`);
+      const response = await api.get<Array<ListType>>(`/list`);
 
       return response.data;
     },
