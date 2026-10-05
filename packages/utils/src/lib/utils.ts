@@ -10,6 +10,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const toggleIn = <T>(arr: T[], v: T): T[] =>
+  arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
+
 export function capitalizeName(name: string) {
   return name
     .trim()
