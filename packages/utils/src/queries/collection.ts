@@ -1,10 +1,5 @@
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
-
-import {
-  infiniteQueryOptions,
-  keepPreviousData,
-  queryOptions,
-} from "@tanstack/react-query";
 
 import {
   CollectionGetById,
@@ -51,7 +46,6 @@ export const collectionGetManyQueryOptions = (
 
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
-    placeholderData: keepPreviousData,
   });
 
 export const collectionGetByIdQueryOptions = (api: AxiosInstance, id: string) =>
