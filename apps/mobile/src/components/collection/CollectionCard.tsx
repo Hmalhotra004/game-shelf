@@ -22,7 +22,7 @@ const CollectionCard = ({ game }: Props) => {
   const playSecs = getPlayTime();
 
   return (
-    <View className="mb-3 flex-row overflow-hidden rounded-xl bg-neutral-900">
+    <View className="mb-3 flex-row overflow-hidden rounded-xl bg-card">
       {imageUri ? (
         <Image
           source={{ uri: imageUri }}
@@ -30,7 +30,7 @@ const CollectionCard = ({ game }: Props) => {
           contentFit="cover"
         />
       ) : (
-        <View className="h-24 w-20 items-center justify-center bg-neutral-800">
+        <View className="h-24 w-20 items-center justify-center bg-card">
           <Text className="text-neutral-500">No image</Text>
         </View>
       )}
@@ -38,20 +38,21 @@ const CollectionCard = ({ game }: Props) => {
       <View className="flex-1 justify-between p-3">
         <View>
           <Text
-            className="font-semibold text-white"
+            className="font-semibold"
             numberOfLines={1}
           >
             {game.name}
           </Text>
-          <Text className="mt-0.5 text-xs text-neutral-400">
+
+          <Text className="mt-0.5 text-xs text-muted-foreground">
             {game.platform} · {game.status}
             {game.dlcCount > 0 ? ` · ${game.dlcCount} DLC` : ""}
           </Text>
         </View>
 
         <View className="flex-row justify-between">
-          <Text className="text-xs text-neutral-300">{playSecs}</Text>
-          <Text className="text-xs text-neutral-300">
+          <Text className="text-xs text-muted-foreground">{playSecs}</Text>
+          <Text className="text-xs text-muted-foreground">
             {game.totalAmount.toFixed(2)}
           </Text>
         </View>
