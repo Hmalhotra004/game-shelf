@@ -1,4 +1,4 @@
-import CollectionCard from "@/components/collection/CollectionCard";
+import CollectionCard2 from "@/components/collection/CollectionCard2";
 import CollectionFilters from "@/components/collection/CollectionFilters";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
@@ -57,7 +57,7 @@ const Collection = () => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const renderItem = useCallback(
-    ({ item }: { item: CollectionGetMany }) => <CollectionCard game={item} />,
+    ({ item }: { item: CollectionGetMany }) => <CollectionCard2 game={item} />,
     [],
   );
 
