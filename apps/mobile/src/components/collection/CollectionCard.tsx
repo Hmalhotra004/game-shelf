@@ -1,7 +1,10 @@
 import { Text } from "@/components/ui/text";
+import { THEME } from "@/lib/theme";
+import { useThemeStore } from "@/store/useThemeStore";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
 import { betterTimeText } from "@repo/utils/lib/utils";
 import { Image } from "expo-image";
+import { ImageIcon } from "lucide-react-native";
 import { View } from "react-native";
 
 interface Props {
@@ -9,6 +12,7 @@ interface Props {
 }
 
 const CollectionCard = ({ game }: Props) => {
+  const theme = useThemeStore((s) => s.theme);
   const imageUri = game.customImage ?? game.image;
 
   const getPlayTime = () => {
@@ -22,7 +26,7 @@ const CollectionCard = ({ game }: Props) => {
   const playSecs = getPlayTime();
 
   return (
-    <View className="mb-3 flex-row overflow-hidden rounded-xl bg-card">
+    <View className="flex-row overflow-hidden rounded-xl bg-card">
       {imageUri ? (
         <Image
           source={{ uri: imageUri }}
@@ -30,12 +34,14 @@ const CollectionCard = ({ game }: Props) => {
           contentFit="cover"
         />
       ) : (
-        <View className="h-24 w-20 items-center justify-center bg-card">
-          <Text className="text-neutral-500">No image</Text>
-        </View>
+        <ImageIcon
+          color={THEME[theme].foreground}
+          width={80}
+          height={96}
+        />
       )}
 
-      <View className="flex-1 justify-between p-3">
+      <View className="flex-1 justify-between py-1.5 px-2.5">
         <View>
           <Text
             className="font-semibold"

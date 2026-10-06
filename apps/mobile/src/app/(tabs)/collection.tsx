@@ -1,3 +1,4 @@
+import CollectionCard from "@/components/collection/CollectionCard";
 import CollectionFilters from "@/components/collection/CollectionFilters";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
@@ -56,12 +57,7 @@ const Collection = () => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const renderItem = useCallback(
-    ({ item }: { item: CollectionGetMany }) => (
-      <View>
-        <Text>{item.name.charAt(0)}</Text>
-      </View>
-      // <CollectionCard game={item} />
-    ),
+    ({ item }: { item: CollectionGetMany }) => <CollectionCard game={item} />,
     [],
   );
 
@@ -116,6 +112,7 @@ const Collection = () => {
               contentContainerClassName="pb-20"
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={() => <View className="h-2" />}
               ListEmptyComponent={
                 <View className="items-center py-16">
                   <Text className="text-muted-foreground">No games found</Text>
