@@ -27,7 +27,7 @@ const GameSearchCard = ({
     <Pressable
       onPress={() => onPress(game.id)}
       className={cn(
-        "mb-3 overflow-hidden rounded-xl border bg-card",
+        "mb-3 overflow-hidden rounded-xl border bg-background",
         selected ? "border-primary" : "border-border",
       )}
     >

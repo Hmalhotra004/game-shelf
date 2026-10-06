@@ -1,6 +1,7 @@
 import { Text } from "@/components/ui/text";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
+import { Option } from "@repo/utils/lib/gameOptions";
 import { CheckIcon } from "lucide-react-native";
 import { RefObject, useCallback, useEffect, useState } from "react";
 import { BackHandler, Pressable, useWindowDimensions } from "react-native";
@@ -11,11 +12,6 @@ import {
   BottomSheetModal,
   type BottomSheetBackdropProps,
 } from "@gorhom/bottom-sheet";
-
-export interface Option<T extends string = string> {
-  value: T;
-  label: string;
-}
 
 interface Props<T extends string> {
   title: string;

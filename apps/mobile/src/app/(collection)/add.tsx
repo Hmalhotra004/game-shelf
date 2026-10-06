@@ -9,11 +9,10 @@ import { handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DLCs } from "@repo/schemas/types/igdb";
+import { PlatformType } from "@repo/schemas/types/index";
 import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
-import { CollectionQueryKeys } from "@repo/utils/queries/collection";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
-import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -38,23 +37,15 @@ import {
 
 import {
   getOwnershipTypeOptions,
-  PC_PROVIDER_OPTIONS,
   PLATFORM_OPTIONS,
-  PS_PROVIDER_OPTIONS,
+  PROVIDER_OPTIONS,
   PS_VERSION_OPTIONS,
-  XBOX_PROVIDER_OPTIONS,
 } from "@repo/utils/lib/gameOptions";
 
 import {
   createCollectionSchema,
   CreateCollectionSchemaType,
 } from "@repo/schemas/schemas/collection";
-
-const PROVIDERS = {
-  PC: { options: PC_PROVIDER_OPTIONS, default: "Steam" },
-  PS: { options: PS_PROVIDER_OPTIONS, default: "PSN" },
-  XBOX: { options: XBOX_PROVIDER_OPTIONS, default: "XBOX" },
-} as const;
 
 const AddCollection = () => {
   const { igdbId } = useLocalSearchParams<{ igdbId: string }>();
@@ -76,7 +67,17 @@ const AddCollection = () => {
     value: d.id,
   }));
 
-  const addGame = useMutation(addCollectionMutationOptions(api));
+  const addGame = useMutation(
+    addCollectionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        showToast("success", "Game Added");
+        router.back();
+      },
+    ),
+  );
 
   const form = useForm<CreateCollectionSchemaType>({
     resolver: zodResolver(createCollectionSchema),
@@ -175,19 +176,7 @@ const AddCollection = () => {
       ),
     };
 
-    await addGame.mutateAsync(payload, {
-      onSuccess: async () => {
-        showToast("success", "Game Added");
-        await queryClient.invalidateQueries({
-          queryKey: StatsQueryKeys.getStats(),
-        });
-        await queryClient.invalidateQueries({
-          queryKey: CollectionQueryKeys.getMany(),
-        });
-        router.back();
-      },
-      onError: (e) => handleError(e),
-    });
+    await addGame.mutateAsync(payload);
   }
 
   const isPending = addGame.isPending;
@@ -301,7 +290,7 @@ const AddCollection = () => {
                     onValueChange={(p) =>
                       form.setValue(
                         "provider",
-                        PROVIDERS[p as keyof typeof PROVIDERS].default,
+                        PROVIDER_OPTIONS[p as PlatformType][0].value,
                       )
                     }
                   />
@@ -311,7 +300,7 @@ const AddCollection = () => {
                     name="provider"
                     control={form.control}
                     label="Provider*"
-                    options={[...PROVIDERS[selectedPlatform].options]}
+                    options={PROVIDER_OPTIONS[selectedPlatform]}
                     disabled={isPending}
                   />
                 </View>
