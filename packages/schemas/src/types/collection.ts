@@ -1,3 +1,5 @@
+import { CollectionListQuerySchemaType } from "@repo/schemas/schemas/collection";
+
 import {
   CollectionStatusType,
   OwnershipType,
@@ -24,6 +26,21 @@ export type CollectionGetMany = {
   totalPlaytime: number;
   onlinePlaySecs: number;
 };
+
+export type CollectionGetManyResponse = {
+  items: CollectionGetMany[];
+  total: number;
+  totalAmount: number;
+  page: number;
+  limit: number;
+  hasNextPage: boolean;
+  nextPage: number | null;
+};
+
+export type CollectionGetManyFilters = Omit<
+  CollectionListQuerySchemaType,
+  "page" | "limit"
+> & { limit?: number };
 
 export type CollectionGetById = {
   id: string;

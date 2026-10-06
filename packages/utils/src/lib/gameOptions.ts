@@ -39,24 +39,26 @@ export const PS_VERSION_OPTIONS = opts<PSVersionType>(
 
 export const PLATFORM_OPTIONS = opts<PlatformType>("PC", "PS", "XBOX");
 
-export const PC_PROVIDER_OPTIONS: Option<ProviderType>[] = [
-  { value: "Steam", label: "Steam" },
-  { value: "Epic", label: "Epic Games" },
-];
-
-export const PS_PROVIDER_OPTIONS: Option<ProviderType>[] = [
-  { value: "PSN", label: "PlayStation Store" },
-  { value: "Physical", label: "Physical" },
-];
-
-export const XBOX_PROVIDER_OPTIONS: Option<ProviderType>[] = [
-  { value: "XBOX", label: "XBOX" },
-  { value: "Physical", label: "Physical" },
-];
+export const PROVIDER_OPTIONS: Record<PlatformType, Option<ProviderType>[]> = {
+  PC: [
+    { value: "Steam", label: "Steam" },
+    { value: "Epic", label: "Epic Games" },
+  ],
+  PS: [
+    { value: "PSN", label: "PlayStation Store" },
+    { value: "Physical", label: "Physical" },
+  ],
+  XBOX: [
+    { value: "XBOX", label: "XBOX" },
+    { value: "Physical", label: "Physical" },
+  ],
+};
 
 /* ---------- Conditional lists ---------- */
 
-export const getAfterCompletionStatusOptions = (isDLC = false): Option[] => [
+export const getAfterCompletionStatusOptions = (
+  isDLC = false,
+): Option<CollectionStatusType>[] => [
   ...opts<CollectionStatusType>("Story Completed", "Platinum"),
   ...(isDLC ? [] : opts<CollectionStatusType>("Platinum+")),
   ...opts<CollectionStatusType>("100% Completed"),
@@ -68,7 +70,7 @@ export const getGameStatusOptions = ({
 }: {
   completions: number;
   isDLC?: boolean;
-}): Option[] => [
+}): Option<CollectionStatusType>[] => [
   ...(completions === 0
     ? opts<CollectionStatusType>("Backlog", "Dropped")
     : []),
@@ -76,7 +78,9 @@ export const getGameStatusOptions = ({
   ...getAfterCompletionStatusOptions(isDLC),
 ];
 
-export const getOwnershipTypeOptions = (isDlc = false): Option[] => [
+export const getOwnershipTypeOptions = (
+  isDlc = false,
+): Option<OwnershipType>[] => [
   ...opts<OwnershipType>("Free", "Gift"),
   ...(isDlc ? opts<OwnershipType>("Included") : []),
   ...opts<OwnershipType>(
@@ -87,3 +91,20 @@ export const getOwnershipTypeOptions = (isDlc = false): Option[] => [
     "Game Pass",
   ),
 ];
+
+/* ---------- Filters ---------- */
+
+const withAll = <T extends string>(
+  options: Option<T>[],
+): Option<T | "ALL">[] => [{ value: "ALL", label: "All" }, ...options];
+
+export const PLATFORM_FILTER_OPTIONS = withAll(PLATFORM_OPTIONS);
+
+export const GAME_STATUS_FILTER_OPTIONS = withAll(
+  getGameStatusOptions({ completions: 0, isDLC: true }),
+);
+
+export const OWNERSHIP_FILTER_OPTIONS = withAll(getOwnershipTypeOptions(false));
+export const COMPLETION_STYLE_FILTER_OPTIONS = withAll(
+  COMPLETION_STYLE_OPTIONS,
+);

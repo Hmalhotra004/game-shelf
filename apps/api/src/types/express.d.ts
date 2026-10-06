@@ -15,6 +15,7 @@ declare global {
   namespace Express {
     export interface Request {
       cleanBody: any;
+      cleanQuery: any;
 
       user: {
         id: string;

@@ -17,24 +17,14 @@ import {
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
-  router.get("/getMany", authenticateUser, getMany);
+  router.get("/", authenticateUser, getMany);
 
-  router.get(
-    "/:listId/getListItems",
-    authenticateUser,
-    verifyList,
-    getListItems,
-  );
+  router.get("/:listId", authenticateUser, verifyList, getListItems);
+
+  router.post("/", authenticateUser, validateData(createListSchema), addList);
 
   router.post(
-    "/add",
-    authenticateUser,
-    validateData(createListSchema),
-    addList,
-  );
-
-  router.post(
-    "/:listId/addItem",
+    "/:listId",
     authenticateUser,
     verifyList,
     validateData(createListItemSchema),
@@ -42,17 +32,17 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.patch(
-    "/:listId/update",
+    "/:listId",
     authenticateUser,
     verifyList,
     validateData(updateListSchema),
     updateList,
   );
 
-  router.delete("/:listId/delete", authenticateUser, verifyList, deleteList);
+  router.delete("/:listId", authenticateUser, verifyList, deleteList);
 
   router.delete(
-    "/:listId/:listItemId/delete",
+    "/:listId/:listItemId",
     authenticateUser,
     verifyList,
     verifyListItem,

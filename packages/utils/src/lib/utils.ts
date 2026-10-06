@@ -18,16 +18,19 @@ export function capitalizeName(name: string) {
     .join(" ");
 }
 
-export const statusColorMap: Record<CollectionStatusType, string> = {
-  Dropped: "border-red-500",
-  Backlog: "border-yellow-500",
-  Online: "border-blue-600",
-  "On Hold": "border-orange-600",
-  Playing: "border-green-600",
-  "Story Completed": "border-blue-600",
-  Platinum: "border-purple-600",
-  "Platinum+": "border-purple-700",
-  "100% Completed": "border-emerald-600",
+export const statusColorMap: Record<
+  CollectionStatusType,
+  { bg: string; border: string }
+> = {
+  Dropped: { bg: "bg-red-500/15", border: "border-red-500" },
+  Backlog: { bg: "bg-yellow-500/15", border: "border-yellow-500" },
+  Online: { bg: "bg-blue-600/15", border: "border-blue-600" },
+  "On Hold": { bg: "bg-orange-600/15", border: "border-orange-600" },
+  Playing: { bg: "bg-green-600/15", border: "border-green-600" },
+  "Story Completed": { bg: "bg-blue-600/15", border: "border-blue-600" },
+  Platinum: { bg: "bg-purple-600/15", border: "border-purple-600" },
+  "Platinum+": { bg: "bg-purple-700/15", border: "border-purple-700" },
+  "100% Completed": { bg: "bg-emerald-600/15", border: "border-emerald-600" },
 };
 
 export function getBorderColor(status: PlaythroughStatusType) {

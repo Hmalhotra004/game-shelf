@@ -1,4 +1,5 @@
 import { addCollection } from "@/controllers/collection/add";
+import { archiveCollection } from "@/controllers/collection/archiveCollection";
 import { deleteCollection } from "@/controllers/collection/deleteCollection";
 import { getById } from "@/controllers/collection/getById";
 import { getMany } from "@/controllers/collection/getMany";
@@ -11,6 +12,7 @@ import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
 
 import {
+  collectionListQuerySchema,
   createCollectionSchema,
   externalIdsSchema,
   updateImagesSchema,
@@ -19,11 +21,17 @@ import {
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
-  router.get("/getMany", authenticateUser, getMany);
+  router.query!(
+    "/",
+    authenticateUser,
+    validateData(collectionListQuerySchema),
+    getMany,
+  );
+
   router.get("/:collectionId", authenticateUser, verifyCollection, getById);
 
   router.post(
-    "/add",
+    "/",
     authenticateUser,
     validateData(createCollectionSchema),
     addCollection,
@@ -52,8 +60,15 @@ export default (baseUrl: string, app: Router) => {
     updateImages,
   );
 
+  router.patch(
+    "/:collectionId/archive",
+    authenticateUser,
+    verifyCollection,
+    archiveCollection,
+  );
+
   router.delete(
-    "/:collectionId/delete",
+    "/:collectionId",
     authenticateUser,
     verifyCollection,
     deleteCollection,

@@ -1,15 +1,19 @@
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
 
 import {
   CollectionGetById,
-  CollectionGetMany,
+  CollectionGetManyFilters,
+  CollectionGetManyResponse,
 } from "@repo/schemas/types/collection";
 
 export const CollectionQueryKeys = {
   all: ["Collection"] as const,
 
-  getMany: () => [...CollectionQueryKeys.all, "getMany"] as const,
+  getManyAll: () => ["collection", "getMany"] as const,
+
+  getMany: (filters: CollectionGetManyFilters = {}) =>
+    ["collection", "getMany", filters] as const,
 
   getById: (id: string) => [...CollectionQueryKeys.all, "getById", id],
 
@@ -20,15 +24,28 @@ export const CollectionQueryKeys = {
   ],
 };
 
-export const collectionGetManyQueryOptions = (api: AxiosInstance) =>
-  queryOptions({
-    queryKey: CollectionQueryKeys.getMany(),
-    queryFn: async () => {
-      const response =
-        await api.get<Array<CollectionGetMany>>(`/collection/getMany`);
+const DEFAULT_LIMIT = 20;
+export const collectionGetManyQueryOptions = (
+  api: AxiosInstance,
+  filters: CollectionGetManyFilters = {},
+) =>
+  infiniteQueryOptions({
+    queryKey: CollectionQueryKeys.getMany(filters),
+
+    queryFn: async ({ pageParam, signal }) => {
+      const { limit = DEFAULT_LIMIT, ...rest } = filters;
+
+      const response = await api.query<CollectionGetManyResponse>(
+        `/collection`,
+        { ...rest, page: pageParam, limit },
+        { signal },
+      );
 
       return response.data;
     },
+
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
   });
 
 export const collectionGetByIdQueryOptions = (api: AxiosInstance, id: string) =>
