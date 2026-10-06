@@ -1,4 +1,5 @@
 import { addCollection } from "@/controllers/collection/add";
+import { archiveCollection } from "@/controllers/collection/archiveCollection";
 import { deleteCollection } from "@/controllers/collection/deleteCollection";
 import { getById } from "@/controllers/collection/getById";
 import { getMany } from "@/controllers/collection/getMany";
@@ -57,6 +58,13 @@ export default (baseUrl: string, app: Router) => {
     verifyCollection,
     validateData(updateImagesSchema),
     updateImages,
+  );
+
+  router.patch(
+    "/:collectionId/archive",
+    authenticateUser,
+    verifyCollection,
+    archiveCollection,
   );
 
   router.delete(
