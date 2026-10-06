@@ -24,7 +24,7 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
   const router = useRouter();
 
   async function onLongPress() {
-    await Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Long_Press);
+    await Haptics.selectionAsync();
   }
 
   const [ArchiveSheet, confirmArchive] = useConfirmSheet(

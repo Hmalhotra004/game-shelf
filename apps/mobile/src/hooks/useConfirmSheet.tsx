@@ -1,5 +1,7 @@
 import { Button, type buttonVariants } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { THEME } from "@/lib/theme";
+import { useThemeStore } from "@/store/useThemeStore";
 import { VariantProps } from "class-variance-authority";
 import { useCallback, useRef } from "react";
 import { View } from "react-native";
@@ -16,6 +18,7 @@ export const useConfirmSheet = (
   confirmText?: string,
   variant: VariantProps<typeof buttonVariants>["variant"] = "default",
 ): [() => React.JSX.Element, () => Promise<boolean>] => {
+  const theme = useThemeStore((s) => s.theme);
   const sheetRef = useRef<BottomSheetModal>(null);
   const resolverRef = useRef<((value: boolean) => void) | null>(null);
 
@@ -65,8 +68,11 @@ export const useConfirmSheet = (
         ref={sheetRef}
         backdropComponent={renderBackdrop}
         enablePanDownToClose
-        // Fires on swipe-down, backdrop tap, Android back, and programmatic dismiss
         onDismiss={() => settle(false)}
+        backgroundStyle={{ backgroundColor: THEME[theme].background }}
+        handleIndicatorStyle={{
+          backgroundColor: THEME[theme].mutedForeground,
+        }}
       >
         <BottomSheetView className="px-4 pb-8 pt-2 gap-4">
           <View className="gap-1">
