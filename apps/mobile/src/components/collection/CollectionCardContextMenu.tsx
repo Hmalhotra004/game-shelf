@@ -1,6 +1,10 @@
 import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
+import { api } from "@/lib/api";
+import { handleError, showToast } from "@/lib/utils";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
+import { deleteCollectionMutationOptions } from "@repo/utils/mutations/collection";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { ReactNode } from "react";
@@ -22,10 +26,22 @@ interface Props {
 
 const CollectionCardContextMenu = ({ children, game }: Props) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   async function onLongPress() {
     await Haptics.selectionAsync();
   }
+
+  const deleteGame = useMutation(
+    deleteCollectionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        showToast("success", "Collection Deleted");
+      },
+    ),
+  );
 
   const [ArchiveSheet, confirmArchive] = useConfirmSheet(
     "Archive game?",
@@ -50,7 +66,8 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
   async function onDelete() {
     const ok = await confirmDelete();
     if (!ok) return;
-    // TODO: delete mutation, e.g. deleteMutation.mutate({ id: game.id })
+
+    deleteGame.mutate(game.id);
   }
 
   return (
