@@ -34,7 +34,10 @@ export const getMany = async (req: Request, res: Response) => {
     const offset = (page - 1) * limit;
 
     // ---------- filters ----------
-    const conditions: (SQL | undefined)[] = [eq(collection.userId, userId)];
+    const conditions: (SQL | undefined)[] = [
+      eq(collection.userId, userId),
+      eq(collection.archived, false),
+    ];
 
     if (search?.trim()) {
       conditions.push(ilike(collection.name, `%${search.trim()}%`));
