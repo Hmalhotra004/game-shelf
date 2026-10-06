@@ -4,8 +4,9 @@ import { useThemeStore } from "@/store/useThemeStore";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
 import { betterTimeText } from "@repo/utils/lib/utils";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { ImageIcon } from "lucide-react-native";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import CollectionCardContextMenu from "./CollectionCardContextMenu";
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 const CollectionCard = ({ game }: Props) => {
   const theme = useThemeStore((s) => s.theme);
   const imageUri = game.customImage ?? game.image;
+  const router = useRouter();
 
   const getPlayTime = () => {
     if (game.status === "Online") return betterTimeText(game.onlinePlaySecs);
@@ -28,7 +30,15 @@ const CollectionCard = ({ game }: Props) => {
 
   return (
     <CollectionCardContextMenu game={game}>
-      <View className="flex-row overflow-hidden rounded-xl bg-card">
+      <Pressable
+        className="flex-row overflow-hidden rounded-xl bg-card"
+        onPress={() =>
+          router.push({
+            pathname: "/(collection)/[collectionId]",
+            params: { collectionId: game.id },
+          })
+        }
+      >
         {imageUri ? (
           <Image
             source={{ uri: imageUri }}
@@ -65,7 +75,7 @@ const CollectionCard = ({ game }: Props) => {
             </Text>
           </View>
         </View>
-      </View>
+      </Pressable>
     </CollectionCardContextMenu>
   );
 };

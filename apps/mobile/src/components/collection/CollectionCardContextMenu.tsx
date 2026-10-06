@@ -3,11 +3,15 @@ import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { handleError, showToast } from "@/lib/utils";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
-import { deleteCollectionMutationOptions } from "@repo/utils/mutations/collection";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { ReactNode } from "react";
+
+import {
+  archiveCollectionMutationOptions,
+  deleteCollectionMutationOptions,
+} from "@repo/utils/mutations/collection";
 
 import {
   ContextMenu,
@@ -43,6 +47,17 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
     ),
   );
 
+  const archiveGame = useMutation(
+    archiveCollectionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        showToast("success", "Collection Archived");
+      },
+    ),
+  );
+
   const [ArchiveSheet, confirmArchive] = useConfirmSheet(
     "Archive game?",
     `"${game.name}" will be moved to your archive. You can restore it later.`,
@@ -60,7 +75,8 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
   async function onArchive() {
     const ok = await confirmArchive();
     if (!ok) return;
-    // TODO: archive mutation, e.g. archiveMutation.mutate({ id: game.id })
+
+    archiveGame.mutate(game.id);
   }
 
   async function onDelete() {
@@ -73,7 +89,10 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
   return (
     <>
       <ContextMenu>
-        <ContextMenuTrigger onLongPress={onLongPress}>
+        <ContextMenuTrigger
+          onLongPress={onLongPress}
+          asChild
+        >
           {children}
         </ContextMenuTrigger>
 
