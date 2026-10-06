@@ -6,6 +6,7 @@ import { betterTimeText } from "@repo/utils/lib/utils";
 import { Image } from "expo-image";
 import { ImageIcon } from "lucide-react-native";
 import { View } from "react-native";
+import CollectionCardContextMenu from "./CollectionCardContextMenu";
 
 interface Props {
   game: CollectionGetMany;
@@ -26,44 +27,46 @@ const CollectionCard = ({ game }: Props) => {
   const playSecs = getPlayTime();
 
   return (
-    <View className="flex-row overflow-hidden rounded-xl bg-card">
-      {imageUri ? (
-        <Image
-          source={{ uri: imageUri }}
-          style={{ width: 80, height: 96 }}
-          contentFit="cover"
-        />
-      ) : (
-        <ImageIcon
-          color={THEME[theme].foreground}
-          width={80}
-          height={96}
-        />
-      )}
+    <CollectionCardContextMenu game={game}>
+      <View className="flex-row overflow-hidden rounded-xl bg-card">
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={{ width: 80, height: 96 }}
+            contentFit="cover"
+          />
+        ) : (
+          <ImageIcon
+            color={THEME[theme].foreground}
+            width={80}
+            height={96}
+          />
+        )}
 
-      <View className="flex-1 justify-between py-1.5 px-2.5">
-        <View>
-          <Text
-            className="font-semibold"
-            numberOfLines={1}
-          >
-            {game.name}
-          </Text>
+        <View className="flex-1 justify-between py-1.5 px-2.5">
+          <View>
+            <Text
+              className="font-semibold"
+              numberOfLines={1}
+            >
+              {game.name}
+            </Text>
 
-          <Text className="mt-0.5 text-xs text-muted-foreground">
-            {game.platform} · {game.status}
-            {game.dlcCount > 0 ? ` · ${game.dlcCount} DLC` : ""}
-          </Text>
-        </View>
+            <Text className="mt-0.5 text-xs text-muted-foreground">
+              {game.platform} · {game.status}
+              {game.dlcCount > 0 ? ` · ${game.dlcCount} DLC` : ""}
+            </Text>
+          </View>
 
-        <View className="flex-row justify-between">
-          <Text className="text-xs text-muted-foreground">{playSecs}</Text>
-          <Text className="text-xs text-muted-foreground">
-            {game.totalAmount.toFixed(2)}
-          </Text>
+          <View className="flex-row justify-between">
+            <Text className="text-xs text-muted-foreground">{playSecs}</Text>
+            <Text className="text-xs text-muted-foreground">
+              {game.totalAmount.toFixed(2)}
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+    </CollectionCardContextMenu>
   );
 };
 
