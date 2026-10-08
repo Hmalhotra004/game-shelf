@@ -1,8 +1,6 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { CollectionListQuerySchemaType } from "@repo/schemas/server/schemas/collection";
-import type { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
-import axios from "axios";
 import type { Request, Response } from "express";
 
 import {
@@ -24,6 +22,12 @@ import {
   listItem,
   playthrough,
 } from "@/db/schema";
+
+import {
+  getOnlineSteamPlaySecs,
+  getSteamPlaytimeByAppId,
+  needsSteamPlaytime,
+} from "@/lib/onlinePlaytime";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
@@ -197,55 +201,19 @@ export const getMany = async (req: Request, res: Response) => {
     );
 
     // ---------- steam playtime (only if this page needs it) ----------
-    const needsSteamPlaytime = games.some(
-      (g) => g.provider === "Steam" && g.status === "Online" && g.steamAppId,
-    );
-
-    let steamPlaytimeByAppId: Record<number, number> = {};
-    if (needsSteamPlaytime && req.user?.steamId) {
-      try {
-        const response = await axios.get<GetOwnedGamesSteamType>(
-          "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/",
-          {
-            params: {
-              key: process.env.STEAM_TOKEN,
-              steamid: req.user.steamId,
-              format: "json",
-              include_appinfo: false,
-            },
-            timeout: 5000,
-          },
-        );
-
-        const steamGames = response.data.response.games ?? [];
-
-        // minutes -> seconds
-        steamPlaytimeByAppId = Object.fromEntries(
-          steamGames.map((g) => [g.appid, g.playtime_forever * 60]),
-        );
-      } catch (err) {
-        // don't fail the whole list if Steam is slow/down
-        req.log.warn({ err }, "COLLECTION_STEAM_PLAYTIME_FETCH_FAILED");
-      }
-    }
+    const steamPlaytimeByAppId = games.some(needsSteamPlaytime)
+      ? await getSteamPlaytimeByAppId(req.user?.steamId, req.log)
+      : {};
 
     // ---------- assemble ----------
-    const items = games.map((g) => {
-      let onlinePlaySecs = 0;
-
-      if (g.provider === "Steam" && g.status === "Online" && g.steamAppId) {
-        onlinePlaySecs = steamPlaytimeByAppId[Number(g.steamAppId)] ?? 0;
-      }
-
-      return {
-        ...g,
-        listIds: listsByGameId[g.id] ?? [],
-        totalAmount: Number(g.amount ?? 0) + (dlcByGameId[g.id] ?? 0),
-        totalPlaytime:
-          (playthroughByGameId[g.id] ?? 0) + (completionByGameId[g.id] ?? 0),
-        onlinePlaySecs,
-      };
-    });
+    const items = games.map((g) => ({
+      ...g,
+      listIds: listsByGameId[g.id] ?? [],
+      totalAmount: Number(g.amount ?? 0) + (dlcByGameId[g.id] ?? 0),
+      totalPlaytime:
+        (playthroughByGameId[g.id] ?? 0) + (completionByGameId[g.id] ?? 0),
+      onlinePlaySecs: getOnlineSteamPlaySecs(g, steamPlaytimeByAppId),
+    }));
 
     return res.status(200).json({
       items,

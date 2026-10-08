@@ -1,10 +1,14 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { completion, dlc, list, listItem, playthrough } from "@/db/schema";
-import type { GetOwnedGamesSteamType } from "@repo/schemas/types/steam";
-import axios from "axios";
 import { and, eq, ne, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
+
+import {
+  getOnlineSteamPlaySecs,
+  getSteamPlaytimeByAppId,
+  needsSteamPlaytime,
+} from "@/lib/onlinePlaytime";
 
 export const getById = async (req: Request, res: Response) => {
   try {
@@ -23,7 +27,7 @@ export const getById = async (req: Request, res: Response) => {
       gameCompletionAgg,
       dlcPlaythroughAgg,
       dlcCompletionAgg,
-      steamResponse,
+      steamPlaytimeByAppId,
     ] = await Promise.all([
       // -------- LISTS --------
       db
@@ -112,35 +116,15 @@ export const getById = async (req: Request, res: Response) => {
         .groupBy(completion.dlcId),
 
       // -------- STEAM (only if needed) --------
-      game.status === "Online" && game.provider === "Steam" && steamId
-        ? axios.get<GetOwnedGamesSteamType>(
-            `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`,
-            {
-              params: {
-                key: process.env.STEAM_TOKEN,
-                steamid: steamId,
-                format: "json",
-                include_appinfo: false,
-              },
-            },
-          )
-        : Promise.resolve(null),
+      needsSteamPlaytime(game)
+        ? getSteamPlaytimeByAppId(steamId, req.log)
+        : Promise.resolve({} as Record<number, number>),
     ]);
 
     // ----------------------------
     // STEAM PLAYTIME
     // ----------------------------
-    let onlinePlaySecs = 0;
-
-    if (steamResponse) {
-      const steamGames = steamResponse.data.response.games ?? [];
-
-      const steamMinutes =
-        steamGames.find((g) => String(g.appid) === game.steamAppId)
-          ?.playtime_forever ?? 0;
-
-      onlinePlaySecs = steamMinutes * 60;
-    }
+    const onlinePlaySecs = getOnlineSteamPlaySecs(game, steamPlaytimeByAppId);
 
     // ----------------------------
     // DLC TIME MERGE (O(n))
