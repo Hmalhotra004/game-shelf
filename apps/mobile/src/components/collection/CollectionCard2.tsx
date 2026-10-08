@@ -40,7 +40,8 @@ const CollectionCard2 = ({ game }: Props) => {
   const statusStyle = statusColorMap[game.status];
 
   const getPlayTime = () => {
-    if (isOnline) return betterTimeText(game.onlinePlaySecs);
+    if (isOnline && game.onlinePlaySecs > 0)
+      return betterTimeText(game.onlinePlaySecs);
 
     if (game.totalPlaytime > 0) return betterTimeText(game.totalPlaytime);
 
