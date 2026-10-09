@@ -4,3 +4,7 @@ export type ScreenMeta = {
   showAvatar?: boolean;
   showBack?: boolean;
 };
+
+export type collectionIdParams = {
+  collectionId: string;
+};
