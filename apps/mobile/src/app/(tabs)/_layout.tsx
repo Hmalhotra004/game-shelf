@@ -1,4 +1,5 @@
 import SearchBottomSheet from "@/components/collection/search/SearchBottomSheet";
+import StartPlaythroughSheet from "@/components/playthrough/StartPlaythroughSheet";
 import TabBar from "@/components/Tabbar/TabBar";
 import { useSession } from "@/hooks/useSession";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -47,6 +48,7 @@ export default function TabsLayout() {
       </Tabs>
 
       <SearchBottomSheet sheetRef={searchRef} />
+      <StartPlaythroughSheet sheetRef={playthroughRef} />
     </>
   );
 }
