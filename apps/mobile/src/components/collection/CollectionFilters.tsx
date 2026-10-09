@@ -14,7 +14,7 @@ import {
   useCollectionFilterStore,
   type CollectionStatusType,
   type PlatformType,
-} from "@/store/useCollectionFilterStore";
+} from "@repo/utils/store/useCollectionFilterStore";
 
 import {
   getGameStatusOptions,

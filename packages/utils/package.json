@@ -6,6 +6,7 @@
     "./constants": "./src/constants.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./lib/*": "./src/lib/*.ts",
+    "./store/*": "./src/store/*.ts",
     "./queries/*": "./src/queries/*.ts",
     "./mutations/*": "./src/mutations/*.ts"
   },
@@ -20,7 +21,8 @@
     "react-dom": "19.2.0",
     "axios": "^1.19.0",
     "@tanstack/react-query": "latest",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
