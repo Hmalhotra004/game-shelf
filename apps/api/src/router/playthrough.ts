@@ -20,17 +20,17 @@ import {
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
-  router.get("/getMany", authenticateUser, getMany);
+  router.get("/", authenticateUser, getMany);
 
   router.post(
-    "/add",
+    "/",
     authenticateUser,
     validateData(createPlaythroughSchema),
     add,
   );
 
   router.post(
-    "/:playthroughId/addTime",
+    "/:playthroughId",
     authenticateUser,
     verifyPlaythrough,
     validateData(createPlaythroughSessionSchema),
