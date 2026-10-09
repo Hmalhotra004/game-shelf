@@ -103,11 +103,13 @@ const StartPlaythroughSheet = ({ sheetRef }: Props) => {
     setSelectedId((prev) => (prev === id ? null : id));
   }, []);
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (selectedId == null || startPlaythrough.isPending) return;
-    startPlaythrough.mutate({
+    await startPlaythrough.mutateAsync({
       gameType: kind,
-      ...(kind === "DLC" ? { dlcId: selectedId } : { gameId: selectedId }),
+      ...(kind === "DLC"
+        ? { dlcId: selectedId }
+        : { collectionId: selectedId }),
     });
   };
 
