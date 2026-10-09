@@ -1,8 +1,12 @@
-import { CreateCollectionSchemaType } from "@repo/schemas/schemas/collection";
 import { CollectionGetManyResponse } from "@repo/schemas/types/collection";
 import { CollectionQueryKeys } from "@repo/utils/queries/collection";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { AxiosInstance } from "axios";
+
+import {
+  CreateCollectionSchemaType,
+  UpdateCollectionSchemaType,
+} from "@repo/schemas/schemas/collection";
 
 import {
   InfiniteData,
@@ -37,6 +41,32 @@ export const addCollectionMutationOptions = (
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: StatsQueryKeys.getStats(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: CollectionQueryKeys.getManyAll(),
+      });
+      onSuccess?.();
+    },
+    onError: (err) => onError(err),
+  });
+
+export const updateCollectionMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  collectionId: string,
+  onError: (error: Error) => void,
+  onSuccess?: () => void,
+) =>
+  mutationOptions({
+    mutationFn: async (data: UpdateCollectionSchemaType) => {
+      await api.patch(`/collection/${collectionId}/update`, data);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: StatsQueryKeys.getStats(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: CollectionQueryKeys.getByIdAll(collectionId),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
