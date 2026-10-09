@@ -22,10 +22,8 @@ const config: ExpoConfig = {
     versionCode: 1,
     package: "com.gameshelf.gameshelf",
     adaptiveIcon: {
-      backgroundColor: "#E6F4FE",
-      foregroundImage: "./assets/images/android-icon-foreground.png",
-      backgroundImage: "./assets/images/android-icon-background.png",
-      monochromeImage: "./assets/images/android-icon-monochrome.png",
+      foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#080808",
     },
     predictiveBackGestureEnabled: false,
   },
@@ -39,9 +37,10 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        backgroundColor: "#208AEF",
-        image: "./assets/images/splash-icon.png",
-        imageWidth: 76,
+        backgroundColor: "#080808",
+        image: "./assets/images/splash.png",
+        imageWidth: 578,
+        resizeMode: "contain",
       },
     ],
     "expo-build-properties",
