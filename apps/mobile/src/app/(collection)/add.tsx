@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
@@ -19,6 +20,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { Image, Pressable, ScrollView, View } from "react-native";
 
 import {
   FormDatePicker,
@@ -26,14 +28,6 @@ import {
   FormMultiSelectSheet,
   FormSelectSheet,
 } from "@/components/form/form";
-
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
 
 import {
   getOwnershipTypeOptions,
@@ -188,7 +182,7 @@ const AddCollection = () => {
         <Header />
 
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator />
+          <Loader />
         </View>
       </View>
     );
