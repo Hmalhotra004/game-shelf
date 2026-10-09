@@ -3,6 +3,7 @@ import { AxiosInstance } from "axios";
 
 import {
   CollectionGetById,
+  CollectionGetByIdForEdit,
   CollectionGetManyFilters,
   CollectionGetManyResponse,
 } from "@repo/schemas/types/collection";
@@ -15,13 +16,13 @@ export const CollectionQueryKeys = {
   getMany: (filters: CollectionGetManyFilters = {}) =>
     ["collection", "getMany", filters] as const,
 
-  getById: (id: string) => [...CollectionQueryKeys.all, "getById", id],
+  getByIdAll: (id: string) =>
+    [...CollectionQueryKeys.all, "getById", id] as const,
+  getById: (id: string, edit: boolean = false) =>
+    [...CollectionQueryKeys.all, "getById", id, edit] as const,
 
-  linkSteamGrid: (name: string) => [
-    ...CollectionQueryKeys.all,
-    "linkSteamGrid",
-    name,
-  ],
+  linkSteamGrid: (name: string) =>
+    [...CollectionQueryKeys.all, "linkSteamGrid", name] as const,
 };
 
 const DEFAULT_LIMIT = 20;
@@ -50,9 +51,24 @@ export const collectionGetManyQueryOptions = (
 
 export const collectionGetByIdQueryOptions = (api: AxiosInstance, id: string) =>
   queryOptions({
-    queryKey: CollectionQueryKeys.getById(id),
+    queryKey: CollectionQueryKeys.getById(id, false),
     queryFn: async () => {
       const response = await api.get<CollectionGetById>(`/collection/${id}`);
+
+      return response.data;
+    },
+  });
+
+export const collectionGetByIdForEditQueryOptions = (
+  api: AxiosInstance,
+  id: string,
+) =>
+  queryOptions({
+    queryKey: CollectionQueryKeys.getById(id, true),
+    queryFn: async () => {
+      const response = await api.get<CollectionGetByIdForEdit>(
+        `/collection/${id}/edit`,
+      );
 
       return response.data;
     },

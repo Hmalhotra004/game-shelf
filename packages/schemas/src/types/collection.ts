@@ -42,6 +42,22 @@ export type CollectionGetManyFilters = Omit<
   "page" | "limit"
 > & { limit?: number };
 
+export type CollectionGetByIdForEdit = {
+  id: string;
+  name: string;
+  edition: string;
+  dateOfPurchase: Date;
+  amount: string;
+  image: string | null;
+  customImage: string | null;
+  platform: PlatformType;
+  provider: ProviderType;
+  PSVersion: PSVersionType[];
+  status: CollectionStatusType;
+  ownershipType: OwnershipType;
+  lists: { id: string; name: string }[];
+};
+
 export type CollectionGetById = {
   id: string;
   name: string;
@@ -54,7 +70,7 @@ export type CollectionGetById = {
   completions: number;
   platform: PlatformType;
   provider: ProviderType;
-  PSVersion: PSVersionType;
+  PSVersion: PSVersionType[];
   status: CollectionStatusType;
   dlcCount: number;
   ownershipType: OwnershipType;

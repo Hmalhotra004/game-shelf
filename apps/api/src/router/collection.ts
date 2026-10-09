@@ -2,7 +2,9 @@ import { addCollection } from "@/controllers/collection/add";
 import { archiveCollection } from "@/controllers/collection/archiveCollection";
 import { deleteCollection } from "@/controllers/collection/deleteCollection";
 import { getById } from "@/controllers/collection/getById";
+import { getByIdForEdit } from "@/controllers/collection/getByIdForEdit";
 import { getMany } from "@/controllers/collection/getMany";
+import { update } from "@/controllers/collection/update";
 import { updateExternalIds } from "@/controllers/collection/updateExternalIds";
 import { updateImages } from "@/controllers/collection/updateImages";
 import { updateSteamGridDBId } from "@/controllers/collection/updateSteamGridDBId";
@@ -15,6 +17,7 @@ import {
   collectionListQuerySchema,
   createCollectionSchema,
   externalIdsSchema,
+  updateCollectionSchema,
   updateImagesSchema,
 } from "@repo/schemas/server/schemas/collection";
 
@@ -29,12 +32,26 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.get("/:collectionId", authenticateUser, verifyCollection, getById);
+  router.get(
+    "/:collectionId/edit",
+    authenticateUser,
+    verifyCollection,
+    getByIdForEdit,
+  );
 
   router.post(
     "/",
     authenticateUser,
     validateData(createCollectionSchema),
     addCollection,
+  );
+
+  router.patch(
+    "/:collectionId/update",
+    authenticateUser,
+    verifyCollection,
+    validateData(updateCollectionSchema),
+    update,
   );
 
   router.patch(

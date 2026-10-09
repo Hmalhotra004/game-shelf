@@ -91,6 +91,40 @@ export const createCollectionSchema = z
     },
   );
 
+export const updateCollectionSchema = z
+  .object({
+    name: z.string().trim().min(1, { error: "Name is requried" }),
+    dateOfPurchase: z.string().trim().nullable(),
+    edition: z.string().trim().nullable(),
+    amount: z.string().trim().nullable(),
+    platform: platformSchema,
+    provider: providerSchema,
+    status: statusSchema,
+    PSVersion: z.array(PSVersionSchema),
+    ownershipType: ownershipTypeSchema,
+    lists: z.array(z.string().trim()).nullable(),
+  })
+  .refine(
+    (data) =>
+      providerPlatformRefine({
+        platform: data.platform,
+        provider: data.provider,
+      }),
+    { error: "Invalid provider for this platform", path: ["provider"] },
+  )
+  .refine(
+    (data) => {
+      if (data.platform === "PS") {
+        return data.PSVersion.length >= 1;
+      }
+      return true;
+    },
+    {
+      path: ["PSVersion"],
+      error: "PS Version is required when platform is PS",
+    },
+  );
+
 const steamGridDbImageUrl = (type: "grid" | "hero") =>
   z
     .string()
@@ -125,9 +159,10 @@ export const updateImagesSchema = z.object({
 });
 
 // ------------------------------- Types -------------------------------------------
+export type CreateCollectionSchemaType = z.infer<typeof createCollectionSchema>;
+export type UpdateCollectionSchemaType = z.infer<typeof updateCollectionSchema>;
 export type ExternalIdsSchemaType = z.infer<typeof externalIdsSchema>;
 export type UpdateImagesSchemaType = z.infer<typeof updateImagesSchema>;
-export type CreateCollectionSchemaType = z.infer<typeof createCollectionSchema>;
 
 // ------------------------------- Query Schema -------------------------------------------
 export const collectionListQuerySchema = z.object({
