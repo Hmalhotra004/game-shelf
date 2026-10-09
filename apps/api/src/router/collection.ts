@@ -2,6 +2,7 @@ import { addCollection } from "@/controllers/collection/add";
 import { archiveCollection } from "@/controllers/collection/archiveCollection";
 import { deleteCollection } from "@/controllers/collection/deleteCollection";
 import { getById } from "@/controllers/collection/getById";
+import { getByIdForEdit } from "@/controllers/collection/getByIdForEdit";
 import { getMany } from "@/controllers/collection/getMany";
 import { updateExternalIds } from "@/controllers/collection/updateExternalIds";
 import { updateImages } from "@/controllers/collection/updateImages";
@@ -29,6 +30,12 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.get("/:collectionId", authenticateUser, verifyCollection, getById);
+  router.get(
+    "/:collectionId/edit",
+    authenticateUser,
+    verifyCollection,
+    getByIdForEdit,
+  );
 
   router.post(
     "/",
