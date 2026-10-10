@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { CollectionStatusType, PlatformType } from "@repo/schemas/types/index";
+import { PlatformType, PlaythroughStatusType } from "@repo/schemas/types/index";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { useQuery } from "@tanstack/react-query";
 import { memo, useMemo, useRef } from "react";
@@ -12,26 +12,26 @@ import { ScrollView, View } from "react-native";
 
 import {
   selectActiveFilterCount,
-  useCollectionFilterStore,
-} from "@repo/utils/store/useCollectionFilterStore";
+  usePlaythroughFilterStore,
+} from "@repo/utils/store/usePlaythroughFilterStore";
 
 import {
-  getGameStatusOptions,
   Option,
   PLATFORM_OPTIONS,
+  PLAYTHROUGH_STATUS_OPTIONS,
 } from "@repo/utils/lib/gameOptions";
 
-const CollectionFilters = () => {
-  const search = useCollectionFilterStore((s) => s.search);
-  const platform = useCollectionFilterStore((s) => s.platform);
-  const lists = useCollectionFilterStore((s) => s.lists);
-  const status = useCollectionFilterStore((s) => s.status);
-  const setSearch = useCollectionFilterStore((s) => s.setSearch);
-  const setPlatform = useCollectionFilterStore((s) => s.setPlatform);
-  const setStatus = useCollectionFilterStore((s) => s.setStatus);
-  const setLists = useCollectionFilterStore((s) => s.setLists);
-  const reset = useCollectionFilterStore((s) => s.reset);
-  const activeCount = useCollectionFilterStore(selectActiveFilterCount);
+const PlaythroughFilters = () => {
+  const search = usePlaythroughFilterStore((s) => s.search);
+  const platform = usePlaythroughFilterStore((s) => s.platform);
+  const lists = usePlaythroughFilterStore((s) => s.lists);
+  const status = usePlaythroughFilterStore((s) => s.status);
+  const setSearch = usePlaythroughFilterStore((s) => s.setSearch);
+  const setPlatform = usePlaythroughFilterStore((s) => s.setPlatform);
+  const setStatus = usePlaythroughFilterStore((s) => s.setStatus);
+  const setLists = usePlaythroughFilterStore((s) => s.setLists);
+  const reset = usePlaythroughFilterStore((s) => s.reset);
+  const activeCount = usePlaythroughFilterStore(selectActiveFilterCount);
 
   const platformSheetRef = useRef<BottomSheetModal>(null);
   const statusSheetRef = useRef<BottomSheetModal>(null);
@@ -106,9 +106,9 @@ const CollectionFilters = () => {
 
       <MultiSelectBottomSheet
         title="Status"
-        options={getGameStatusOptions({ completions: 0, isDLC: true })}
+        options={PLAYTHROUGH_STATUS_OPTIONS}
         value={status}
-        onChange={(v) => setStatus(v as CollectionStatusType[])}
+        onChange={(v) => setStatus(v as PlaythroughStatusType[])}
         sheetRef={statusSheetRef}
       />
 
@@ -123,4 +123,4 @@ const CollectionFilters = () => {
   );
 };
 
-export default memo(CollectionFilters);
+export default memo(PlaythroughFilters);
