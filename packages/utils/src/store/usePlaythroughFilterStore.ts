@@ -1,21 +1,21 @@
-import { CollectionStatusType, PlatformType } from "@repo/schemas/types/index";
+import { PlatformType, PlaythroughStatusType } from "@repo/schemas/types/index";
 import { toggleIn } from "@repo/utils/lib/utils";
 import { create } from "zustand";
 
 interface State {
   search: string;
   platform: PlatformType[];
-  status: CollectionStatusType[];
+  status: PlaythroughStatusType[];
   lists: string[];
 }
 
 interface Actions {
   setSearch: (search: string) => void;
   setPlatform: (platform: PlatformType[]) => void;
-  setStatus: (status: CollectionStatusType[]) => void;
+  setStatus: (status: PlaythroughStatusType[]) => void;
   setLists: (list: string[]) => void;
   togglePlatform: (p: PlatformType) => void;
-  toggleStatus: (s: CollectionStatusType) => void;
+  toggleStatus: (s: PlaythroughStatusType) => void;
   toggleLists: (s: string) => void;
   reset: () => void;
 }
@@ -27,7 +27,7 @@ const initialState: State = {
   lists: [],
 };
 
-export const useCollectionFilterStore = create<State & Actions>()((set) => ({
+export const usePlaythroughFilterStore = create<State & Actions>()((set) => ({
   ...initialState,
   setSearch: (search) => set({ search }),
   setPlatform: (platform) => set({ platform }),

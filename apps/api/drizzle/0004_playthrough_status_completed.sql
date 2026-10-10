@@ -1,0 +1,1 @@
+ALTER TYPE "public"."playthrough_status" ADD VALUE 'Completed';

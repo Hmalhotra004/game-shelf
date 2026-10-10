@@ -1,3 +1,4 @@
+import { PlaythroughListQuerySchemaType } from "../schemas/playthrough";
 import { PlatformType, PlaythroughStatusType, ProviderType } from "./index";
 
 export type PlaythroughGetManyType = {
@@ -28,3 +29,18 @@ export type Session = {
   duration: number;
   userId: string;
 };
+
+export type PlaythroughGetManyResponse = {
+  items: PlaythroughGetManyType[];
+  total: number;
+  totalSeconds: number;
+  page: number;
+  limit: number;
+  hasNextPage: boolean;
+  nextPage: number | null;
+};
+
+export type PlaythroughGetManyFilters = Omit<
+  PlaythroughListQuerySchemaType,
+  "page" | "limit"
+> & { limit?: number };
