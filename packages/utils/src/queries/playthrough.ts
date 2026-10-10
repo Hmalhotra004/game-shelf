@@ -1,31 +1,40 @@
+import { infiniteQueryOptions } from "@tanstack/react-query";
+import { AxiosInstance } from "axios";
+
+import {
+  PlaythroughGetManyFilters,
+  PlaythroughGetManyResponse,
+} from "@repo/schemas/types/playthrough";
+
 export const PlaythroughQueryKeys = {
   all: ["Playthrough"] as const,
 
   getManyAll: () => ["Playthrough", "getMany"] as const,
 
-  getMany: (filters = {}) => ["Playthrough", "getMany", filters] as const,
+  getMany: (filters: PlaythroughGetManyFilters = {}) =>
+    ["Playthrough", "getMany", filters] as const,
 };
 
-// const DEFAULT_LIMIT = 20;
-// export const collectionGetManyQueryOptions = (
-//   api: AxiosInstance,
-//   filters: CollectionGetManyFilters = {},
-// ) =>
-//   infiniteQueryOptions({
-//     queryKey: PlaythroughQueryKeys.getMany(filters),
+const DEFAULT_LIMIT = 20;
+export const PlaythroughGetManyQueryOptions = (
+  api: AxiosInstance,
+  filters: PlaythroughGetManyFilters = {},
+) =>
+  infiniteQueryOptions({
+    queryKey: PlaythroughQueryKeys.getMany(filters),
 
-//     queryFn: async ({ pageParam, signal }) => {
-//       const { limit = DEFAULT_LIMIT, ...rest } = filters;
+    queryFn: async ({ pageParam, signal }) => {
+      const { limit = DEFAULT_LIMIT, ...rest } = filters;
 
-//       const response = await api.query<CollectionGetManyResponse>(
-//         `/collection`,
-//         { ...rest, page: pageParam, limit },
-//         { signal },
-//       );
+      const response = await api.query<PlaythroughGetManyResponse>(
+        `/playthrough`,
+        { ...rest, page: pageParam, limit },
+        { signal },
+      );
 
-//       return response.data;
-//     },
+      return response.data;
+    },
 
-//     initialPageParam: 1,
-//     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
-//   });
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
+  });
