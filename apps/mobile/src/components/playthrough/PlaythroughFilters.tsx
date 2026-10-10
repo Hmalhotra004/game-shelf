@@ -51,7 +51,7 @@ const PlaythroughFilters = () => {
       <SearchBar
         value={search}
         onChangeText={setSearch}
-        placeholder="Search collection..."
+        placeholder="Search playthrough..."
       />
 
       <ScrollView
