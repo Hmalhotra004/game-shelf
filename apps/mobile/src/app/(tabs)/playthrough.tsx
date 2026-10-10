@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
+import PlaythroughCard2 from "@/components/playthrough/Playthroughcard2";
 import PlaythroughFilters from "@/components/playthrough/PlaythroughFilters";
 import { Button } from "@/components/ui/button";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
@@ -59,9 +60,7 @@ const Playthrough = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: PlaythroughGetManyType }) => (
-      <View>
-        <Text>{item.id}</Text>
-      </View>
+      <PlaythroughCard2 play={item} />
     ),
     [],
   );
