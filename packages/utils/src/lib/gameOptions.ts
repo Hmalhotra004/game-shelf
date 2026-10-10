@@ -3,6 +3,7 @@ import {
   CompletionStyleType,
   OwnershipType,
   PlatformType,
+  PlaythroughStatusType,
   ProviderType,
   PSVersionType,
 } from "@repo/schemas/types/index";
@@ -35,6 +36,12 @@ export const PS_VERSION_OPTIONS = opts<PSVersionType>(
   "PS3",
   "PS2",
   "PS1",
+);
+
+export const PLAYTHROUGH_STATUS_OPTIONS = opts<PlaythroughStatusType>(
+  "Active",
+  "On Hold",
+  "Archived",
 );
 
 export const PLATFORM_OPTIONS = opts<PlatformType>("PC", "PS", "XBOX");
