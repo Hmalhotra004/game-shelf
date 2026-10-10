@@ -21,9 +21,18 @@ import {
   getTableColumns,
   ilike,
   inArray,
+  ne,
   sql,
   type SQL,
 } from "drizzle-orm";
+
+const statusOrder = sql`CASE ${playthrough.status}
+  WHEN 'Active' THEN 0
+  WHEN 'On Hold' THEN 1
+  WHEN 'Completed' THEN 2
+  WHEN 'Archived' THEN 4
+  ELSE 3
+END`;
 
 export const getMany = async (req: Request, res: Response) => {
   try {
@@ -59,7 +68,11 @@ export const getMany = async (req: Request, res: Response) => {
     }
 
     if (status?.length) {
+      // only the selected statuses (archived included only if selected)
       conditions.push(inArray(playthrough.status, status));
+    } else {
+      // no status filter => hide archived
+      conditions.push(ne(playthrough.status, "Archived"));
     }
 
     if (listFilter?.length) {
@@ -107,7 +120,7 @@ export const getMany = async (req: Request, res: Response) => {
         .leftJoin(parent, eq(parent.id, dlc.collectionId))
         .where(where)
         // id as tiebreaker => stable pages for infinite scroll
-        .orderBy(asc(effectiveName), asc(playthrough.id))
+        .orderBy(asc(statusOrder), asc(effectiveName), asc(playthrough.id))
         .limit(limit)
         .offset(offset),
 
