@@ -1,35 +1,146 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
-import { collection, dlc, playthrough, playthroughSession } from "@/db/schema";
-import { and, desc, eq, getTableColumns, inArray } from "drizzle-orm";
+import { PlaythroughListQuerySchemaType } from "@repo/schemas/server/schemas/playthrough";
+import { alias } from "drizzle-orm/pg-core";
 import type { Request, Response } from "express";
+
+import {
+  collection,
+  dlc,
+  listItem,
+  playthrough,
+  playthroughSession,
+} from "@/db/schema";
+
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  exists,
+  getTableColumns,
+  ilike,
+  inArray,
+  sql,
+  type SQL,
+} from "drizzle-orm";
 
 export const getMany = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
+    const query = req.cleanBody as PlaythroughListQuerySchemaType;
 
-    const playthroughs = await db
-      .select({
-        ...getTableColumns(playthrough),
+    const { page, limit, search, platform, status, lists: listFilter } = query;
+    const offset = (page - 1) * limit;
 
-        // from collection (game)
-        gameName: collection.name,
-        gameImage: collection.image,
-        gameCustomImage: collection.customImage,
-        gameCoverImage: collection.coverImage,
-        gameCustomCoverImage: collection.customCoverImage,
-        gamePlatform: collection.platform,
-        gameProvider: collection.provider,
+    // A playthrough is either for a game or for a DLC. DLCs get their
+    // platform/provider from the parent game, so join it once here.
+    const parent = alias(collection, "parent_collection");
 
-        // from dlc
-        dlcName: dlc.name,
-        dlcImage: dlc.image,
-        dlcParentGameId: dlc.collectionId,
-      })
-      .from(playthrough)
-      .leftJoin(collection, eq(collection.id, playthrough.collectionId))
-      .leftJoin(dlc, eq(dlc.id, playthrough.dlcId))
-      .where(eq(playthrough.userId, userId));
+    const effectiveName = sql<string>`COALESCE(${collection.name}, ${dlc.name})`;
+    const effectivePlatform = sql<
+      typeof collection.$inferSelect.platform | null
+    >`COALESCE(${collection.platform}, ${parent.platform})`;
+    const effectiveProvider = sql<
+      typeof collection.$inferSelect.provider | null
+    >`COALESCE(${collection.provider}, ${parent.provider})`;
+    // the game that "owns" this playthrough (parent game for DLCs)
+    const effectiveGameId = sql<string>`COALESCE(${playthrough.collectionId}, ${dlc.collectionId})`;
+
+    // ---------- filters ----------
+    const conditions: (SQL | undefined)[] = [eq(playthrough.userId, userId)];
+
+    if (search?.trim()) {
+      conditions.push(ilike(effectiveName, `%${search.trim()}%`));
+    }
+
+    if (platform?.length) {
+      conditions.push(inArray(effectivePlatform, platform));
+    }
+
+    if (status?.length) {
+      conditions.push(inArray(playthrough.status, status));
+    }
+
+    if (listFilter?.length) {
+      conditions.push(
+        exists(
+          db
+            .select({ one: sql`1` })
+            .from(listItem)
+            .where(
+              and(
+                eq(listItem.collectionId, effectiveGameId),
+                inArray(listItem.listId, listFilter),
+              ),
+            ),
+        ),
+      );
+    }
+
+    const where = and(...conditions);
+
+    // ---------- page + overall aggregates (parallel) ----------
+    const [rows, [aggRow]] = await Promise.all([
+      db
+        .select({
+          ...getTableColumns(playthrough),
+
+          // game
+          gameName: collection.name,
+          gameImage: collection.image,
+          gameCustomImage: collection.customImage,
+          gameCoverImage: collection.coverImage,
+          gameCustomCoverImage: collection.customCoverImage,
+
+          // dlc
+          dlcName: dlc.name,
+          dlcImage: dlc.image,
+
+          // resolved through the parent game for DLCs
+          platform: effectivePlatform,
+          provider: effectiveProvider,
+        })
+        .from(playthrough)
+        .leftJoin(collection, eq(collection.id, playthrough.collectionId))
+        .leftJoin(dlc, eq(dlc.id, playthrough.dlcId))
+        .leftJoin(parent, eq(parent.id, dlc.collectionId))
+        .where(where)
+        // id as tiebreaker => stable pages for infinite scroll
+        .orderBy(asc(effectiveName), asc(playthrough.id))
+        .limit(limit)
+        .offset(offset),
+
+      db
+        .select({
+          count: sql<number>`count(*)::int`,
+          totalSeconds: sql<string>`COALESCE(SUM(${playthrough.totalSeconds}), 0)`,
+        })
+        .from(playthrough)
+        .leftJoin(collection, eq(collection.id, playthrough.collectionId))
+        .leftJoin(dlc, eq(dlc.id, playthrough.dlcId))
+        .leftJoin(parent, eq(parent.id, dlc.collectionId))
+        .where(where),
+    ]);
+
+    const total = aggRow?.count ?? 0;
+    const totalSeconds = Number(aggRow?.totalSeconds ?? 0);
+    const hasNextPage = offset + rows.length < total;
+
+    if (rows.length === 0) {
+      return res.status(200).json({
+        items: [],
+        total,
+        totalSeconds,
+        page,
+        limit,
+        hasNextPage: false,
+        nextPage: null,
+      });
+    }
+
+    // ---------- sessions (only for the playthroughs on this page) ----------
+    const ids = rows.map((r) => r.id);
 
     const sessions = await db
       .select({
@@ -40,65 +151,24 @@ export const getMany = async (req: Request, res: Response) => {
         userId: playthroughSession.userId,
       })
       .from(playthroughSession)
-      .where(eq(playthroughSession.userId, userId))
+      .where(
+        and(
+          eq(playthroughSession.userId, userId),
+          inArray(playthroughSession.playthroughId, ids),
+        ),
+      )
       .orderBy(desc(playthroughSession.playDate));
 
-    const parentIds = [
-      ...new Set(
-        playthroughs
-          .map((pt) => pt.dlcParentGameId)
-          .filter((id): id is string => id !== null),
-      ),
-    ];
-
-    const parentGames =
-      parentIds.length > 0
-        ? await db
-            .select({
-              id: collection.id,
-              platform: collection.platform,
-              provider: collection.provider,
-            })
-            .from(collection)
-            .where(
-              and(
-                eq(collection.userId, userId),
-                inArray(collection.id, parentIds),
-              ),
-            )
-        : [];
-
-    const parentMap = new Map(parentGames.map((g) => [g.id, g]));
-
     const sessionMap = new Map<string, typeof sessions>();
-
-    for (const session of sessions) {
-      if (!sessionMap.has(session.playthroughId)) {
-        sessionMap.set(session.playthroughId, []);
-      }
-      sessionMap.get(session.playthroughId)!.push(session);
+    for (const s of sessions) {
+      const arr = sessionMap.get(s.playthroughId);
+      if (arr) arr.push(s);
+      else sessionMap.set(s.playthroughId, [s]);
     }
 
-    const result = playthroughs.map((pt) => {
+    // ---------- assemble ----------
+    const items = rows.map((pt) => {
       const isDLC = pt.dlcId !== null;
-
-      let parentPlatform = pt.gamePlatform;
-      let parentProvider = pt.gameProvider;
-
-      if (isDLC) {
-        if (!pt.dlcParentGameId) {
-          throw new Error("DLC parent game missing");
-        }
-
-        const parentGame = parentMap.get(pt.dlcParentGameId);
-
-        if (!parentGame) {
-          throw new Error("Parent not found");
-        }
-
-        parentPlatform = parentGame.platform;
-        parentProvider = parentGame.provider;
-      }
 
       return {
         id: pt.id,
@@ -121,16 +191,24 @@ export const getMany = async (req: Request, res: Response) => {
         coverImage: isDLC ? pt.dlcImage : pt.gameCoverImage,
         customCoverImage: isDLC ? pt.dlcImage : pt.gameCustomCoverImage,
 
-        platform: isDLC ? parentPlatform : pt.gamePlatform,
-        provider: isDLC ? parentProvider : pt.gameProvider,
+        platform: pt.platform,
+        provider: pt.provider,
 
         sessions: sessionMap.get(pt.id) ?? [],
       };
     });
 
-    return res.status(200).json(result);
+    return res.status(200).json({
+      items,
+      total, // total playthroughs matching the filters (all pages)
+      totalSeconds, // total playtime matching the filters
+      page,
+      limit,
+      hasNextPage,
+      nextPage: hasNextPage ? page + 1 : null,
+    });
   } catch (err) {
-    req.log.error({ err }, "PLAYTHORUGH_GET_MANY_ERROR");
+    req.log.error({ err }, "PLAYTHROUGH_GET_MANY_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };

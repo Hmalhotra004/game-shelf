@@ -10,6 +10,7 @@ import { Router } from "express";
 import {
   createPlaythroughSchema,
   createPlaythroughSessionSchema,
+  playthroughListQuerySchema,
 } from "@repo/schemas/server/schemas/playthrough";
 
 import {
@@ -20,7 +21,12 @@ import {
 export default (baseUrl: string, app: Router) => {
   const router = Router();
 
-  router.get("/", authenticateUser, getMany);
+  router.query!(
+    "/",
+    authenticateUser,
+    validateData(playthroughListQuerySchema),
+    getMany,
+  );
 
   router.post(
     "/",

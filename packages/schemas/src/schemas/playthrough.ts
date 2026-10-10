@@ -1,5 +1,6 @@
 import z from "zod";
 import { PlaythroughStatusValues } from "../enums";
+import { platformSchema } from "./collection";
 import { GameTypeSchema } from "./index";
 
 export const playthroughStatusSchema = z.enum(PlaythroughStatusValues, {
@@ -84,4 +85,22 @@ export type UpdatePlaythroughNotesSchemaType = z.infer<
 
 export type UpdatePlaythroughSessionSchemaType = z.infer<
   typeof updatePlaythroughSessionSchema
+>;
+
+// ------------------------------- Query Schema -------------------------------------------
+export const playthroughListQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().optional(),
+  platform: z.array(platformSchema).optional(),
+  status: z.array(playthroughStatusSchema).optional(),
+  lists: z.array(z.string()).optional(),
+});
+
+// ------------------------------- Types -------------------------------------------
+export type playthroughListQuerySchemaInput = z.input<
+  typeof playthroughListQuerySchema
+>;
+export type PlaythroughListQuerySchemaType = z.infer<
+  typeof playthroughListQuerySchema
 >;
