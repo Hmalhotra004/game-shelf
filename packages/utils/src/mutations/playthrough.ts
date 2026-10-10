@@ -1,21 +1,37 @@
-import { CreatePlaythroughSchemaType } from "@repo/schemas/schemas/playthrough";
+import { PlaythroughGetManyResponse } from "@repo/schemas/types/playthrough";
 import { CollectionQueryKeys } from "@repo/utils/queries/collection";
 import { PlaythroughQueryKeys } from "@repo/utils/queries/playthrough";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { AxiosInstance } from "axios";
 
-import { mutationOptions, QueryClient } from "@tanstack/react-query";
+import {
+  CreatePlaythroughSchemaType,
+  UpdatePlaythroughSchemaType,
+} from "@repo/schemas/schemas/playthrough";
+
+import {
+  InfiniteData,
+  mutationOptions,
+  QueryClient,
+  QueryKey,
+} from "@tanstack/react-query";
 
 // --------------------- Types------------------------------------
-// type CollectionInfinite = InfiniteData<CollectionGetManyResponse>;
+type PlaythroughInfinite = InfiniteData<PlaythroughGetManyResponse>;
 
-// type ArchiveContext = {
-//   previous: [QueryKey, CollectionInfinite | undefined][];
-// };
+type StatusContext = {
+  previous: [QueryKey, PlaythroughInfinite | undefined][];
+};
 
-// type DeleteContext = {
-//   previous: [QueryKey, CollectionInfinite | undefined][];
-// };
+type UpdateStatusVariables = {
+  id: string;
+  status: UpdatePlaythroughSchemaType["status"];
+  notes: UpdatePlaythroughSchemaType["notes"];
+};
+
+type DeleteContext = {
+  previous: [QueryKey, PlaythroughInfinite | undefined][];
+};
 
 // --------------------Mutations--------------------------
 
@@ -44,160 +60,134 @@ export const startPlaythroughMutationOptions = (
     onError: (err) => onError(err),
   });
 
-// export const updateCollectionMutationOptions = (
-//   api: AxiosInstance,
-//   queryClient: QueryClient,
-//   collectionId: string,
-//   onError: (error: Error) => void,
-//   onSuccess?: () => void,
-// ) =>
-//   mutationOptions({
-//     mutationFn: async (data: UpdateCollectionSchemaType) => {
-//       await api.patch(`/collection/${collectionId}/update`, data);
-//     },
-//     onSuccess: async () => {
-//       await queryClient.invalidateQueries({
-//         queryKey: StatsQueryKeys.getStats(),
-//       });
-//       await queryClient.invalidateQueries({
-//         queryKey: CollectionQueryKeys.getByIdAll(collectionId),
-//       });
-//       await queryClient.invalidateQueries({
-//         queryKey: CollectionQueryKeys.getManyAll(),
-//       });
-//       onSuccess?.();
-//     },
-//     onError: (err) => onError(err),
-//   });
+export const updatePlaythroughMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  onError: (error: Error) => void,
+  onSuccess?: () => void,
+) =>
+  mutationOptions<void, Error, UpdateStatusVariables, StatusContext>({
+    mutationFn: async ({ id, status, notes }) => {
+      await api.patch(`/playthrough/${id}/status`, { status, notes });
+    },
 
-// export const archiveCollectionMutationOptions = (
-//   api: AxiosInstance,
-//   queryClient: QueryClient,
-//   onError: (error: Error) => void,
-//   onSuccess?: () => void,
-// ) =>
-//   mutationOptions<void, Error, string, ArchiveContext>({
-//     mutationFn: async (id: string) => {
-//       await api.patch(`/collection/${id}/archive`);
-//     },
+    onMutate: async ({ id, status, notes }) => {
+      const key = PlaythroughQueryKeys.getManyAll();
 
-//     onMutate: async (id) => {
-//       const key = CollectionQueryKeys.getManyAll();
+      await queryClient.cancelQueries({ queryKey: key });
 
-//       await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueriesData<PlaythroughInfinite>({
+        queryKey: key,
+      });
 
-//       const previous = queryClient.getQueriesData<CollectionInfinite>({
-//         queryKey: key,
-//       });
+      queryClient.setQueriesData<PlaythroughInfinite>(
+        { queryKey: key },
+        (old) => {
+          if (!old) return old;
 
-//       queryClient.setQueriesData<CollectionInfinite>(
-//         { queryKey: key },
-//         (old) => {
-//           if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              items: page.items.map((item) =>
+                item.id === id ? { ...item, status, notes } : item,
+              ),
+            })),
+          };
+        },
+      );
 
-//           return {
-//             ...old,
-//             pages: old.pages.map((page) => {
-//               const items = page.items.filter((item) => item.id !== id);
-//               const removed = page.items.length - items.length;
+      return { previous };
+    },
 
-//               return {
-//                 ...page,
-//                 items,
-//                 total: Math.max(0, page.total - removed),
-//               };
-//             }),
-//           };
-//         },
-//       );
+    onError: (err, _vars, context) => {
+      context?.previous.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+      onError(err);
+    },
 
-//       return { previous };
-//     },
+    onSuccess: () => {
+      onSuccess?.();
+    },
 
-//     onError: (err, _id, context) => {
-//       context?.previous.forEach(([queryKey, data]) => {
-//         queryClient.setQueryData(queryKey, data);
-//       });
-//       onError(err);
-//     },
+    onSettled: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({
+          queryKey: CollectionQueryKeys.getManyAll(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: PlaythroughQueryKeys.getManyAll(),
+        }),
+      ]);
+    },
+  });
 
-//     onSuccess: () => {
-//       onSuccess?.();
-//     },
+export const deletePlaythroughMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  onError: (error: Error) => void,
+  onSuccess?: () => void,
+) =>
+  mutationOptions<void, Error, string, DeleteContext>({
+    mutationFn: async (id: string) => {
+      await api.delete(`/playthrough/${id}`);
+    },
 
-//     onSettled: async () => {
-//       await Promise.all([
-//         queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
-//         queryClient.invalidateQueries({
-//           queryKey: CollectionQueryKeys.getManyAll(),
-//         }),
-//         // TODO: add playthorugh and completion key as well and archived getmany key as well
-//       ]);
-//     },
-//   });
+    onMutate: async (id) => {
+      const key = PlaythroughQueryKeys.getManyAll();
 
-// export const deleteCollectionMutationOptions = (
-//   api: AxiosInstance,
-//   queryClient: QueryClient,
-//   onError: (error: Error) => void,
-//   onSuccess?: () => void,
-// ) =>
-//   mutationOptions<void, Error, string, DeleteContext>({
-//     mutationFn: async (id: string) => {
-//       await api.delete(`/collection/${id}`);
-//     },
+      await queryClient.cancelQueries({ queryKey: key });
 
-//     onMutate: async (id) => {
-//       const key = CollectionQueryKeys.getManyAll();
+      const previous = queryClient.getQueriesData<PlaythroughInfinite>({
+        queryKey: key,
+      });
 
-//       await queryClient.cancelQueries({ queryKey: key });
+      queryClient.setQueriesData<PlaythroughInfinite>(
+        { queryKey: key },
+        (old) => {
+          if (!old) return old;
 
-//       const previous = queryClient.getQueriesData<CollectionInfinite>({
-//         queryKey: key,
-//       });
+          return {
+            ...old,
+            pages: old.pages.map((page) => {
+              const items = page.items.filter((item) => item.id !== id);
+              const removed = page.items.length - items.length;
 
-//       queryClient.setQueriesData<CollectionInfinite>(
-//         { queryKey: key },
-//         (old) => {
-//           if (!old) return old;
+              return {
+                ...page,
+                items,
+                total: Math.max(0, page.total - removed),
+              };
+            }),
+          };
+        },
+      );
 
-//           return {
-//             ...old,
-//             pages: old.pages.map((page) => {
-//               const items = page.items.filter((item) => item.id !== id);
-//               const removed = page.items.length - items.length;
+      return { previous };
+    },
 
-//               return {
-//                 ...page,
-//                 items,
-//                 total: Math.max(0, page.total - removed),
-//               };
-//             }),
-//           };
-//         },
-//       );
+    onError: (err, _id, context) => {
+      context?.previous.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+      onError(err);
+    },
 
-//       return { previous };
-//     },
+    onSuccess: () => {
+      onSuccess?.();
+    },
 
-//     onError: (err, _id, context) => {
-//       context?.previous.forEach(([queryKey, data]) => {
-//         queryClient.setQueryData(queryKey, data);
-//       });
-//       onError(err);
-//     },
-
-//     onSuccess: () => {
-//       onSuccess?.();
-//     },
-
-//     onSettled: async () => {
-//       await Promise.all([
-//         queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
-//         queryClient.invalidateQueries({
-//           queryKey: CollectionQueryKeys.getManyAll(),
-//         }),
-//         // TODO: add playthorugh and completion key as well and archived getmany key as well
-//       ]);
-//     },
-//   });
+    onSettled: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({
+          queryKey: CollectionQueryKeys.getManyAll(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: PlaythroughQueryKeys.getManyAll(),
+        }),
+      ]);
+    },
+  });
