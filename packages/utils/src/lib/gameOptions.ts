@@ -42,6 +42,7 @@ export const PLAYTHROUGH_STATUS_OPTIONS = opts<PlaythroughStatusType>(
   "Active",
   "On Hold",
   "Archived",
+  "Completed",
 );
 
 export const PLATFORM_OPTIONS = opts<PlatformType>("PC", "PS", "XBOX");

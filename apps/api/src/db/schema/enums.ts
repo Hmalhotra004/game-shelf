@@ -33,6 +33,7 @@ export const playthroughStatus = pgEnum("playthrough_status", [
   "Active",
   "On Hold",
   "Archived",
+  "Completed",
 ]);
 
 export const status = pgEnum("status", [

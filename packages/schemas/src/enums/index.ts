@@ -46,6 +46,7 @@ export const PlaythroughStatusValues = [
   "Active",
   "On Hold",
   "Archived",
+  "Completed",
 ] as const;
 
 export const CompletionStyleValues = [
