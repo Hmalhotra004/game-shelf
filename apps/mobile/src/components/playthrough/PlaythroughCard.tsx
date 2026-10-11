@@ -30,6 +30,7 @@ import {
 import {
   addPlaythroughSessionMutationOptions,
   deletePlaythroughMutationOptions,
+  deletePlaythroughSessionMutationOptions,
   updatePlaythroughMutationOptions,
 } from "@repo/utils/mutations/playthrough";
 
@@ -126,7 +127,16 @@ const PlaythroughCard = ({ play }: Props) => {
     ),
   );
 
-  const deleteSession = useMutation({});
+  const deleteSession = useMutation(
+    deletePlaythroughSessionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        showToast("success", "Deleted");
+      },
+    ),
+  );
 
   // ----------------- Sheets -------------------------------
   const [DeletePlaySheet, confirmDeletePlay] = useConfirmSheet(
@@ -161,7 +171,7 @@ const PlaythroughCard = ({ play }: Props) => {
     const ok = await confirmDeleteSession();
     if (!ok) return;
 
-    // deleteSession.mutate(s.id);
+    deleteSession.mutate({ id: s.playthroughId, sessionId: s.id });
   }
 
   async function onChangeStatus(status: Status) {
