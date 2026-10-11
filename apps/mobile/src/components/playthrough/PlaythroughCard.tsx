@@ -1,16 +1,35 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { cn, handleError } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
-import { PlaythroughGetManyType } from "@repo/schemas/types/playthrough";
-import { betterTimeText, secondsToHMS } from "@repo/utils/lib/utils";
-import { useMutation } from "@tanstack/react-query";
+import { PlaythroughStatusType as Status } from "@repo/schemas/types/index";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { formatDate } from "date-fns";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { Alert, Pressable, ScrollView, TextInput, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { Pressable, ScrollView, TextInput, View } from "react-native";
+import ActionButton from "./ActionButton";
+import StatTile from "./StatTile";
+
+import {
+  betterTimeText,
+  PLAYTHROUGH_STATUS_STYLE,
+  secondsToHMS,
+} from "@repo/utils/lib/utils";
+
+import {
+  deletePlaythroughMutationOptions,
+  updatePlaythroughMutationOptions,
+} from "@repo/utils/mutations/playthrough";
+
+import {
+  PlaythroughGetManyType,
+  Session as SessionType,
+} from "@repo/schemas/types/playthrough";
 
 import {
   ArchiveIcon,
@@ -26,15 +45,11 @@ import {
   PlusIcon,
   StickyNoteIcon,
   TrashIcon,
-  type LucideIcon,
 } from "lucide-react-native";
 
 interface Props {
   play: PlaythroughGetManyType;
 }
-
-type Status = PlaythroughGetManyType["status"];
-type SessionType = PlaythroughGetManyType["sessions"][number];
 
 const HERO_HEIGHT = 128;
 const SESSION_ROW_HEIGHT = 48;
@@ -43,34 +58,6 @@ const VISIBLE_SESSIONS = 5;
 const SESSIONS_MAX_HEIGHT =
   VISIBLE_SESSIONS * SESSION_ROW_HEIGHT + (VISIBLE_SESSIONS - 1) * SESSION_GAP;
 
-const STATUS_STYLE: Record<
-  string,
-  { bg: string; border: string; bar: string }
-> = {
-  Active: {
-    bg: "bg-emerald-600/20",
-    border: "border-emerald-500",
-    bar: "bg-emerald-600",
-  },
-  "On Hold": {
-    bg: "bg-amber-500/20",
-    border: "border-amber-400",
-    bar: "bg-amber-500",
-  },
-  Archived: {
-    bg: "bg-rose-600/20",
-    border: "border-rose-500",
-    bar: "bg-rose-600",
-  },
-};
-
-const formatDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-
 const PlaythroughCard = ({ play }: Props) => {
   const theme = useThemeStore((s) => s.theme);
   const router = useRouter();
@@ -78,12 +65,15 @@ const PlaythroughCard = ({ play }: Props) => {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notes, setNotes] = useState(play.notes ?? "");
 
-  const imageUri = play.customImage ?? play.image;
+  const imageUri = play.customCoverImage ?? play.coverImage;
   const isArchived = play.status === "Archived";
   const isOnHold = play.status === "On Hold";
-  const statusStyle = STATUS_STYLE[play.status] ?? STATUS_STYLE.Active;
+  const statusStyle =
+    PLAYTHROUGH_STATUS_STYLE[play.status] ?? PLAYTHROUGH_STATUS_STYLE.Active;
   const mutedColor = THEME[theme].mutedForeground;
   const fgColor = THEME[theme].foreground;
+
+  const queryClient = useQueryClient();
 
   // Newest first
   const sessions = useMemo(
@@ -94,104 +84,30 @@ const PlaythroughCard = ({ play }: Props) => {
       ),
     [play.sessions],
   );
-  const lastPlayed = sessions[0] ? formatDate(sessions[0].playDate) : "—";
+  const lastPlayed = sessions[0] ? formatDate(sessions[0].playDate, "PP") : "—";
 
-  const onError = (err: Error) =>
-    Toast.show({ type: "error", text1: err.message });
+  const deletePlay = useMutation(
+    deletePlaythroughMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {},
+    ),
+  );
 
-  // ---- Placeholder mutations: replace each mutationFn with your real API call ----
+  const deleteSession = useMutation({});
 
-  const deletePlay = useMutation({
-    mutationFn: async (_vars: { playthroughId: string }) => {
-      // TODO: call delete playthrough endpoint
-    },
-    onSuccess: async () => {
-      Toast.show({ type: "success", text1: "Playthrough Deleted" });
-    },
-    onError,
-  });
-
-  const deleteSession = useMutation({
-    mutationFn: async (_vars: {
-      playthroughId: string;
-      playthroughSessionId: string;
-    }) => {
-      // TODO: call delete session endpoint
-    },
-    onSuccess: async () => {
-      Toast.show({ type: "success", text1: "Session Deleted" });
-    },
-    onError,
-  });
-
-  const updateStatus = useMutation({
-    mutationFn: async (_vars: { playthroughId: string; status: Status }) => {
-      // TODO: call update status endpoint
-    },
-    onError,
-  });
-
-  const updateNotes = useMutation({
-    mutationFn: async (_vars: { playthroughId: string; notes: string }) => {
-      // TODO: call update notes endpoint
-    },
-    onSuccess: async () => {
-      setEditingNotes(false);
-      Toast.show({ type: "success", text1: "Notes saved" });
-    },
-    onError,
-  });
+  const updatePlaythrough = useMutation(
+    updatePlaythroughMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {},
+    ),
+  );
 
   function changeStatus(status: Status) {
-    updateStatus.mutate({ playthroughId: play.id, status });
-  }
-
-  function confirmDeletePlaythrough() {
-    Alert.alert(
-      "Delete Playthrough",
-      `"${play.name}" and all its sessions will be removed. This action cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => deletePlay.mutate({ playthroughId: play.id }),
-        },
-      ],
-    );
-  }
-
-  function confirmDeleteSession(s: SessionType) {
-    Alert.alert("Delete Session", "This action cannot be undone", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () =>
-          deleteSession.mutate({
-            playthroughId: play.id,
-            playthroughSessionId: s.id,
-          }),
-      },
-    ]);
-  }
-
-  // Tapping the "more" button on a session row
-  function openSessionMenu(s: SessionType) {
-    Alert.alert(
-      formatDate(s.playDate),
-      secondsToHMS(s.duration),
-      [
-        { text: "Edit", onPress: () => editSession(s) },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => confirmDeleteSession(s),
-        },
-        { text: "Cancel", style: "cancel" },
-      ],
-      { cancelable: true },
-    );
+    updatePlaythrough.mutate({ id: play.id, status, notes });
   }
 
   function cancelNotes() {
@@ -200,25 +116,15 @@ const PlaythroughCard = ({ play }: Props) => {
   }
 
   // NOTE: adjust these routes to your mobile screens / bottom sheets.
-  function addSession() {
-    router.push({
-      pathname: "/(playthrough)/add-session" as never,
-      params: { playthroughId: play.id },
-    } as never);
-  }
+  function addSession() {}
 
-  function editSession(s: SessionType) {
-    router.push({
-      pathname: "/(playthrough)/edit-session" as never,
-      params: { playthroughId: play.id, sessionId: s.id },
-    } as never);
-  }
+  function editSession(s: SessionType) {}
 
   function finish() {
     router.push({
-      pathname: "/(playthrough)/finish/[playthroughId]" as never,
+      pathname: "/(playthrough)/finish/[playthroughId]",
       params: { playthroughId: play.id },
-    } as never);
+    });
   }
 
   return (
@@ -253,7 +159,7 @@ const PlaythroughCard = ({ play }: Props) => {
         {imageUri && (
           <View
             pointerEvents="none"
-            className="absolute inset-0 bg-black/45"
+            className="absolute inset-0 bg-black/75"
           />
         )}
 
@@ -263,32 +169,21 @@ const PlaythroughCard = ({ play }: Props) => {
             variant="outline"
             className={cn(statusStyle.bg, statusStyle.border)}
           >
-            <Text
-              className={cn("text-2xs font-semibold", imageUri && "text-white")}
-            >
-              {play.status}
-            </Text>
+            <Text className={cn("text-2xs font-semibold")}>{play.status}</Text>
           </Badge>
         </View>
 
         {/* Title + meta */}
         <View className="absolute inset-x-3 bottom-3 gap-1">
           <Text
-            className={cn(
-              "text-xl font-bold leading-tight",
-              imageUri && "text-white",
-            )}
+            className={cn("text-xl font-bold leading-tight")}
             numberOfLines={2}
           >
             {play.name}
           </Text>
-          <Text
-            className={cn(
-              "text-xs font-medium",
-              imageUri ? "text-white/80" : "text-muted-foreground",
-            )}
-          >
-            {play.platform === "PS" ? "PlayStation" : "PC"} · {play.provider}
+          <Text className={cn("text-xs font-medium text-muted-foreground")}>
+            {play.platform === "PS" ? "PlayStation" : play.platform} ·{" "}
+            {play.provider}
           </Text>
         </View>
       </View>
@@ -330,19 +225,16 @@ const PlaythroughCard = ({ play }: Props) => {
               Sessions
             </Text>
             {!isArchived && (
-              <Pressable
-                hitSlop={8}
-                className="h-9 flex-row items-center gap-1 rounded-full bg-primary px-3.5 active:opacity-80"
-                onPress={addSession}
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-0 w-5 p-2"
               >
                 <PlusIcon
-                  color={THEME[theme].primaryForeground}
+                  color={THEME[theme].foreground}
                   size={14}
                 />
-                <Text className="text-xs font-semibold text-primary-foreground">
-                  Add Entry
-                </Text>
-              </Pressable>
+              </Button>
             )}
           </View>
 
@@ -366,16 +258,19 @@ const PlaythroughCard = ({ play }: Props) => {
                   <Pressable
                     key={s.id}
                     disabled={isArchived}
-                    onPress={() => openSessionMenu(s)}
+                    onPress={() => {}}
                     className="flex-row items-center justify-between rounded-xl bg-muted pl-3.5 pr-1 active:opacity-70"
                     style={{ height: SESSION_ROW_HEIGHT }}
                   >
-                    <Text className="text-sm">{formatDate(s.playDate)}</Text>
+                    <Text className="text-sm">
+                      {formatDate(s.playDate, "PP")}
+                    </Text>
 
                     <View className="flex-row items-center">
                       <Text className="text-sm font-semibold">
                         {secondsToHMS(s.duration)}
                       </Text>
+
                       {!isArchived && (
                         <View className="size-10 items-center justify-center">
                           <EllipsisVerticalIcon
@@ -384,6 +279,7 @@ const PlaythroughCard = ({ play }: Props) => {
                           />
                         </View>
                       )}
+
                       {isArchived && <View className="w-3" />}
                     </View>
                   </Pressable>
@@ -427,13 +323,12 @@ const PlaythroughCard = ({ play }: Props) => {
                   </Pressable>
                   <Pressable
                     className="h-11 flex-1 items-center justify-center rounded-xl bg-primary active:opacity-80"
-                    disabled={updateNotes.isPending}
-                    onPress={() =>
-                      updateNotes.mutate({ playthroughId: play.id, notes })
-                    }
+                    disabled={updatePlaythrough.isPending}
+                    onPress={() => {}}
                   >
                     <Text className="text-sm font-semibold text-primary-foreground">
-                      {updateNotes.isPending ? "Saving..." : "Save"}
+                      Save
+                      {/* {updateNotes.isPending ? "Saving..." : "Save"} */}
                     </Text>
                   </Pressable>
                 </View>
@@ -448,7 +343,7 @@ const PlaythroughCard = ({ play }: Props) => {
                   className="text-sm text-muted-foreground"
                   numberOfLines={3}
                 >
-                  {play.notes}
+                  {play.notes}dsfdsfdsfdsfds
                 </Text>
               </Pressable>
             )}
@@ -486,88 +381,26 @@ const PlaythroughCard = ({ play }: Props) => {
             icon={TrashIcon}
             label="Delete"
             color="#f87171"
-            onPress={confirmDeletePlaythrough}
+            onPress={() => {}}
+            // onPress={confirmDeletePlaythrough}
           />
         </View>
 
-        {/* Primary CTA */}
         {!isArchived && (
-          <Pressable
-            className="h-12 flex-row items-center justify-center gap-2 rounded-2xl bg-secondary active:opacity-80"
-            onPress={finish}
+          <Button
+            variant="secondary"
+            onPress={() => {}}
           >
             <FlagIcon
               color={fgColor}
               size={16}
             />
             <Text className="text-sm font-semibold">Finish Playthrough</Text>
-          </Pressable>
+          </Button>
         )}
       </View>
     </View>
   );
 };
-
-function StatTile({
-  icon: Icon,
-  label,
-  value,
-  color,
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <View className="flex-1 gap-1 rounded-2xl bg-muted px-3 py-2.5">
-      <View className="flex-row items-center gap-1">
-        <Icon
-          color={color}
-          size={12}
-        />
-        <Text className="text-2xs font-medium text-muted-foreground">
-          {label}
-        </Text>
-      </View>
-      <Text
-        className="text-sm font-bold"
-        numberOfLines={1}
-      >
-        {value}
-      </Text>
-    </View>
-  );
-}
-
-function ActionButton({
-  icon: Icon,
-  label,
-  color,
-  onPress,
-}: {
-  icon: LucideIcon;
-  label: string;
-  color: string;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      className="min-w-16 items-center gap-1 py-1 active:opacity-50"
-    >
-      <Icon
-        color={color}
-        size={20}
-      />
-      <Text
-        className="text-2xs font-medium"
-        style={{ color }}
-      >
-        {label}
-      </Text>
-    </Pressable>
-  );
-}
 
 export default PlaythroughCard;

@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
-import PlaythroughCard2 from "@/components/playthrough/Playthroughcard2";
+import PlaythroughCard from "@/components/playthrough/PlaythroughCard";
 import PlaythroughFilters from "@/components/playthrough/PlaythroughFilters";
 import { Button } from "@/components/ui/button";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
@@ -60,7 +60,7 @@ const Playthrough = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: PlaythroughGetManyType }) => (
-      <PlaythroughCard2 play={item} />
+      <PlaythroughCard play={item} />
     ),
     [],
   );
@@ -87,10 +87,10 @@ const Playthrough = () => {
 
           {isLoading ? (
             <View className="flex-1 gap-2">
-              {Array.from({ length: 10 }).map((_, idx) => (
+              {Array.from({ length: 5 }).map((_, idx) => (
                 <Skeleton
                   key={idx}
-                  className="h-24 rounded-xl"
+                  className="h-96 rounded-xl"
                 />
               ))}
             </View>
