@@ -140,7 +140,7 @@ const NotesSheet = ({
       <BottomSheetScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerClassName="gap-4 px-4 pt-2"
-        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 16) }}
+        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 32) }}
       >
         <View className="gap-1">
           <Text className="text-lg font-semibold">Notes</Text>

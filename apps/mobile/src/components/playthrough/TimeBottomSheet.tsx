@@ -19,7 +19,7 @@ import {
 import {
   createPlaythroughSessionSchema,
   type CreatePlaythroughSessionSchemaType,
-} from "@repo/schemas/server/schemas/playthrough";
+} from "@repo/schemas/schemas/playthrough";
 
 import {
   BottomSheetBackdrop,
@@ -29,9 +29,16 @@ import {
 
 interface Props {
   sheetRef: RefObject<BottomSheetModal | null>;
+  title?: string;
+  description?: string;
+  submitLabel?: string;
+  initialValues?: CreatePlaythroughSessionSchemaType;
   isSaving?: boolean;
-  onSubmit: (values: CreatePlaythroughSessionSchemaType) => void;
+  onSubmit: (
+    values: CreatePlaythroughSessionSchemaType,
+  ) => void | Promise<void>;
   onCancel: () => void;
+  onDismissed?: () => void;
 }
 
 // today's date (with the current time) and no time played yet
@@ -40,11 +47,16 @@ const getDefaults = (): CreatePlaythroughSessionSchemaType => ({
   secondsPlayed: 0,
 });
 
-const AddTimeBottomSheet = ({
+const TimeBottomSheet = ({
   sheetRef,
+  title = "Add Time",
+  description = "Log a play session for this playthrough.",
+  submitLabel = "Add Time",
+  initialValues,
   isSaving = false,
   onSubmit,
   onCancel,
+  onDismissed,
 }: Props) => {
   const theme = useThemeStore((s) => s.theme);
   const insets = useSafeAreaInsets();
@@ -53,8 +65,14 @@ const AddTimeBottomSheet = ({
 
   const form = useForm<CreatePlaythroughSessionSchemaType>({
     resolver: zodResolver(createPlaythroughSessionSchema),
-    defaultValues: getDefaults(),
+    defaultValues: initialValues ?? getDefaults(),
   });
+  const { reset } = form;
+
+  // prefill whenever the session being edited changes
+  useEffect(() => {
+    reset(initialValues ?? getDefaults());
+  }, [initialValues, reset]);
 
   // Android hardware back closes the sheet
   useEffect(() => {
@@ -114,7 +132,8 @@ const AddTimeBottomSheet = ({
       onChange={(index) => setIsOpen(index >= 0)}
       onDismiss={() => {
         setIsOpen(false);
-        form.reset(getDefaults());
+        reset(initialValues ?? getDefaults());
+        onDismissed?.();
       }}
       backgroundStyle={{ backgroundColor: THEME[theme].background }}
       handleIndicatorStyle={{ backgroundColor: THEME[theme].mutedForeground }}
@@ -122,13 +141,11 @@ const AddTimeBottomSheet = ({
       <BottomSheetScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerClassName="gap-4 px-4"
-        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 20) }}
+        contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 32) }}
       >
         <View className="gap-1">
-          <Text className="text-lg font-semibold">Add Time</Text>
-          <Text className="text-muted-foreground">
-            Log a play session for this playthrough.
-          </Text>
+          <Text className="text-lg font-semibold">{title}</Text>
+          <Text className="text-muted-foreground">{description}</Text>
         </View>
 
         <FormDatePicker
@@ -158,7 +175,7 @@ const AddTimeBottomSheet = ({
             onPress={form.handleSubmit(onSubmit)}
             disabled={isSaving}
           >
-            <Text>{isSaving ? "Adding..." : "Add Time"}</Text>
+            <Text>{isSaving ? "Saving..." : submitLabel}</Text>
           </Button>
         </View>
       </BottomSheetScrollView>
@@ -166,4 +183,4 @@ const AddTimeBottomSheet = ({
   );
 };
 
-export default AddTimeBottomSheet;
+export default TimeBottomSheet;

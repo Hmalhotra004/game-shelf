@@ -7,18 +7,22 @@ import { THEME } from "@/lib/theme";
 import { cn, handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { CreatePlaythroughSessionSchemaType } from "@repo/schemas/schemas/playthrough";
 import { PlaythroughStatusType as Status } from "@repo/schemas/types/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "date-fns";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import ActionButton from "./ActionButton";
-import AddTimeBottomSheet from "./AddTimeBottomSheet";
 import NotesSheet from "./NotesSheet";
 import StatTile from "./StatTile";
+import TimeBottomSheet from "./TimeBottomSheet";
+
+import {
+  CreatePlaythroughSessionSchemaType,
+  UpdatePlaythroughSessionSchemaType,
+} from "@repo/schemas/schemas/playthrough";
 
 import {
   betterTimeText,
@@ -32,6 +36,7 @@ import {
   deletePlaythroughMutationOptions,
   deletePlaythroughSessionMutationOptions,
   updatePlaythroughMutationOptions,
+  updatePlaythroughSessionMutationOptions,
 } from "@repo/utils/mutations/playthrough";
 
 import {
@@ -44,7 +49,6 @@ import {
   ArchiveRestoreIcon,
   CalendarIcon,
   ClockIcon,
-  EllipsisVerticalIcon,
   FlagIcon,
   ImageIcon,
   ListIcon,
@@ -67,12 +71,17 @@ const SESSIONS_MAX_HEIGHT =
   VISIBLE_SESSIONS * SESSION_ROW_HEIGHT + (VISIBLE_SESSIONS - 1) * SESSION_GAP;
 
 const PlaythroughCard = ({ play }: Props) => {
+  const [editingSession, setEditingSession] = useState<SessionType | null>(
+    null,
+  );
+
   const theme = useThemeStore((s) => s.theme);
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const notesSheetRef = useRef<BottomSheetModal>(null);
   const addTimeSheetRef = useRef<BottomSheetModal>(null);
+  const editSessionSheetRef = useRef<BottomSheetModal>(null);
 
   const imageUri = play.customCoverImage ?? play.coverImage;
   const isArchived = play.status === "Archived";
@@ -92,6 +101,17 @@ const PlaythroughCard = ({ play }: Props) => {
     [play.sessions],
   );
   const lastPlayed = sessions[0] ? formatDate(sessions[0].playDate, "PP") : "—";
+
+  const editInitialValues = useMemo(
+    () =>
+      editingSession
+        ? {
+            playDate: new Date(editingSession.playDate).toISOString(),
+            secondsPlayed: editingSession.duration,
+          }
+        : undefined,
+    [editingSession],
+  );
 
   // ----------------- Mutations -------------------------------
 
@@ -116,7 +136,17 @@ const PlaythroughCard = ({ play }: Props) => {
     ),
   );
 
-  const updateSession = useMutation({});
+  const updateSession = useMutation(
+    updatePlaythroughSessionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        editSessionSheetRef.current?.dismiss();
+        showToast("success", "Session Updated");
+      },
+    ),
+  );
 
   const deletePlay = useMutation(
     deletePlaythroughMutationOptions(
@@ -210,7 +240,23 @@ const PlaythroughCard = ({ play }: Props) => {
     await createSession.mutateAsync({ id: play.id, ...values });
   }
 
-  function editSession(s: SessionType) {}
+  function editSession(s: SessionType) {
+    if (isArchived) return;
+    setEditingSession(s);
+    editSessionSheetRef.current?.present();
+  }
+
+  async function onSubmitEditSession(
+    values: UpdatePlaythroughSessionSchemaType,
+  ) {
+    if (!editingSession) return;
+
+    await updateSession.mutateAsync({
+      id: play.id,
+      sessionId: editingSession.id,
+      ...values,
+    });
+  }
 
   function finish() {
     router.push({
@@ -354,7 +400,7 @@ const PlaythroughCard = ({ play }: Props) => {
                     <Pressable
                       key={s.id}
                       disabled={isArchived}
-                      onPress={() => {}}
+                      onPress={() => editSession(s)}
                       className="flex-row items-center justify-between rounded-xl bg-muted pl-3.5 pr-1 active:opacity-70"
                       style={{ height: SESSION_ROW_HEIGHT }}
                     >
@@ -367,13 +413,19 @@ const PlaythroughCard = ({ play }: Props) => {
                           {secondsToHMS(s.duration)}
                         </Text>
 
-                        {!isArchived && (
-                          <View className="size-10 items-center justify-center">
-                            <EllipsisVerticalIcon
-                              color={mutedColor}
-                              size={18}
+                        {isArchived ? (
+                          <View className="w-3" />
+                        ) : (
+                          <Pressable
+                            hitSlop={8}
+                            onPress={() => onDeleteSession(s)}
+                            className="size-10 items-center justify-center active:opacity-60"
+                          >
+                            <TrashIcon
+                              color={THEME[theme].destructive}
+                              size={16}
                             />
-                          </View>
+                          </Pressable>
                         )}
 
                         {isArchived && <View className="w-3" />}
@@ -474,11 +526,23 @@ const PlaythroughCard = ({ play }: Props) => {
         onCancel={() => notesSheetRef.current?.dismiss()}
       />
 
-      <AddTimeBottomSheet
+      <TimeBottomSheet
         sheetRef={addTimeSheetRef}
         isSaving={createSession.isPending}
         onSubmit={onSubmitSession}
         onCancel={() => addTimeSheetRef.current?.dismiss()}
+      />
+
+      <TimeBottomSheet
+        sheetRef={editSessionSheetRef}
+        title="Edit Session"
+        description="Update the date or time for this session."
+        submitLabel="Save Changes"
+        initialValues={editInitialValues}
+        isSaving={updateSession.isPending}
+        onSubmit={onSubmitEditSession}
+        onCancel={() => editSessionSheetRef.current?.dismiss()}
+        onDismissed={() => setEditingSession(null)}
       />
     </>
   );
