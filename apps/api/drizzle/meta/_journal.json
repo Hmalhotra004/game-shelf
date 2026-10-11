@@ -43,6 +43,13 @@
       "when": 1791722567650,
       "tag": "0005_play_session_date_id_idx",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791728982978,
+      "tag": "0006_play_completion_link",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { GameType, playthroughStatus } from "./enums";
-import { collection, dlc, user } from "./index";
+import { collection, completion, dlc, user } from "./index";
 
 import {
   check,
@@ -40,6 +40,10 @@ export const playthrough = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+
+    completionId: text("completion_id").references(() => completion.id, {
+      onDelete: "set null",
+    }),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

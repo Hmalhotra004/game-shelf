@@ -1,0 +1,2 @@
+ALTER TABLE "playthrough" ADD COLUMN "completion_id" text;--> statement-breakpoint
+ALTER TABLE "playthrough" ADD CONSTRAINT "playthrough_completion_id_completion_id_fk" FOREIGN KEY ("completion_id") REFERENCES "public"."completion"("id") ON DELETE set null ON UPDATE no action;
