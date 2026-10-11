@@ -6,6 +6,7 @@ import { AxiosInstance } from "axios";
 
 import {
   CreatePlaythroughSchemaType,
+  CreatePlaythroughSessionSchemaType,
   UpdatePlaythroughSchemaType,
 } from "@repo/schemas/schemas/playthrough";
 
@@ -190,4 +191,32 @@ export const deletePlaythroughMutationOptions = (
         }),
       ]);
     },
+  });
+
+export const addPlaythroughSessionMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  onError: (error: Error) => void,
+  onSuccess?: () => void,
+) =>
+  mutationOptions({
+    mutationFn: async ({
+      id,
+      ...data
+    }: { id: string } & CreatePlaythroughSessionSchemaType) => {
+      await api.post(`/playthrough/${id}`, data);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: StatsQueryKeys.getStats(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: CollectionQueryKeys.getManyAll(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: PlaythroughQueryKeys.getManyAll(),
+      });
+      onSuccess?.();
+    },
+    onError: (err) => onError(err),
   });
