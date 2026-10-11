@@ -4,9 +4,10 @@ import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { cn, handleError } from "@/lib/utils";
+import { cn, handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { CreatePlaythroughSessionSchemaType } from "@repo/schemas/schemas/playthrough";
 import { PlaythroughStatusType as Status } from "@repo/schemas/types/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "date-fns";
@@ -15,6 +16,7 @@ import { useRouter } from "expo-router";
 import { useMemo, useRef } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import ActionButton from "./ActionButton";
+import AddTimeBottomSheet from "./AddTimeBottomSheet";
 import NotesSheet from "./NotesSheet";
 import StatTile from "./StatTile";
 
@@ -26,6 +28,7 @@ import {
 } from "@repo/utils/lib/utils";
 
 import {
+  addPlaythroughSessionMutationOptions,
   deletePlaythroughMutationOptions,
   updatePlaythroughMutationOptions,
 } from "@repo/utils/mutations/playthrough";
@@ -68,6 +71,7 @@ const PlaythroughCard = ({ play }: Props) => {
   const queryClient = useQueryClient();
 
   const notesSheetRef = useRef<BottomSheetModal>(null);
+  const addTimeSheetRef = useRef<BottomSheetModal>(null);
 
   const imageUri = play.customCoverImage ?? play.coverImage;
   const isArchived = play.status === "Archived";
@@ -89,12 +93,25 @@ const PlaythroughCard = ({ play }: Props) => {
   const lastPlayed = sessions[0] ? formatDate(sessions[0].playDate, "PP") : "—";
 
   // ----------------- Mutations -------------------------------
+
+  const createSession = useMutation(
+    addPlaythroughSessionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        addTimeSheetRef.current?.dismiss();
+        showToast("success", "Session Added");
+      },
+    ),
+  );
+
   const updatePlaythrough = useMutation(
     updatePlaythroughMutationOptions(
       api,
       queryClient,
       (err) => handleError(err),
-      () => {},
+      () => showToast("success", "Updated"),
     ),
   );
 
@@ -105,7 +122,7 @@ const PlaythroughCard = ({ play }: Props) => {
       api,
       queryClient,
       (err) => handleError(err),
-      () => {},
+      () => showToast("success", "Deleted"),
     ),
   );
 
@@ -175,8 +192,13 @@ const PlaythroughCard = ({ play }: Props) => {
     );
   }
 
-  // NOTE: adjust these routes to your mobile screens / bottom sheets.
-  function addSession() {}
+  function addSession() {
+    addTimeSheetRef.current?.present();
+  }
+
+  async function onSubmitSession(values: CreatePlaythroughSessionSchemaType) {
+    await createSession.mutateAsync({ id: play.id, ...values });
+  }
 
   function editSession(s: SessionType) {}
 
@@ -292,6 +314,7 @@ const PlaythroughCard = ({ play }: Props) => {
                   size="icon"
                   variant="ghost"
                   className="h-0 w-5 p-2"
+                  onPress={addSession}
                 >
                   <PlusIcon
                     color={THEME[theme].foreground}
@@ -439,6 +462,13 @@ const PlaythroughCard = ({ play }: Props) => {
         isSaving={updatePlaythrough.isPending}
         onSave={onSaveNotes}
         onCancel={() => notesSheetRef.current?.dismiss()}
+      />
+
+      <AddTimeBottomSheet
+        sheetRef={addTimeSheetRef}
+        isSaving={createSession.isPending}
+        onSubmit={onSubmitSession}
+        onCancel={() => addTimeSheetRef.current?.dismiss()}
       />
     </>
   );
