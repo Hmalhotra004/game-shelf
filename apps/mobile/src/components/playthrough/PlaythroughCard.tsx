@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
 import { cn, handleError } from "@/lib/utils";
@@ -32,7 +33,6 @@ import {
   Session as SessionType,
 } from "@repo/schemas/types/playthrough";
 
-import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import {
   ArchiveIcon,
   ArchiveRestoreIcon,
@@ -88,6 +88,7 @@ const PlaythroughCard = ({ play }: Props) => {
   );
   const lastPlayed = sessions[0] ? formatDate(sessions[0].playDate, "PP") : "—";
 
+  // ----------------- Mutations -------------------------------
   const updatePlaythrough = useMutation(
     updatePlaythroughMutationOptions(
       api,
@@ -110,6 +111,7 @@ const PlaythroughCard = ({ play }: Props) => {
 
   const deleteSession = useMutation({});
 
+  // ----------------- Sheets -------------------------------
   const [DeletePlaySheet, confirmDeletePlay] = useConfirmSheet(
     "Delete Playthrough",
     "This will permanently delete this playthrough and all of its sessions. This can't be undone.",
@@ -130,6 +132,7 @@ const PlaythroughCard = ({ play }: Props) => {
     "Confirm",
   );
 
+  // ----------------- Functions -------------------------------
   async function onDeletePlay() {
     const ok = await confirmDeletePlay();
     if (!ok) return;
@@ -144,7 +147,7 @@ const PlaythroughCard = ({ play }: Props) => {
     // deleteSession.mutate(s.id);
   }
 
-  async function changeStatus(status: Status) {
+  async function onChangeStatus(status: Status) {
     const action = playStatusAction(play.status, status);
 
     const ok = await confirmStatus({
@@ -407,7 +410,7 @@ const PlaythroughCard = ({ play }: Props) => {
                 icon={isOnHold ? PlayIcon : PauseIcon}
                 label={isOnHold ? "Resume" : "Pause"}
                 color={fgColor}
-                onPress={() => changeStatus(isOnHold ? "Active" : "On Hold")}
+                onPress={() => onChangeStatus(isOnHold ? "Active" : "On Hold")}
               />
             )}
 
@@ -424,7 +427,7 @@ const PlaythroughCard = ({ play }: Props) => {
               icon={isArchived ? ArchiveRestoreIcon : ArchiveIcon}
               label={isArchived ? "Restore" : "Archive"}
               color={fgColor}
-              onPress={() => changeStatus(isArchived ? "Active" : "Archived")}
+              onPress={() => onChangeStatus(isArchived ? "Active" : "Archived")}
             />
 
             <ActionButton
