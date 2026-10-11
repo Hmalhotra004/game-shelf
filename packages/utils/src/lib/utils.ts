@@ -36,16 +36,31 @@ export const statusColorMap: Record<
   "100% Completed": { bg: "bg-emerald-600/15", border: "border-emerald-600" },
 };
 
-export function getBorderColor(status: PlaythroughStatusType) {
-  switch (status) {
-    case "Active":
-      return "border-emerald-600";
-    case "On Hold":
-      return "border-amber-500";
-    case "Archived":
-      return "border-rose-600";
-  }
-}
+export const PLAYTHROUGH_STATUS_STYLE: Record<
+  PlaythroughStatusType,
+  { bg: string; border: string; bar: string }
+> = {
+  Active: {
+    bg: "bg-emerald-600/20",
+    border: "border-emerald-600",
+    bar: "bg-emerald-600",
+  },
+  "On Hold": {
+    bg: "bg-amber-500/20",
+    border: "border-amber-500",
+    bar: "bg-amber-500",
+  },
+  Completed: {
+    bg: "bg-emerald-600/20",
+    border: "border-emerald-600",
+    bar: "bg-emerald-600",
+  },
+  Archived: {
+    bg: "bg-rose-600/20",
+    border: "border-rose-600",
+    bar: "bg-rose-600",
+  },
+};
 
 export function betterTimeText(seconds: number, withS?: boolean): string {
   const h = Math.floor(seconds / 3600);
