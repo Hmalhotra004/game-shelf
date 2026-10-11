@@ -4,6 +4,7 @@ import { playthrough, playthroughSession } from "@/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 
+// TODO: sync with completion
 export const deletePlaythroughSession = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;

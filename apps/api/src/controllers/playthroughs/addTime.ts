@@ -6,6 +6,7 @@ import { and, eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 import lodash from "lodash";
 
+// TODO: sync with completion
 export const addTime = async (req: Request, res: Response) => {
   try {
     const { playDate: date, secondsPlayed } =
