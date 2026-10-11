@@ -34,6 +34,11 @@ type DeleteContext = {
   previous: [QueryKey, PlaythroughInfinite | undefined][];
 };
 
+type DeleteSessionVariables = {
+  id: string;
+  sessionId: string;
+};
+
 // --------------------Mutations--------------------------
 
 export const startPlaythroughMutationOptions = (
@@ -219,4 +224,88 @@ export const addPlaythroughSessionMutationOptions = (
       onSuccess?.();
     },
     onError: (err) => onError(err),
+  });
+
+export const deletePlaythroughSessionMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  onError: (error: Error) => void,
+  onSuccess?: () => void,
+) =>
+  mutationOptions<void, Error, DeleteSessionVariables, DeleteContext>({
+    mutationFn: async ({ id, sessionId }) => {
+      await api.delete(`/playthrough/${id}/${sessionId}`);
+    },
+
+    onMutate: async ({ id, sessionId }) => {
+      const key = PlaythroughQueryKeys.getManyAll();
+
+      await queryClient.cancelQueries({ queryKey: key });
+
+      const previous = queryClient.getQueriesData<PlaythroughInfinite>({
+        queryKey: key,
+      });
+
+      queryClient.setQueriesData<PlaythroughInfinite>(
+        { queryKey: key },
+        (old) => {
+          if (!old) return old;
+
+          // seconds of the session being deleted (0 if this cache entry doesn't hold it)
+          const removedSeconds =
+            old.pages
+              .flatMap((page) => page.items)
+              .find((item) => item.id === id)
+              ?.sessions.find((s) => s.id === sessionId)?.duration ?? 0;
+
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              // overall playtime for the current filters, repeated on every page
+              totalSeconds: Math.max(0, page.totalSeconds - removedSeconds),
+              items: page.items.map((item) =>
+                item.id !== id
+                  ? item
+                  : {
+                      ...item,
+                      totalSeconds: Math.max(
+                        0,
+                        item.totalSeconds - removedSeconds,
+                      ),
+                      sessions: item.sessions.filter((s) => s.id !== sessionId),
+                    },
+              ),
+            })),
+          };
+        },
+      );
+
+      return { previous };
+    },
+
+    onError: (err, _variables, context) => {
+      context?.previous.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+      onError(err);
+    },
+
+    onSuccess: () => {
+      onSuccess?.();
+    },
+
+    onSettled: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: StatsQueryKeys.getStats(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: CollectionQueryKeys.getManyAll(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: PlaythroughQueryKeys.getManyAll(),
+        }),
+      ]);
+    },
   });
