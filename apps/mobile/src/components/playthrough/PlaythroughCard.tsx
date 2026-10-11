@@ -17,6 +17,7 @@ import StatTile from "./StatTile";
 
 import {
   betterTimeText,
+  playStatusAction,
   PLAYTHROUGH_STATUS_STYLE,
   secondsToHMS,
 } from "@repo/utils/lib/utils";
@@ -123,6 +124,12 @@ const PlaythroughCard = ({ play }: Props) => {
     "destructive",
   );
 
+  const [StatusSheet, confirmStatus] = useConfirmSheet(
+    "Update Status",
+    "",
+    "Confirm",
+  );
+
   async function onDeletePlay() {
     const ok = await confirmDeletePlay();
     if (!ok) return;
@@ -137,7 +144,16 @@ const PlaythroughCard = ({ play }: Props) => {
     // deleteSession.mutate(s.id);
   }
 
-  function changeStatus(status: Status) {
+  async function changeStatus(status: Status) {
+    const action = playStatusAction(play.status, status);
+
+    const ok = await confirmStatus({
+      title: `${action} Playthrough`,
+      message: `Status will change from "${play.status}" to "${status}".`,
+      confirmText: action,
+    });
+    if (!ok) return;
+
     updatePlaythrough.mutate({ id: play.id, status, notes });
   }
 
@@ -153,7 +169,7 @@ const PlaythroughCard = ({ play }: Props) => {
 
   function finish() {
     router.push({
-      pathname: "/(playthrough)/finish/[playthroughId]",
+      pathname: "/(playthrough)/[playthroughId]/finish",
       params: { playthroughId: play.id },
     });
   }
@@ -422,7 +438,7 @@ const PlaythroughCard = ({ play }: Props) => {
           {!isArchived && (
             <Button
               variant="secondary"
-              onPress={() => {}}
+              onPress={finish}
             >
               <FlagIcon
                 color={fgColor}
@@ -434,6 +450,7 @@ const PlaythroughCard = ({ play }: Props) => {
         </View>
       </View>
 
+      <StatusSheet />
       <DeletePlaySheet />
       <DeleteSessionSheet />
     </>
