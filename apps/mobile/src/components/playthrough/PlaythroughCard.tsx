@@ -6,14 +6,16 @@ import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
 import { cn, handleError } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { PlaythroughStatusType as Status } from "@repo/schemas/types/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "date-fns";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { useMemo, useRef } from "react";
+import { Pressable, ScrollView, View } from "react-native";
 import ActionButton from "./ActionButton";
+import NotesSheet from "./NotesSheet";
 import StatTile from "./StatTile";
 
 import {
@@ -63,9 +65,9 @@ const SESSIONS_MAX_HEIGHT =
 const PlaythroughCard = ({ play }: Props) => {
   const theme = useThemeStore((s) => s.theme);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const [editingNotes, setEditingNotes] = useState(false);
-  const [notes, setNotes] = useState(play.notes ?? "");
+  const notesSheetRef = useRef<BottomSheetModal>(null);
 
   const imageUri = play.customCoverImage ?? play.coverImage;
   const isArchived = play.status === "Archived";
@@ -74,8 +76,6 @@ const PlaythroughCard = ({ play }: Props) => {
     PLAYTHROUGH_STATUS_STYLE[play.status] ?? PLAYTHROUGH_STATUS_STYLE.Active;
   const mutedColor = THEME[theme].mutedForeground;
   const fgColor = THEME[theme].foreground;
-
-  const queryClient = useQueryClient();
 
   // Newest first
   const sessions = useMemo(
@@ -157,12 +157,22 @@ const PlaythroughCard = ({ play }: Props) => {
     });
     if (!ok) return;
 
-    updatePlaythrough.mutate({ id: play.id, status, notes });
+    updatePlaythrough.mutate({
+      id: play.id,
+      status,
+      notes: play.notes ?? null,
+    });
   }
 
-  function cancelNotes() {
-    setNotes(play.notes ?? "");
-    setEditingNotes(false);
+  function openNotes() {
+    notesSheetRef.current?.present();
+  }
+
+  function onSaveNotes(notes: string | null) {
+    updatePlaythrough.mutate(
+      { id: play.id, status: play.status, notes },
+      { onSuccess: () => notesSheetRef.current?.dismiss() },
+    );
   }
 
   // NOTE: adjust these routes to your mobile screens / bottom sheets.
@@ -349,57 +359,25 @@ const PlaythroughCard = ({ play }: Props) => {
           </View>
 
           {/* Notes */}
-          {(editingNotes || !!play.notes) && (
+          {!!play.notes && (
             <View className="gap-2">
               <Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Notes
               </Text>
 
-              {editingNotes ? (
-                <>
-                  <TextInput
-                    value={notes}
-                    onChangeText={setNotes}
-                    multiline
-                    autoFocus
-                    placeholder="Write your thoughts..."
-                    placeholderTextColor={mutedColor}
-                    textAlignVertical="top"
-                    className="min-h-28 rounded-2xl bg-muted p-3 text-sm text-foreground"
-                  />
-                  <View className="flex-row gap-2">
-                    <Pressable
-                      className="h-11 flex-1 items-center justify-center rounded-xl bg-muted active:opacity-70"
-                      onPress={cancelNotes}
-                    >
-                      <Text className="text-sm font-medium">Cancel</Text>
-                    </Pressable>
-                    <Pressable
-                      className="h-11 flex-1 items-center justify-center rounded-xl bg-primary active:opacity-80"
-                      disabled={updatePlaythrough.isPending}
-                      onPress={() => {}}
-                    >
-                      <Text className="text-sm font-semibold text-primary-foreground">
-                        Save
-                        {/* {updateNotes.isPending ? "Saving..." : "Save"} */}
-                      </Text>
-                    </Pressable>
-                  </View>
-                </>
-              ) : (
-                <Pressable
-                  disabled={isArchived}
-                  onPress={() => setEditingNotes(true)}
-                  className="rounded-2xl bg-muted p-3 active:opacity-70"
+              <Button
+                variant="secondary"
+                disabled={isArchived}
+                onPress={openNotes}
+                className="text-start items-center justify-start"
+              >
+                <Text
+                  className="text-sm text-muted-foreground"
+                  numberOfLines={3}
                 >
-                  <Text
-                    className="text-sm text-muted-foreground"
-                    numberOfLines={3}
-                  >
-                    {play.notes}dsfdsfdsfdsfds
-                  </Text>
-                </Pressable>
-              )}
+                  {play.notes}
+                </Text>
+              </Button>
             </View>
           )}
 
@@ -419,7 +397,7 @@ const PlaythroughCard = ({ play }: Props) => {
                 icon={StickyNoteIcon}
                 label="Notes"
                 color={fgColor}
-                onPress={() => setEditingNotes(true)}
+                onPress={openNotes}
               />
             )}
 
@@ -456,6 +434,15 @@ const PlaythroughCard = ({ play }: Props) => {
       <StatusSheet />
       <DeletePlaySheet />
       <DeleteSessionSheet />
+
+      <NotesSheet
+        ref={notesSheetRef}
+        status={play.status}
+        initialNotes={play.notes ?? null}
+        isSaving={updatePlaythrough.isPending}
+        onSave={onSaveNotes}
+        onCancel={() => notesSheetRef.current?.dismiss()}
+      />
     </>
   );
 };
