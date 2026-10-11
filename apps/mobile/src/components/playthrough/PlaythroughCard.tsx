@@ -369,12 +369,9 @@ const PlaythroughCard = ({ play }: Props) => {
                 variant="secondary"
                 disabled={isArchived}
                 onPress={openNotes}
-                className="text-start items-center justify-start"
+                className="text-start items-center justify-start h-auto"
               >
-                <Text
-                  className="text-sm text-muted-foreground"
-                  numberOfLines={3}
-                >
+                <Text className="text-sm text-muted-foreground">
                   {play.notes}
                 </Text>
               </Button>
@@ -436,7 +433,7 @@ const PlaythroughCard = ({ play }: Props) => {
       <DeleteSessionSheet />
 
       <NotesSheet
-        ref={notesSheetRef}
+        sheetRef={notesSheetRef}
         status={play.status}
         initialNotes={play.notes ?? null}
         isSaving={updatePlaythrough.isPending}
