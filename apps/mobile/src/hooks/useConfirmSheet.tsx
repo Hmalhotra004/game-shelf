@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/text";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
 import { VariantProps } from "class-variance-authority";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useSyncExternalStore } from "react";
 import { View } from "react-native";
 
 import {
@@ -12,15 +12,51 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
+type Variant = VariantProps<typeof buttonVariants>["variant"];
+
+export type ConfirmOptions = {
+  title?: string;
+  message?: string;
+  confirmText?: string;
+  variant?: Variant;
+};
+
+type Content = {
+  title: string;
+  message: string;
+  confirmText?: string;
+  variant: Variant;
+};
+
 export const useConfirmSheet = (
   title: string,
   message: string,
   confirmText?: string,
-  variant: VariantProps<typeof buttonVariants>["variant"] = "default",
-): [() => React.JSX.Element, () => Promise<boolean>] => {
-  const theme = useThemeStore((s) => s.theme);
+  variant: Variant = "default",
+): [
+  () => React.JSX.Element,
+  (options?: ConfirmOptions) => Promise<boolean>,
+] => {
   const sheetRef = useRef<BottomSheetModal>(null);
   const resolverRef = useRef<((value: boolean) => void) | null>(null);
+
+  // Defaults from the hook arguments (always the latest render's values)
+  const defaultsRef = useRef<Content>({ title, message, confirmText, variant });
+  defaultsRef.current = { title, message, confirmText, variant };
+
+  // What the sheet is currently showing. Changed only by confirm(), which
+  // then notifies the sheet directly, so it never depends on parent re-renders.
+  const contentRef = useRef<Content>(defaultsRef.current);
+  const listenersRef = useRef(new Set<() => void>());
+
+  const subscribe = useCallback((listener: () => void) => {
+    listenersRef.current.add(listener);
+    return () => {
+      listenersRef.current.delete(listener);
+    };
+  }, []);
+
+  const getSnapshot = useCallback(() => contentRef.current, []);
 
   // Resolve at most once; later calls (e.g. onDismiss after a button press) are no-ops
   const settle = useCallback((value: boolean) => {
@@ -28,26 +64,22 @@ export const useConfirmSheet = (
     resolverRef.current = null;
   }, []);
 
-  const confirm = useCallback(() => {
+  const confirm = useCallback((options: ConfirmOptions = {}) => {
+    const d = defaultsRef.current;
+
+    contentRef.current = {
+      title: options.title ?? d.title,
+      message: options.message ?? d.message,
+      confirmText: options.confirmText ?? d.confirmText,
+      variant: options.variant ?? d.variant,
+    };
+    listenersRef.current.forEach((l) => l());
+
     return new Promise<boolean>((resolve) => {
       resolverRef.current = resolve;
       sheetRef.current?.present();
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (!isOpen) return;
-
-  //   const subscription = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     () => {
-  //       sheetRef.current?.dismiss();
-  //       return true;
-  //     },
-  //   );
-
-  //   return () => subscription.remove();
-  // }, [isOpen, sheetRef]);
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -61,50 +93,56 @@ export const useConfirmSheet = (
     [],
   );
 
-  // Stable component identity so the sheet isn't remounted on parent re-renders
+  // Fully stable identity (no remounts); it subscribes to its own content
+  // and theme, so nothing here needs to be a dependency.
   const ConfirmationDialog = useCallback(
-    () => (
-      <BottomSheetModal
-        ref={sheetRef}
-        backdropComponent={renderBackdrop}
-        enablePanDownToClose
-        onDismiss={() => settle(false)}
-        backgroundStyle={{ backgroundColor: THEME[theme].background }}
-        handleIndicatorStyle={{
-          backgroundColor: THEME[theme].mutedForeground,
-        }}
-      >
-        <BottomSheetView className="px-4 pb-8 pt-2 gap-4">
-          <View className="gap-1">
-            <Text className="text-lg font-semibold">{title}</Text>
-            <Text className="text-muted-foreground">{message}</Text>
-          </View>
+    function ConfirmationDialog() {
+      const theme = useThemeStore((s) => s.theme);
+      const c = useSyncExternalStore(subscribe, getSnapshot);
 
-          <View className="flex-row gap-2 justify-end">
-            <Button
-              variant="outline"
-              onPress={() => {
-                settle(false);
-                sheetRef.current?.dismiss();
-              }}
-            >
-              <Text>Cancel</Text>
-            </Button>
+      return (
+        <BottomSheetModal
+          ref={sheetRef}
+          backdropComponent={renderBackdrop}
+          enablePanDownToClose
+          onDismiss={() => settle(false)}
+          backgroundStyle={{ backgroundColor: THEME[theme].background }}
+          handleIndicatorStyle={{
+            backgroundColor: THEME[theme].mutedForeground,
+          }}
+        >
+          <BottomSheetView className="px-4 pb-8 pt-2 gap-4">
+            <View className="gap-1">
+              <Text className="text-lg font-semibold">{c.title}</Text>
+              <Text className="text-muted-foreground">{c.message}</Text>
+            </View>
 
-            <Button
-              variant={variant}
-              onPress={() => {
-                settle(true);
-                sheetRef.current?.dismiss();
-              }}
-            >
-              <Text>{confirmText ?? "Confirm"}</Text>
-            </Button>
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
-    ),
-    [title, message, variant, renderBackdrop, settle],
+            <View className="flex-row gap-2 justify-end">
+              <Button
+                variant="outline"
+                onPress={() => {
+                  settle(false);
+                  sheetRef.current?.dismiss();
+                }}
+              >
+                <Text>Cancel</Text>
+              </Button>
+
+              <Button
+                variant={c.variant}
+                onPress={() => {
+                  settle(true);
+                  sheetRef.current?.dismiss();
+                }}
+              >
+                <Text>{c.confirmText ?? "Confirm"}</Text>
+              </Button>
+            </View>
+          </BottomSheetView>
+        </BottomSheetModal>
+      );
+    },
+    [renderBackdrop, settle, subscribe, getSnapshot],
   );
 
   return [ConfirmationDialog, confirm];

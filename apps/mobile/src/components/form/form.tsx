@@ -1,4 +1,5 @@
 import DatePickerModal from "@/components/DatePicker/DatePickerModal";
+import SelectValueBottomSheet from "@/components/form/SelectValueBottomSheet";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input as TextInput } from "@/components/ui/input";
@@ -9,9 +10,11 @@ import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Option } from "@repo/utils/lib/gameOptions";
 import type { ClassValue } from "clsx";
 import { formatDate } from "date-fns";
 import { ReactNode, useRef, useState } from "react";
+import { DurationTimePicker } from "./DurationTimePicker";
 import MultiSelectBottomSheet from "./MultiSelectBottomSheet";
 
 import {
@@ -20,10 +23,6 @@ import {
   EyeIcon,
   EyeOffIcon,
 } from "lucide-react-native";
-
-import SelectValueBottomSheet, {
-  type Option,
-} from "@/components/form/SelectValueBottomSheet";
 
 import {
   KeyboardTypeOptions,
@@ -258,6 +257,25 @@ export const FormTextarea: FormControlFunc<{
           disabled && !keepDisabledStyle && "opacity-50",
           className,
         )}
+      />
+    )}
+  </FormBase>
+);
+
+// ─── FormTimePicker ─────────────────────────────────────────────────────────────
+export const FormTimePicker: FormControlFunc<{ className?: ClassValue }> = ({
+  disabled,
+  className,
+  ...props
+}) => (
+  <FormBase {...props}>
+    {({ value, onChange, invalid }) => (
+      <DurationTimePicker
+        value={value ?? 0}
+        onChange={onChange}
+        disabled={disabled}
+        invalid={invalid}
+        className={className}
       />
     )}
   </FormBase>

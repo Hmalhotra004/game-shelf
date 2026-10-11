@@ -144,10 +144,12 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
       }}
     >
       <View className="flex-1 px-4">
-        <SearchBar
-          onChangeText={setSearch}
-          value={search}
-        />
+        <View className="mb-2">
+          <SearchBar
+            onChangeText={setSearch}
+            value={search}
+          />
+        </View>
 
         {isFetching && (
           <View className="py-2 gap-2">
@@ -166,7 +168,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
           renderItem={renderItem}
           ListEmptyComponent={renderEmpty}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingTop: 12, paddingBottom: 32 }}
+          contentContainerStyle={{ paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}
         />
       </View>

@@ -41,6 +41,12 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
     title: "Manage Microtransactions",
     showAvatar: false,
   },
+
+  // (playthrough)/[id]
+  "/(playthrough)/[playthroughId]/finish": {
+    title: "Finish Playthrough",
+    showAvatar: false,
+  },
 };
 
 export const DEFAULT_META: Required<ScreenMeta> = {

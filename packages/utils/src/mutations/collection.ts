@@ -1,5 +1,6 @@
 import { CollectionGetManyResponse } from "@repo/schemas/types/collection";
 import { CollectionQueryKeys } from "@repo/utils/queries/collection";
+import { PlaythroughQueryKeys } from "@repo/utils/queries/playthrough";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { AxiosInstance } from "axios";
 
@@ -137,7 +138,10 @@ export const archiveCollectionMutationOptions = (
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
         }),
-        // TODO: add playthorugh and completion key as well and archived getmany key as well
+        queryClient.invalidateQueries({
+          queryKey: PlaythroughQueryKeys.getManyAll(),
+        }),
+        // TODO: add completion key as well and archived getmany key as well
       ]);
     },
   });
@@ -203,7 +207,11 @@ export const deleteCollectionMutationOptions = (
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
         }),
-        // TODO: add playthorugh and completion key as well and archived getmany key as well
+        queryClient.invalidateQueries({
+          queryKey: PlaythroughQueryKeys.getManyAll(),
+        }),
+
+        // TODO: add completion key as well and archived getmany key as well
       ]);
     },
   });

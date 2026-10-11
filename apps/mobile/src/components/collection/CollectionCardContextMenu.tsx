@@ -127,6 +127,7 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
             </ContextMenuItem>
 
             <ContextMenuItem
+              disabled
               onPress={() =>
                 router.push({
                   pathname: "/(collection)/[collectionId]/manage-micro",
@@ -138,6 +139,7 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
             </ContextMenuItem>
 
             <ContextMenuItem
+              disabled
               onPress={() =>
                 router.push({
                   pathname: "/(collection)/[collectionId]/edit-images",
