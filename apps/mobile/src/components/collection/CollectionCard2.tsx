@@ -63,12 +63,12 @@ const CollectionCard2 = ({ game }: Props) => {
           shadowOffset: { width: 0, height: 4 },
           elevation: 4,
         }}
-        onPress={() =>
-          router.push({
-            pathname: "/(collection)/[collectionId]",
-            params: { collectionId: game.id },
-          })
-        }
+        // onPress={() =>
+        //   router.push({
+        //     pathname: "/(collection)/[collectionId]",
+        //     params: { collectionId: game.id },
+        //   })
+        // }
       >
         {/* Cover */}
         <View style={{ width: IMAGE_WIDTH, height: CARD_HEIGHT }}>

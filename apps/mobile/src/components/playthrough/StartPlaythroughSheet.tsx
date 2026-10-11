@@ -172,7 +172,7 @@ const StartPlaythroughSheet = ({ sheetRef }: Props) => {
         />
 
         {/* Game / DLC toggle */}
-        <View className="mt-3 flex-row rounded-xl bg-muted p-1">
+        <View className="my-3 flex-row rounded-xl bg-muted p-1">
           {KINDS.map(({ value, label }) => {
             const active = kind === value;
             return (
@@ -213,7 +213,7 @@ const StartPlaythroughSheet = ({ sheetRef }: Props) => {
             renderItem={renderItem}
             ListEmptyComponent={renderEmpty}
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ paddingTop: 12, paddingBottom: 16 }}
+            contentContainerStyle={{ paddingBottom: 16 }}
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
           />
