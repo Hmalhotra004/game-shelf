@@ -111,7 +111,14 @@ const PlaythroughCard = ({ play }: Props) => {
 
   const [DeletePlaySheet, confirmDeletePlay] = useConfirmSheet(
     "Delete Playthrough",
-    "",
+    "This will permanently delete this playthrough and all of its sessions. This can't be undone.",
+    "Delete",
+    "destructive",
+  );
+
+  const [DeleteSessionSheet, confirmDeleteSession] = useConfirmSheet(
+    "Delete Session",
+    "This session will be permanently removed from this playthrough. This can't be undone.",
     "Delete",
     "destructive",
   );
@@ -121,6 +128,13 @@ const PlaythroughCard = ({ play }: Props) => {
     if (!ok) return;
 
     deletePlay.mutate(play.id);
+  }
+
+  async function onDeleteSession(s: SessionType) {
+    const ok = await confirmDeleteSession();
+    if (!ok) return;
+
+    // deleteSession.mutate(s.id);
   }
 
   function changeStatus(status: Status) {
@@ -421,6 +435,7 @@ const PlaythroughCard = ({ play }: Props) => {
       </View>
 
       <DeletePlaySheet />
+      <DeleteSessionSheet />
     </>
   );
 };
