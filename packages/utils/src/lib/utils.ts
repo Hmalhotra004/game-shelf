@@ -36,6 +36,16 @@ export const statusColorMap: Record<
   "100% Completed": { bg: "bg-emerald-600/15", border: "border-emerald-600" },
 };
 
+export function playStatusAction(
+  from: PlaythroughStatusType,
+  to: PlaythroughStatusType,
+): string {
+  if (to === "On Hold") return "Pause";
+  if (to === "Archived") return "Archive";
+  if (from === "Archived") return "Restore";
+  return "Resume";
+}
+
 export const PLAYTHROUGH_STATUS_STYLE: Record<
   PlaythroughStatusType,
   { bg: string; border: string; bar: string }
