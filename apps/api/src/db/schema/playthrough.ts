@@ -85,6 +85,10 @@ export const playthroughSession = pgTable(
   },
   (table) => [
     index("session_playthrough_idx").on(table.playthroughId),
+    index("session_playthrough_play_date_idx").on(
+      table.playthroughId,
+      table.playDate,
+    ),
     index("session_user_idx").on(table.userId),
   ],
 );

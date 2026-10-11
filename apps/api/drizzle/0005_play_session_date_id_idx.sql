@@ -1,0 +1,1 @@
+CREATE INDEX "session_playthrough_play_date_idx" ON "playthrough_session" USING btree ("playthrough_id","play_date");
