@@ -8,6 +8,7 @@ import {
   CreatePlaythroughSchemaType,
   CreatePlaythroughSessionSchemaType,
   UpdatePlaythroughSchemaType,
+  UpdatePlaythroughSessionSchemaType,
 } from "@repo/schemas/schemas/playthrough";
 
 import {
@@ -24,15 +25,24 @@ type StatusContext = {
   previous: [QueryKey, PlaythroughInfinite | undefined][];
 };
 
+type UpdateContext = {
+  previous: [QueryKey, PlaythroughInfinite | undefined][];
+};
+
+type DeleteContext = {
+  previous: [QueryKey, PlaythroughInfinite | undefined][];
+};
+
 type UpdateStatusVariables = {
   id: string;
   status: UpdatePlaythroughSchemaType["status"];
   notes: UpdatePlaythroughSchemaType["notes"];
 };
 
-type DeleteContext = {
-  previous: [QueryKey, PlaythroughInfinite | undefined][];
-};
+type UpdateSessionVariables = {
+  id: string;
+  sessionId: string;
+} & UpdatePlaythroughSessionSchemaType;
 
 type DeleteSessionVariables = {
   id: string;
@@ -198,6 +208,7 @@ export const deletePlaythroughMutationOptions = (
     },
   });
 
+// ------------------------ Session -----------------------------
 export const addPlaythroughSessionMutationOptions = (
   api: AxiosInstance,
   queryClient: QueryClient,
@@ -224,6 +235,93 @@ export const addPlaythroughSessionMutationOptions = (
       onSuccess?.();
     },
     onError: (err) => onError(err),
+  });
+
+export const updatePlaythroughSessionMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  onError: (error: Error) => void,
+  onSuccess?: () => void,
+) =>
+  mutationOptions<void, Error, UpdateSessionVariables, UpdateContext>({
+    mutationFn: async ({ id, sessionId, ...data }) => {
+      await api.patch(`/playthrough/${id}/${sessionId}`, data);
+    },
+
+    onMutate: async ({ id, sessionId, playDate, secondsPlayed }) => {
+      const key = PlaythroughQueryKeys.getManyAll();
+
+      await queryClient.cancelQueries({ queryKey: key });
+
+      const previous = queryClient.getQueriesData<PlaythroughInfinite>({
+        queryKey: key,
+      });
+
+      queryClient.setQueriesData<PlaythroughInfinite>(
+        { queryKey: key },
+        (old) => {
+          if (!old) return old;
+
+          const oldSeconds = old.pages
+            .flatMap((page) => page.items)
+            .find((item) => item.id === id)
+            ?.sessions.find((s) => s.id === sessionId)?.duration;
+
+          // this cache entry doesn't hold the session
+          if (oldSeconds === undefined) return old;
+
+          const diff = secondsPlayed - oldSeconds;
+
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              totalSeconds: Math.max(0, page.totalSeconds + diff),
+              items: page.items.map((item) =>
+                item.id !== id
+                  ? item
+                  : {
+                      ...item,
+                      totalSeconds: Math.max(0, item.totalSeconds + diff),
+                      sessions: item.sessions.map((s) =>
+                        s.id === sessionId
+                          ? { ...s, playDate, duration: secondsPlayed }
+                          : s,
+                      ),
+                    },
+              ),
+            })),
+          };
+        },
+      );
+
+      return { previous };
+    },
+
+    onError: (err, _variables, context) => {
+      context?.previous.forEach(([queryKey, data]) => {
+        queryClient.setQueryData(queryKey, data);
+      });
+      onError(err);
+    },
+
+    onSuccess: () => {
+      onSuccess?.();
+    },
+
+    onSettled: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: StatsQueryKeys.getStats(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: CollectionQueryKeys.getManyAll(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: PlaythroughQueryKeys.getManyAll(),
+        }),
+      ]);
+    },
   });
 
 export const deletePlaythroughSessionMutationOptions = (

@@ -4,6 +4,7 @@ import { deletePlaythrough } from "@/controllers/playthroughs/deletePlaythrough"
 import { deletePlaythroughSession } from "@/controllers/playthroughs/deletePlaythroughSession";
 import { getMany } from "@/controllers/playthroughs/getMany";
 import { updatePlaythrough } from "@/controllers/playthroughs/updatePlathrough";
+import { updateSession } from "@/controllers/playthroughs/updateSession";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
@@ -13,6 +14,7 @@ import {
   createPlaythroughSessionSchema,
   playthroughListQuerySchema,
   updatePlaythroughSchema,
+  updatePlaythroughSessionSchema,
 } from "@repo/schemas/server/schemas/playthrough";
 
 import {
@@ -51,6 +53,15 @@ export default (baseUrl: string, app: Router) => {
     verifyPlaythrough,
     validateData(updatePlaythroughSchema),
     updatePlaythrough,
+  );
+
+  router.patch(
+    "/:playthroughId/:playthroughSessionId",
+    authenticateUser,
+    verifyPlaythrough,
+    verifyPlaythroughSession,
+    validateData(updatePlaythroughSessionSchema),
+    updateSession,
   );
 
   router.delete(
