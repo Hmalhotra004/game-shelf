@@ -1,5 +1,5 @@
 import { PlaythroughListQuerySchemaType } from "../schemas/playthrough";
-import { PlatformType, PlaythroughStatusType, ProviderType } from "./index";
+import { GameType, PlatformType, PlaythroughStatusType, ProviderType } from "./index";
 
 export type PlaythroughGetManyType = {
   id: string;
@@ -11,7 +11,7 @@ export type PlaythroughGetManyType = {
   totalSeconds: number;
   startedAt: string | null;
   finishedAt: string | null;
-  gameType: string;
+  gameType: GameType;
   name: string;
   image: string | null;
   customImage: string | null;

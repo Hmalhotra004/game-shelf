@@ -3,6 +3,8 @@ import { PlaythroughStatusValues } from "../enums";
 import { platformSchema } from "./collection";
 import { GameTypeSchema } from "./index";
 
+export const MAX_NOTES_CHARACTERS = 250;
+
 export const playthroughStatusSchema = z.enum(PlaythroughStatusValues, {
   error: "playthroughStatus is requried",
 });
@@ -46,13 +48,10 @@ export const createPlaythroughSessionSchema = z.object({
 
 export const updatePlaythroughSchema = z.object({
   status: playthroughStatusSchema,
-});
-
-export const updatePlaythroughNotesSchema = z.object({
   notes: z
     .string()
     .trim()
-    .max(250, { error: "Character length exceeded" })
+    .max(MAX_NOTES_CHARACTERS, { error: "Character length exceeded" })
     .nullable(),
 });
 
@@ -77,10 +76,6 @@ export type CreatePlaythroughSessionSchemaType = z.infer<
 
 export type UpdatePlaythroughSchemaType = z.infer<
   typeof updatePlaythroughSchema
->;
-
-export type UpdatePlaythroughNotesSchemaType = z.infer<
-  typeof updatePlaythroughNotesSchema
 >;
 
 export type UpdatePlaythroughSessionSchemaType = z.infer<

@@ -3,6 +3,8 @@ import { addTime } from "@/controllers/playthroughs/addTime";
 import { deletePlaythrough } from "@/controllers/playthroughs/deletePlaythrough";
 import { deletePlaythroughSession } from "@/controllers/playthroughs/deletePlaythroughSession";
 import { getMany } from "@/controllers/playthroughs/getMany";
+import { updatePlaythrough } from "@/controllers/playthroughs/updatePlathrough";
+import { updateSession } from "@/controllers/playthroughs/updateSession";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
@@ -11,6 +13,8 @@ import {
   createPlaythroughSchema,
   createPlaythroughSessionSchema,
   playthroughListQuerySchema,
+  updatePlaythroughSchema,
+  updatePlaythroughSessionSchema,
 } from "@repo/schemas/server/schemas/playthrough";
 
 import {
@@ -41,6 +45,23 @@ export default (baseUrl: string, app: Router) => {
     verifyPlaythrough,
     validateData(createPlaythroughSessionSchema),
     addTime,
+  );
+
+  router.patch(
+    "/:playthroughId",
+    authenticateUser,
+    verifyPlaythrough,
+    validateData(updatePlaythroughSchema),
+    updatePlaythrough,
+  );
+
+  router.patch(
+    "/:playthroughId/:playthroughSessionId",
+    authenticateUser,
+    verifyPlaythrough,
+    verifyPlaythroughSession,
+    validateData(updatePlaythroughSessionSchema),
+    updateSession,
   );
 
   router.delete(

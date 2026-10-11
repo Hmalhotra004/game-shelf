@@ -34,6 +34,12 @@ const statusOrder = sql`CASE ${playthrough.status}
   ELSE 3
 END`;
 
+const lastPlayedAt = sql<Date | null>`(
+  SELECT MAX(${playthroughSession.playDate})
+  FROM ${playthroughSession}
+  WHERE ${playthroughSession.playthroughId} = ${playthrough.id}
+)`;
+
 export const getMany = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -99,6 +105,12 @@ export const getMany = async (req: Request, res: Response) => {
         .select({
           ...getTableColumns(playthrough),
 
+          lastPlayedAt: sql<string | null>`(
+    SELECT MAX(${playthroughSession.playDate})
+    FROM ${playthroughSession}
+    WHERE ${playthroughSession.playthroughId} = ${playthrough.id}
+  )`.mapWith((v) => (v ? new Date(v) : null)),
+
           // game
           gameName: collection.name,
           gameImage: collection.image,
@@ -120,7 +132,12 @@ export const getMany = async (req: Request, res: Response) => {
         .leftJoin(parent, eq(parent.id, dlc.collectionId))
         .where(where)
         // id as tiebreaker => stable pages for infinite scroll
-        .orderBy(asc(statusOrder), asc(effectiveName), asc(playthrough.id))
+        .orderBy(
+          sql`${lastPlayedAt} DESC NULLS LAST`,
+          asc(statusOrder),
+          asc(effectiveName),
+          asc(playthrough.id),
+        )
         .limit(limit)
         .offset(offset),
 
@@ -170,7 +187,10 @@ export const getMany = async (req: Request, res: Response) => {
           inArray(playthroughSession.playthroughId, ids),
         ),
       )
-      .orderBy(desc(playthroughSession.playDate));
+      .orderBy(
+        desc(playthroughSession.playDate),
+        desc(playthroughSession.createdAt),
+      );
 
     const sessionMap = new Map<string, typeof sessions>();
     for (const s of sessions) {
@@ -195,6 +215,7 @@ export const getMany = async (req: Request, res: Response) => {
         finishedAt: pt.finishedAt,
         createdAt: pt.createdAt,
         updatedAt: pt.updatedAt,
+        lastPlayedAt: pt.lastPlayedAt,
 
         gameType: isDLC ? "DLC" : "Game",
 
