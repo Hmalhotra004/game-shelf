@@ -77,6 +77,11 @@ export type CreateCompletionSchemaType = z.infer<typeof createCompletionSchema>;
 export type UpdateCompletionSchemaType = z.infer<typeof updateCompletionSchema>;
 
 // ------------------------------- Query Schema -------------------------------------------
+export const gameInfoCompletionQuerySchema = z.object({
+  id: z.string({ error: "Id is required" }).min(1, { error: "id is required" }),
+  gameType: GameTypeSchema,
+});
+
 export const completionListQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
@@ -92,4 +97,7 @@ export type CompletionListQuerySchemaInput = z.input<
 >;
 export type CompletionListQuerySchemaType = z.infer<
   typeof completionListQuerySchema
+>;
+export type GameInfoCompletionQuerySchema = z.infer<
+  typeof gameInfoCompletionQuerySchema
 >;
