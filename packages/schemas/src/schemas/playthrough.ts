@@ -1,9 +1,8 @@
+import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
 import z from "zod";
 import { PlaythroughStatusValues } from "../enums";
 import { platformSchema } from "./collection";
 import { GameTypeSchema } from "./index";
-
-export const MAX_NOTES_CHARACTERS = 250;
 
 export const playthroughStatusSchema = z.enum(PlaythroughStatusValues, {
   error: "playthroughStatus is requried",
