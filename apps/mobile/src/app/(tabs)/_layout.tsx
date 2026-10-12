@@ -1,4 +1,5 @@
 import SearchBottomSheet from "@/components/collection/search/SearchBottomSheet";
+import AddCompletionSheet from "@/components/completion/AddCompletionSheet";
 import StartPlaythroughSheet from "@/components/playthrough/StartPlaythroughSheet";
 import TabBar from "@/components/Tabbar/TabBar";
 import { useSession } from "@/hooks/useSession";
@@ -49,6 +50,7 @@ export default function TabsLayout() {
 
       <SearchBottomSheet sheetRef={searchRef} />
       <StartPlaythroughSheet sheetRef={playthroughRef} />
+      <AddCompletionSheet sheetRef={completionRef} />
     </>
   );
 }
