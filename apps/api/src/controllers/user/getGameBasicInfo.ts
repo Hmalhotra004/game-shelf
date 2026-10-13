@@ -18,6 +18,7 @@ export const getGameBasicInfo = async (req: Request, res: Response) => {
         columns: {
           id: true,
           igdbId: true,
+          name: true,
           image: true,
           customImage: true,
           coverImage: true,
@@ -32,6 +33,7 @@ export const getGameBasicInfo = async (req: Request, res: Response) => {
         .select({
           id: dlc.id,
           igdbId: dlc.igdbId,
+          name: dlc.name,
           image: dlc.image,
           customImage: dlc.customImage,
           coverImage: dlc.coverImage,
