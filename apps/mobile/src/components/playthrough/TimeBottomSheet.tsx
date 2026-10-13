@@ -160,6 +160,7 @@ const TimeBottomSheet = ({
           name="secondsPlayed"
           label="Time played"
           disabled={isSaving}
+          inBottomSheet
         />
 
         <View className="flex-row justify-end gap-2">
