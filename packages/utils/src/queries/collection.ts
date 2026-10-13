@@ -11,10 +11,10 @@ import {
 export const CollectionQueryKeys = {
   all: ["Collection"] as const,
 
-  getManyAll: () => ["collection", "getMany"] as const,
+  getManyAll: () => [...CollectionQueryKeys.all, "getMany"] as const,
 
   getMany: (filters: CollectionGetManyFilters = {}) =>
-    ["collection", "getMany", filters] as const,
+    [...CollectionQueryKeys.all, "getMany", filters] as const,
 
   getByIdAll: (id: string) =>
     [...CollectionQueryKeys.all, "getById", id] as const,

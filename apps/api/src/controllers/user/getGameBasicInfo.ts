@@ -1,14 +1,14 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { collection, dlc } from "@/db/schema";
-import { GameInfoCompletionQuerySchema } from "@repo/schemas/server/schemas/completion";
+import { GameBasicInfoQuerySchemaType } from "@repo/schemas/server/schemas/user";
 import { and, eq } from "drizzle-orm";
 import type { Request, Response } from "express";
 
-export const getGameInfoForCompletion = async (req: Request, res: Response) => {
+export const getGameBasicInfo = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
-    const { gameType, id } = req.cleanQuery as GameInfoCompletionQuerySchema;
+    const { gameType, id } = req.cleanQuery as GameBasicInfoQuerySchemaType;
 
     let game;
 
@@ -53,7 +53,7 @@ export const getGameInfoForCompletion = async (req: Request, res: Response) => {
 
     return res.status(200).json(game);
   } catch (err) {
-    req.log.error({ err }, "COMPLETION_GET_GAME_INFO_ERROR");
+    req.log.error({ err }, "GET_GAME_BASIC_INFO_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
   }
 };
