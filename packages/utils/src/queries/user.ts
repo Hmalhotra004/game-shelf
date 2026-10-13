@@ -1,6 +1,6 @@
 import { GameBasicInfoQuerySchemaType } from "@repo/schemas/schemas/user";
 import { GameType } from "@repo/schemas/types/index";
-import { GetGamesType } from "@repo/schemas/types/user";
+import { GetGameBasicInfoType, GetGamesType } from "@repo/schemas/types/user";
 import { queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
 
@@ -40,9 +40,12 @@ export const getGameBasicInfo = (
   queryOptions({
     queryKey: UserQueryKeys.getGameInfo(id, gameType),
     queryFn: async () => {
-      const response = await api.get<GetGamesType>(`/user/getGameBasicInfo`, {
-        params: { id, gameType } as GameBasicInfoQuerySchemaType,
-      });
+      const response = await api.get<GetGameBasicInfoType>(
+        `/user/getGameBasicInfo`,
+        {
+          params: { id, gameType } as GameBasicInfoQuerySchemaType,
+        },
+      );
 
       return response.data;
     },

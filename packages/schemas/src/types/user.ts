@@ -1,4 +1,4 @@
-import { PlatformType, ProviderType } from "./index";
+import { PlatformType, ProviderType, PSVersionType } from "./index";
 
 export type GetGamesType = {
   games: {
@@ -19,6 +19,19 @@ export type GetGamesType = {
     name: string;
     image: string | null;
   }[];
+};
+
+export type GetGameBasicInfoType = {
+  id: string;
+  name: string;
+  igdbId: string;
+  image: string | null;
+  customImage: string | null;
+  coverImage: string | null;
+  customCoverImage: string | null;
+  platform: PlatformType;
+  provider: ProviderType;
+  PSVersion: PSVersionType;
 };
 
 export type AccountProfileType = {
