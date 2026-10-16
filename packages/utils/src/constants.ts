@@ -15,3 +15,5 @@ export const overviewLabels = [
 ];
 
 export const GenericErrorMessage = "Something Went Wrong!";
+
+export const MAX_NOTES_CHARACTERS = 250;
