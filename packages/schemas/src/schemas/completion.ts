@@ -20,8 +20,7 @@ export const createCompletionSchema = z
 
     totalPlaytime: z
       .number({ error: "Time played is required" })
-      .int({ message: "Invalid time format" })
-      .positive({ message: "Time must be greater than 0 seconds" }),
+      .int({ message: "Invalid time format" }),
 
     completedAt: z.string().trim().nullable(),
 
@@ -60,8 +59,7 @@ export const updateCompletionSchema = z.object({
 
   totalPlaytime: z
     .number({ error: "Time played is required" })
-    .int({ message: "Invalid time format" })
-    .positive({ message: "Time must be greater than 0 seconds" }),
+    .int({ message: "Invalid time format" }),
 
   completedAt: z.string().trim().nullable(),
 
