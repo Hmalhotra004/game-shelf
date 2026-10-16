@@ -69,7 +69,7 @@ const AddCompletion = () => {
       gameType,
       completionStyle: "Story",
       completionStatus: "Story Completed",
-      totalPlaytime: undefined,
+      totalPlaytime: 0,
       completedAt: null,
       notes: null,
       collectionId: isDlc ? undefined : id,
