@@ -263,11 +263,10 @@ export const FormTextarea: FormControlFunc<{
 );
 
 // ─── FormTimePicker ─────────────────────────────────────────────────────────────
-export const FormTimePicker: FormControlFunc<{ className?: ClassValue }> = ({
-  disabled,
-  className,
-  ...props
-}) => (
+export const FormTimePicker: FormControlFunc<{
+  className?: ClassValue;
+  inBottomSheet: boolean;
+}> = ({ disabled, className, inBottomSheet, ...props }) => (
   <FormBase {...props}>
     {({ value, onChange, invalid }) => (
       <DurationTimePicker
@@ -276,6 +275,7 @@ export const FormTimePicker: FormControlFunc<{ className?: ClassValue }> = ({
         disabled={disabled}
         invalid={invalid}
         className={className}
+        inBottomSheet={inBottomSheet}
       />
     )}
   </FormBase>
