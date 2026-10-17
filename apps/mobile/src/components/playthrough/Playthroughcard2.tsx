@@ -5,6 +5,7 @@ import { useThemeStore } from "@/store/useThemeStore";
 import { PlaythroughGetManyType } from "@repo/schemas/types/playthrough";
 import { betterTimeText, secondsToHMS } from "@repo/utils/lib/utils";
 import { useMutation } from "@tanstack/react-query";
+import { formatDate } from "date-fns";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
@@ -47,13 +48,6 @@ const STATUS_DOT: Record<string, string> = {
   "On Hold": "bg-amber-500",
   Archived: "bg-rose-500",
 };
-
-const formatDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
 
 const PlaythroughCard2 = ({ play }: Props) => {
   const theme = useThemeStore((s) => s.theme);
@@ -157,7 +151,7 @@ const PlaythroughCard2 = ({ play }: Props) => {
 
   function openSessionMenu(s: SessionType) {
     Alert.alert(
-      formatDate(s.playDate),
+      formatDate(s.playDate, "PP"),
       secondsToHMS(s.duration),
       [
         { text: "Edit", onPress: () => editSession(s) },
@@ -325,7 +319,9 @@ const PlaythroughCard2 = ({ play }: Props) => {
                   className="flex-row items-center justify-between rounded-lg bg-muted px-3 active:opacity-70"
                   style={{ height: ROW_HEIGHT }}
                 >
-                  <Text className="text-sm">{formatDate(s.playDate)}</Text>
+                  <Text className="text-sm">
+                    {formatDate(s.playDate, "PP")}
+                  </Text>
                   <Text className="text-sm font-semibold">
                     {secondsToHMS(s.duration)}
                   </Text>

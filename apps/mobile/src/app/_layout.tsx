@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Slot } from "expo-router";
 import { useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -47,14 +48,16 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <BottomSheetModalProvider>
-            <SafeAreaProvider>
-              <Slot />
+          <KeyboardProvider>
+            <BottomSheetModalProvider>
+              <SafeAreaProvider>
+                <Slot />
 
-              <Toast />
-              <PortalHost />
-            </SafeAreaProvider>
-          </BottomSheetModalProvider>
+                <Toast />
+                <PortalHost />
+              </SafeAreaProvider>
+            </BottomSheetModalProvider>
+          </KeyboardProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>

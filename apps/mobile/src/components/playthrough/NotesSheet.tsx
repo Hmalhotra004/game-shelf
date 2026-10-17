@@ -29,6 +29,7 @@ interface Props {
   status: Status;
   initialNotes: string | null;
   isSaving: boolean;
+  readOnly?: boolean;
   onSave: (notes: string | null) => void;
   onCancel: () => void;
 }
@@ -40,6 +41,7 @@ const NotesSheet = ({
   isSaving,
   onSave,
   onCancel,
+  readOnly = false,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(initialNotes ?? "");
@@ -142,7 +144,9 @@ const NotesSheet = ({
         <View className="gap-1">
           <Text className="text-lg font-semibold">Notes</Text>
           <Text className="text-muted-foreground">
-            Jot down your thoughts about this playthrough.
+            {readOnly
+              ? "Your notes for this playthrough."
+              : "Jot down your thoughts about this playthrough."}
           </Text>
         </View>
 
@@ -151,8 +155,8 @@ const NotesSheet = ({
             value={value}
             onChangeText={setValue}
             multiline
-            autoFocus
-            editable={!isSaving}
+            autoFocus={!readOnly}
+            editable={!isSaving && !readOnly}
             placeholder="Write your thoughts..."
             placeholderTextColor={THEME[theme].mutedForeground}
             textAlignVertical="top"
@@ -166,17 +170,19 @@ const NotesSheet = ({
             }}
           />
 
-          <View className="flex-row justify-between">
-            <Text className="text-xs text-destructive">{error ?? ""}</Text>
-            <Text
-              className={cn(
-                "text-xs text-muted-foreground",
-                error && "text-destructive",
-              )}
-            >
-              {value.length}/{MAX_NOTES_CHARACTERS}
-            </Text>
-          </View>
+          {!readOnly && (
+            <View className="flex-row justify-between">
+              <Text className="text-xs text-destructive">{error ?? ""}</Text>
+              <Text
+                className={cn(
+                  "text-xs text-muted-foreground",
+                  error && "text-destructive",
+                )}
+              >
+                {value.length}/{MAX_NOTES_CHARACTERS}
+              </Text>
+            </View>
+          )}
         </View>
 
         <View className="flex-row justify-end gap-2">
@@ -185,15 +191,17 @@ const NotesSheet = ({
             onPress={onCancel}
             disabled={isSaving}
           >
-            <Text>Cancel</Text>
+            <Text>{readOnly ? "Close" : "Cancel"}</Text>
           </Button>
 
-          <Button
-            disabled={!!error || unchanged || isSaving}
-            onPress={handleSave}
-          >
-            <Text>{isSaving ? "Saving..." : "Save"}</Text>
-          </Button>
+          {!readOnly && (
+            <Button
+              disabled={!!error || unchanged || isSaving}
+              onPress={handleSave}
+            >
+              <Text>{isSaving ? "Saving..." : "Save"}</Text>
+            </Button>
+          )}
         </View>
       </BottomSheetScrollView>
     </BottomSheetModal>

@@ -5,18 +5,22 @@ import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { handleError, showToast } from "@/lib/utils";
+import { cn, handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GameType } from "@repo/schemas/types/index";
+import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
+import { isCompletionStatus } from "@repo/utils/lib/utils";
 import { addCompletionMutationOptions } from "@repo/utils/mutations/completion";
 import { getGameBasicInfo } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ImageIcon } from "lucide-react-native";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 import {
   createCompletionSchema,
@@ -26,6 +30,8 @@ import {
 import {
   COMPLETION_STYLE_OPTIONS,
   getAfterCompletionStatusOptions,
+  opts,
+  PS_VERSION_OPTIONS,
 } from "@repo/utils/lib/gameOptions";
 
 import {
@@ -70,6 +76,8 @@ const AddCompletion = () => {
       completionStyle: "Story",
       completionStatus: "Story Completed",
       totalPlaytime: 0,
+      platform: "PC",
+      PSVersion: null,
       completedAt: null,
       notes: null,
       collectionId: isDlc ? undefined : id,
@@ -83,6 +91,21 @@ const AddCompletion = () => {
 
   const isPending = addCompletion.isPending;
 
+  useEffect(() => {
+    if (!game) return;
+
+    if (game.status && isCompletionStatus(game.status)) {
+      form.setValue("completionStatus", game.status);
+    }
+
+    if (game.platform) form.setValue("platform", game.platform);
+
+    if (game.PSVersion.length > 0) {
+      if (game.PSVersion.length === 1)
+        form.setValue("PSVersion", game.PSVersion[0]);
+    }
+  }, [game, form]);
+
   if (isLoadingGame || !game) {
     return (
       <View className="flex-1">
@@ -95,6 +118,8 @@ const AddCompletion = () => {
     );
   }
 
+  const notes = form.watch("notes");
+  const selectedPlatform = form.watch("platform");
   const imageUri = game?.customImage ?? game.image;
 
   return (
@@ -102,7 +127,8 @@ const AddCompletion = () => {
       <Header />
 
       <ScreenWrapper>
-        <ScrollView
+        <KeyboardAwareScrollView
+          bottomOffset={24}
           contentContainerClassName="gap-6 pb-10"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -112,9 +138,13 @@ const AddCompletion = () => {
             {imageUri ? (
               <Image
                 source={{ uri: imageUri }}
-                style={{ width: 96, height: 72 }}
+                style={{
+                  width: 72,
+                  height: 96,
+                  borderRadius: 8,
+                  backgroundColor: THEME[theme].muted,
+                }}
                 contentFit="cover"
-                transition={250}
               />
             ) : (
               <View className="flex-1 items-center justify-center bg-muted">
@@ -127,13 +157,10 @@ const AddCompletion = () => {
 
             <View className="flex-1 gap-1">
               <Text className="text-2xl font-bold tracking-tight">
-                Add Completion
-              </Text>
-              <Text
-                className="text-sm text-muted-foreground"
-                numberOfLines={2}
-              >
                 {game.name}
+              </Text>
+              <Text className="text-sm text-muted-foreground">
+                Fill in the details below to add this game to your completion.
               </Text>
             </View>
           </View>
@@ -156,14 +183,19 @@ const AddCompletion = () => {
               disabled={isPending}
             />
 
-            {/* Playtime */}
-            <FormTimePicker
-              name="totalPlaytime"
-              control={form.control}
-              label="Time Played*"
-              disabled={isPending}
-              inBottomSheet={false}
-            />
+            {selectedPlatform === "PS" && (
+              <FormSelectSheet
+                name="PSVersion"
+                control={form.control}
+                label="PS Version*"
+                options={
+                  game.PSVersion?.length
+                    ? opts(...game.PSVersion)
+                    : PS_VERSION_OPTIONS
+                }
+                disabled={isPending}
+              />
+            )}
 
             {/* Completed date */}
             <FormDatePicker
@@ -173,15 +205,39 @@ const AddCompletion = () => {
               disabled={isPending}
             />
 
-            {/* Notes */}
-            <FormTextarea
-              name="notes"
+            {/* Playtime */}
+            <FormTimePicker
+              name="totalPlaytime"
               control={form.control}
-              label="Notes"
-              placeholder="Anything worth remembering..."
-              numberOfLines={4}
+              label="Time Played*"
               disabled={isPending}
+              inBottomSheet={false}
             />
+
+            {/* Notes */}
+            <View>
+              <FormTextarea
+                name="notes"
+                control={form.control}
+                label="Notes"
+                placeholder="Anything worth remembering..."
+                numberOfLines={4}
+                disabled={isPending}
+              />
+              <View className="flex-row justify-between">
+                <Text className="text-xs text-destructive">
+                  {form.formState.errors.notes?.message ?? ""}
+                </Text>
+                <Text
+                  className={cn(
+                    "text-xs text-muted-foreground",
+                    form.formState.errors.notes?.message && "text-destructive",
+                  )}
+                >
+                  {notes?.length ?? 0}/{MAX_NOTES_CHARACTERS}
+                </Text>
+              </View>
+            </View>
           </View>
 
           {/* Actions */}
@@ -202,7 +258,7 @@ const AddCompletion = () => {
               <Text>Cancel</Text>
             </Button>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </ScreenWrapper>
     </View>
   );

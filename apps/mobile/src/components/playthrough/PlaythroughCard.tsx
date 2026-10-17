@@ -86,6 +86,9 @@ const PlaythroughCard = ({ play }: Props) => {
   const imageUri = play.customCoverImage ?? play.coverImage;
   const isArchived = play.status === "Archived";
   const isOnHold = play.status === "On Hold";
+  const isCompleted = play.status === "Completed";
+  const canModify = !isArchived && !isCompleted;
+
   const statusStyle =
     PLAYTHROUGH_STATUS_STYLE[play.status] ?? PLAYTHROUGH_STATUS_STYLE.Active;
   const mutedColor = THEME[theme].mutedForeground;
@@ -241,7 +244,7 @@ const PlaythroughCard = ({ play }: Props) => {
   }
 
   function editSession(s: SessionType) {
-    if (isArchived) return;
+    if (!canModify) return;
     setEditingSession(s);
     editSessionSheetRef.current?.present();
   }
@@ -261,7 +264,7 @@ const PlaythroughCard = ({ play }: Props) => {
   function finish() {
     router.push({
       pathname: "/(playthrough)/[playthroughId]/finish",
-      params: { playthroughId: play.id },
+      params: { playthroughId: play.id, gameType: play.gameType },
     });
   }
 
@@ -365,7 +368,7 @@ const PlaythroughCard = ({ play }: Props) => {
               <Text className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Sessions
               </Text>
-              {!isArchived && (
+              {canModify && (
                 <Button
                   size="icon"
                   variant="ghost"
@@ -399,7 +402,7 @@ const PlaythroughCard = ({ play }: Props) => {
                   {sessions.map((s) => (
                     <Pressable
                       key={s.id}
-                      disabled={isArchived}
+                      disabled={!canModify}
                       onPress={() => editSession(s)}
                       className="flex-row items-center justify-between rounded-xl bg-muted pl-3.5 pr-1 active:opacity-70"
                       style={{ height: SESSION_ROW_HEIGHT }}
@@ -413,9 +416,7 @@ const PlaythroughCard = ({ play }: Props) => {
                           {secondsToHMS(s.duration)}
                         </Text>
 
-                        {isArchived ? (
-                          <View className="w-3" />
-                        ) : (
+                        {canModify ? (
                           <Pressable
                             hitSlop={8}
                             onPress={() => onDeleteSession(s)}
@@ -426,9 +427,9 @@ const PlaythroughCard = ({ play }: Props) => {
                               size={16}
                             />
                           </Pressable>
+                        ) : (
+                          <View className="w-3" />
                         )}
-
-                        {isArchived && <View className="w-3" />}
                       </View>
                     </Pressable>
                   ))}
@@ -465,7 +466,7 @@ const PlaythroughCard = ({ play }: Props) => {
 
           {/* Quick actions */}
           <View className="flex-row justify-between border-t border-border pt-3">
-            {!isArchived && (
+            {canModify && (
               <ActionButton
                 icon={isOnHold ? PlayIcon : PauseIcon}
                 label={isOnHold ? "Resume" : "Pause"}
@@ -474,21 +475,23 @@ const PlaythroughCard = ({ play }: Props) => {
               />
             )}
 
-            {!isArchived && (
+            <ActionButton
+              icon={StickyNoteIcon}
+              label="Notes"
+              color={fgColor}
+              onPress={openNotes}
+            />
+
+            {!isCompleted && (
               <ActionButton
-                icon={StickyNoteIcon}
-                label="Notes"
+                icon={isArchived ? ArchiveRestoreIcon : ArchiveIcon}
+                label={isArchived ? "Restore" : "Archive"}
                 color={fgColor}
-                onPress={openNotes}
+                onPress={() =>
+                  onChangeStatus(isArchived ? "Active" : "Archived")
+                }
               />
             )}
-
-            <ActionButton
-              icon={isArchived ? ArchiveRestoreIcon : ArchiveIcon}
-              label={isArchived ? "Restore" : "Archive"}
-              color={fgColor}
-              onPress={() => onChangeStatus(isArchived ? "Active" : "Archived")}
-            />
 
             <ActionButton
               icon={TrashIcon}
@@ -498,7 +501,7 @@ const PlaythroughCard = ({ play }: Props) => {
             />
           </View>
 
-          {!isArchived && (
+          {canModify && (
             <Button
               variant="secondary"
               onPress={finish}
@@ -523,6 +526,7 @@ const PlaythroughCard = ({ play }: Props) => {
         initialNotes={play.notes ?? null}
         isSaving={updatePlaythrough.isPending}
         onSave={onSaveNotes}
+        readOnly={!canModify}
         onCancel={() => notesSheetRef.current?.dismiss()}
       />
 
