@@ -17,7 +17,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { ImageIcon } from "lucide-react-native";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 import {
   createCompletionSchema,
@@ -117,7 +118,8 @@ const AddCompletion = () => {
       <Header />
 
       <ScreenWrapper>
-        <ScrollView
+        <KeyboardAwareScrollView
+          bottomOffset={24}
           contentContainerClassName="gap-6 pb-10"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -228,7 +230,7 @@ const AddCompletion = () => {
               <Text>Cancel</Text>
             </Button>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </ScreenWrapper>
     </View>
   );
