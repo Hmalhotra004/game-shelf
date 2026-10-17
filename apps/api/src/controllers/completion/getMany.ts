@@ -33,7 +33,10 @@ export const getMany = async (req: Request, res: Response) => {
     >`COALESCE(${completion.collectionId}, ${dlc.collectionId})`;
 
     // ---------- filters ----------
-    const conditions: (SQL | undefined)[] = [eq(completion.userId, userId)];
+    const conditions: (SQL | undefined)[] = [
+      eq(completion.userId, userId),
+      eq(parent.archived, false),
+    ];
 
     if (search?.trim()) {
       const term = `%${search.trim()}%`;
@@ -123,6 +126,7 @@ export const getMany = async (req: Request, res: Response) => {
     ]);
 
     const total = countRow?.count ?? 0;
+    const totalPages = Math.ceil(total / limit);
     const totalPlaytime = Number(playtimeRow?.total ?? 0);
     const hasNextPage = offset + rows.length < total;
 
@@ -177,6 +181,7 @@ export const getMany = async (req: Request, res: Response) => {
     return res.status(200).json({
       items,
       total, // total completions matching the filters (all pages)
+      totalPages,
       totalPlaytime, // total playtime (seconds) matching the filters
       page,
       limit,

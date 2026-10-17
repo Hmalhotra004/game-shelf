@@ -31,6 +31,7 @@ export type CompletionGetMany = {
 export type CompletionGetManyResponse = {
   items: CompletionGetMany[];
   total: number;
+  totalPages: number;
   totalPlaytime: number;
   page: number;
   limit: number;
