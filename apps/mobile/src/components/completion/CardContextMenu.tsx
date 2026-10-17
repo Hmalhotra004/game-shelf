@@ -1,7 +1,9 @@
 import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
+import { api } from "@/lib/api";
+import { handleError, showToast } from "@/lib/utils";
 import { CompletionGetMany } from "@repo/schemas/types/completion";
-// import { deleteCompletionMutationOptions } from "@repo/utils/mutations/completion";
+import { deleteCompletionMutationOptions } from "@repo/utils/mutations/completion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
@@ -35,18 +37,16 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
     await Haptics.selectionAsync();
   }
 
-  const deleteCompletion = useMutation({});
-
-  // const deleteCompletion = useMutation(
-  //   deleteCompletionMutationOptions(
-  //     api,
-  //     queryClient,
-  //     (err) => handleError(err),
-  //     () => {
-  //       showToast("success", "Completion Deleted");
-  //     },
-  //   ),
-  // );
+  const deleteCompletion = useMutation(
+    deleteCompletionMutationOptions(
+      api,
+      queryClient,
+      (err) => handleError(err),
+      () => {
+        showToast("success", "Completion Deleted");
+      },
+    ),
+  );
 
   const [DeleteSheet, confirmDelete] = useConfirmSheet(
     "Delete completion?",
@@ -59,7 +59,7 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
     const ok = await confirmDelete();
     if (!ok) return;
 
-    // deleteCompletion.mutate(completion.id);
+    deleteCompletion.mutate(completion.id);
   }
 
   return (
