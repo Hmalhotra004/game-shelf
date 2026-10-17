@@ -127,9 +127,13 @@ const AddCompletion = () => {
             {imageUri ? (
               <Image
                 source={{ uri: imageUri }}
-                style={{ width: 96, height: 72 }}
+                style={{
+                  width: 72,
+                  height: 96,
+                  borderRadius: 8,
+                  backgroundColor: THEME[theme].muted,
+                }}
                 contentFit="cover"
-                transition={250}
               />
             ) : (
               <View className="flex-1 items-center justify-center bg-muted">
@@ -142,13 +146,10 @@ const AddCompletion = () => {
 
             <View className="flex-1 gap-1">
               <Text className="text-2xl font-bold tracking-tight">
-                Add Completion
-              </Text>
-              <Text
-                className="text-sm text-muted-foreground"
-                numberOfLines={2}
-              >
                 {game.name}
+              </Text>
+              <Text className="text-sm text-muted-foreground">
+                Fill in the details below to add this game to your completion.
               </Text>
             </View>
           </View>
@@ -181,6 +182,14 @@ const AddCompletion = () => {
               />
             )}
 
+            {/* Completed date */}
+            <FormDatePicker
+              name="completedAt"
+              control={form.control}
+              label="Completed On"
+              disabled={isPending}
+            />
+
             {/* Playtime */}
             <FormTimePicker
               name="totalPlaytime"
@@ -188,14 +197,6 @@ const AddCompletion = () => {
               label="Time Played*"
               disabled={isPending}
               inBottomSheet={false}
-            />
-
-            {/* Completed date */}
-            <FormDatePicker
-              name="completedAt"
-              control={form.control}
-              label="Completed On"
-              disabled={isPending}
             />
 
             {/* Notes */}
