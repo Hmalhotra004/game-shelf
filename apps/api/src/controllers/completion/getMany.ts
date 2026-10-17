@@ -95,7 +95,8 @@ export const getMany = async (req: Request, res: Response) => {
         .where(where)
         // most recent first; id as tiebreaker => stable pages for infinite scroll
         .orderBy(
-          sql`${completion.completedAt} DESC NULLS LAST`,
+          sql`lower(${parent.name}) ASC`,
+          sql`${dlc.name} ASC NULLS FIRST`,
           sql`${completion.id} ASC`,
         )
         .limit(limit)
