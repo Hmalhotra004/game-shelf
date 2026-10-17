@@ -10,6 +10,7 @@ import {
   exists,
   ilike,
   inArray,
+  notInArray,
   sql,
   type SQL,
 } from "drizzle-orm";
@@ -122,6 +123,7 @@ export const getMany = async (req: Request, res: Response) => {
       ]);
 
     const total = countRow?.count ?? 0;
+    const totalPages = Math.ceil(total / limit);
     const totalAmount =
       Number(collectionAmountRow?.total ?? 0) +
       Number(dlcAmountRow?.total ?? 0);
@@ -145,47 +147,83 @@ export const getMany = async (req: Request, res: Response) => {
     // ---------- per-page details (only for the games on this page) ----------
     // Aggregated separately to avoid the join fan-out that inflated sums
     // when playthrough x completion x dlc were joined together.
-    const [lists, playthroughTotals, completionTotals, dlcTotals] =
-      await Promise.all([
-        db
-          .select({
-            collectionId: listItem.collectionId,
-            name: sql<string[]>`array_agg(${list.name})`,
-          })
-          .from(listItem)
-          .innerJoin(list, eq(list.id, listItem.listId))
-          .where(
-            and(eq(list.userId, userId), inArray(listItem.collectionId, ids)),
-          )
-          .groupBy(listItem.collectionId),
+    const [
+      lists,
+      playthroughTotals,
+      completionTotals,
+      dlcTotals,
+      dlcCompletionTotals,
+      dlcPlaythroughTotals,
+    ] = await Promise.all([
+      db
+        .select({
+          collectionId: listItem.collectionId,
+          name: sql<string[]>`array_agg(${list.name})`,
+        })
+        .from(listItem)
+        .innerJoin(list, eq(list.id, listItem.listId))
+        .where(
+          and(eq(list.userId, userId), inArray(listItem.collectionId, ids)),
+        )
+        .groupBy(listItem.collectionId),
 
-        db
-          .select({
-            collectionId: playthrough.collectionId,
-            total: sql<string>`COALESCE(SUM(${playthrough.totalSeconds}), 0)`,
-          })
-          .from(playthrough)
-          .where(inArray(playthrough.collectionId, ids))
-          .groupBy(playthrough.collectionId),
+      db
+        .select({
+          collectionId: playthrough.collectionId,
+          total: sql<string>`COALESCE(SUM(${playthrough.totalSeconds}), 0)`,
+        })
+        .from(playthrough)
+        .where(
+          and(
+            inArray(playthrough.collectionId, ids),
+            notInArray(playthrough.status, ["Completed", "Archived"]),
+          ),
+        )
+        .groupBy(playthrough.collectionId),
 
-        db
-          .select({
-            collectionId: completion.collectionId,
-            total: sql<string>`COALESCE(SUM(${completion.totalPlaytime}), 0)`,
-          })
-          .from(completion)
-          .where(inArray(completion.collectionId, ids))
-          .groupBy(completion.collectionId),
+      db
+        .select({
+          collectionId: completion.collectionId,
+          total: sql<string>`COALESCE(SUM(${completion.totalPlaytime}), 0)`,
+        })
+        .from(completion)
+        .where(inArray(completion.collectionId, ids))
+        .groupBy(completion.collectionId),
 
-        db
-          .select({
-            collectionId: dlc.collectionId,
-            total: sql<string>`COALESCE(SUM(${dlc.amount}), 0)`,
-          })
-          .from(dlc)
-          .where(inArray(dlc.collectionId, ids))
-          .groupBy(dlc.collectionId),
-      ]);
+      db
+        .select({
+          collectionId: dlc.collectionId,
+          total: sql<string>`COALESCE(SUM(${dlc.amount}), 0)`,
+        })
+        .from(dlc)
+        .where(inArray(dlc.collectionId, ids))
+        .groupBy(dlc.collectionId),
+
+      db
+        .select({
+          collectionId: dlc.collectionId,
+          total: sql<string>`COALESCE(SUM(${completion.totalPlaytime}), 0)`,
+        })
+        .from(completion)
+        .innerJoin(dlc, eq(dlc.id, completion.dlcId))
+        .where(inArray(dlc.collectionId, ids))
+        .groupBy(dlc.collectionId),
+
+      db
+        .select({
+          collectionId: dlc.collectionId,
+          total: sql<string>`COALESCE(SUM(${playthrough.totalSeconds}), 0)`,
+        })
+        .from(playthrough)
+        .innerJoin(dlc, eq(dlc.id, playthrough.dlcId))
+        .where(
+          and(
+            inArray(dlc.collectionId, ids),
+            notInArray(playthrough.status, ["Completed", "Archived"]),
+          ),
+        )
+        .groupBy(dlc.collectionId),
+    ]);
 
     const listsByGameId = Object.fromEntries(
       lists.map((l) => [l.collectionId, l.name ?? []]),
@@ -199,6 +237,12 @@ export const getMany = async (req: Request, res: Response) => {
     const dlcByGameId = Object.fromEntries(
       dlcTotals.map((r) => [r.collectionId, Number(r.total)]),
     );
+    const dlcCompletionByGameId = Object.fromEntries(
+      dlcCompletionTotals.map((r) => [r.collectionId, Number(r.total)]),
+    );
+    const dlcPlaythroughByGameId = Object.fromEntries(
+      dlcPlaythroughTotals.map((r) => [r.collectionId, Number(r.total)]),
+    );
 
     // ---------- steam playtime (only if this page needs it) ----------
     const steamPlaytimeByAppId = games.some(needsSteamPlaytime)
@@ -211,13 +255,17 @@ export const getMany = async (req: Request, res: Response) => {
       listIds: listsByGameId[g.id] ?? [],
       totalAmount: Number(g.amount ?? 0) + (dlcByGameId[g.id] ?? 0),
       totalPlaytime:
-        (playthroughByGameId[g.id] ?? 0) + (completionByGameId[g.id] ?? 0),
+        (playthroughByGameId[g.id] ?? 0) +
+        (completionByGameId[g.id] ?? 0) +
+        (dlcPlaythroughByGameId[g.id] ?? 0) +
+        (dlcCompletionByGameId[g.id] ?? 0),
       onlinePlaySecs: getOnlineSteamPlaySecs(g, steamPlaytimeByAppId),
     }));
 
     return res.status(200).json({
       items,
       total, // total games matching the filters (all pages)
+      totalPages,
       totalAmount, // total spent (games + DLCs) matching the filters
       page,
       limit,

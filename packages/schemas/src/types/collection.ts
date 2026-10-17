@@ -30,6 +30,7 @@ export type CollectionGetMany = {
 export type CollectionGetManyResponse = {
   items: CollectionGetMany[];
   total: number;
+  totalPages: number;
   totalAmount: number;
   page: number;
   limit: number;
