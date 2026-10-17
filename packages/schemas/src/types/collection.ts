@@ -11,8 +11,8 @@ import {
 export type CollectionGetMany = {
   id: string;
   name: string;
-  amount: string;
-  dateOfPurchase: Date;
+  amount: string | null;
+  dateOfPurchase: Date | null;
   image: string | null;
   customImage: string | null;
   platform: PlatformType;
