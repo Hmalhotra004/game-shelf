@@ -44,6 +44,8 @@ export const addCompletion = async (req: Request, res: Response) => {
           totalPlaytime: data.totalPlaytime,
           completedAt: data.completedAt ? new Date(data.completedAt) : null,
           notes: data.notes,
+          platform: data.platform,
+          PSVersion: data.platform === "PS" ? data.PSVersion : null,
           collectionId: isDLC ? null : data.collectionId!,
           dlcId: isDLC ? data.dlcId! : null,
           userId,
