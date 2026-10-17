@@ -1,7 +1,9 @@
 import { CollectionGetManyResponse } from "@repo/schemas/types/collection";
 import { CollectionQueryKeys } from "@repo/utils/queries/collection";
+import { CompletionQueryKeys } from "@repo/utils/queries/completion";
 import { PlaythroughQueryKeys } from "@repo/utils/queries/playthrough";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
+import { UserQueryKeys } from "@repo/utils/queries/user";
 import { AxiosInstance } from "axios";
 
 import {
@@ -46,6 +48,9 @@ export const addCollectionMutationOptions = (
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
       });
+      await queryClient.invalidateQueries({
+        queryKey: UserQueryKeys.getCollection(),
+      });
       onSuccess?.();
     },
     onError: (err) => onError(err),
@@ -71,6 +76,12 @@ export const updateCollectionMutationOptions = (
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: UserQueryKeys.getCollection(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: CompletionQueryKeys.getManyAll(),
       });
       onSuccess?.();
     },
@@ -141,7 +152,12 @@ export const archiveCollectionMutationOptions = (
         queryClient.invalidateQueries({
           queryKey: PlaythroughQueryKeys.getManyAll(),
         }),
-        // TODO: add completion key as well and archived getmany key as well
+        await queryClient.invalidateQueries({
+          queryKey: UserQueryKeys.getCollection(),
+        }),
+        await queryClient.invalidateQueries({
+          queryKey: CompletionQueryKeys.getManyAll(),
+        }),
       ]);
     },
   });
@@ -210,8 +226,12 @@ export const deleteCollectionMutationOptions = (
         queryClient.invalidateQueries({
           queryKey: PlaythroughQueryKeys.getManyAll(),
         }),
-
-        // TODO: add completion key as well and archived getmany key as well
+        await queryClient.invalidateQueries({
+          queryKey: UserQueryKeys.getCollection(),
+        }),
+        await queryClient.invalidateQueries({
+          queryKey: CompletionQueryKeys.getManyAll(),
+        }),
       ]);
     },
   });
