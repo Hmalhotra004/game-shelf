@@ -13,7 +13,7 @@ export default (baseUrl: string, app: Router) => {
   const router = Router();
 
   router.query!(
-    "/getMany",
+    "/",
     authenticateUser,
     validateData(completionListQuerySchema),
     getMany,
