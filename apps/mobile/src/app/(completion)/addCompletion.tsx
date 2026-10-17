@@ -29,6 +29,7 @@ import {
 import {
   COMPLETION_STYLE_OPTIONS,
   getAfterCompletionStatusOptions,
+  opts,
   PS_VERSION_OPTIONS,
 } from "@repo/utils/lib/gameOptions";
 
@@ -181,7 +182,11 @@ const AddCompletion = () => {
                 name="PSVersion"
                 control={form.control}
                 label="PS Version*"
-                options={PS_VERSION_OPTIONS}
+                options={
+                  game.PSVersion?.length
+                    ? opts(...game.PSVersion)
+                    : PS_VERSION_OPTIONS
+                }
                 disabled={isPending}
               />
             )}
