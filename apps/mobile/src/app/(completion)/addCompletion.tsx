@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ImageIcon } from "lucide-react-native";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 
@@ -26,6 +27,7 @@ import {
 import {
   COMPLETION_STYLE_OPTIONS,
   getAfterCompletionStatusOptions,
+  PS_VERSION_OPTIONS,
 } from "@repo/utils/lib/gameOptions";
 
 import {
@@ -70,6 +72,8 @@ const AddCompletion = () => {
       completionStyle: "Story",
       completionStatus: "Story Completed",
       totalPlaytime: 0,
+      platform: "PC",
+      PSVersion: null,
       completedAt: null,
       notes: null,
       collectionId: isDlc ? undefined : id,
@@ -83,6 +87,16 @@ const AddCompletion = () => {
 
   const isPending = addCompletion.isPending;
 
+  useEffect(() => {
+    if (!game) return;
+
+    if (game.platform) form.setValue("platform", game.platform);
+    if (game.PSVersion.length > 0) {
+      if (game.PSVersion.length === 1)
+        form.setValue("PSVersion", game.PSVersion[0]);
+    }
+  }, [game, form]);
+
   if (isLoadingGame || !game) {
     return (
       <View className="flex-1">
@@ -95,6 +109,7 @@ const AddCompletion = () => {
     );
   }
 
+  const selectedPlatform = form.watch("platform");
   const imageUri = game?.customImage ?? game.image;
 
   return (
@@ -155,6 +170,16 @@ const AddCompletion = () => {
               options={getAfterCompletionStatusOptions(isDlc)}
               disabled={isPending}
             />
+
+            {selectedPlatform === "PS" && !isDlc && (
+              <FormSelectSheet
+                name="PSVersion"
+                control={form.control}
+                label="PS Version*"
+                options={PS_VERSION_OPTIONS}
+                disabled={isPending}
+              />
+            )}
 
             {/* Playtime */}
             <FormTimePicker
