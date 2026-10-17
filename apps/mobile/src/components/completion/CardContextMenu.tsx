@@ -2,12 +2,17 @@ import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { handleError, showToast } from "@/lib/utils";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { CompletionGetMany } from "@repo/schemas/types/completion";
-import { deleteCompletionMutationOptions } from "@repo/utils/mutations/completion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
+import EditCompletionSheet from "./EditCompletionSheet";
+
+import {
+  deleteCompletionMutationOptions,
+  updateCompletionMutationOptions,
+} from "@repo/utils/mutations/completion";
 
 import {
   ContextMenu,
@@ -25,8 +30,8 @@ interface Props {
 }
 
 const CompletionCardContextMenu = ({ children, completion }: Props) => {
-  const router = useRouter();
   const queryClient = useQueryClient();
+  const editSheetRef = useRef<BottomSheetModal>(null);
 
   const title =
     completion.gameType === "DLC" && completion.dlcName
@@ -36,6 +41,19 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
   async function onLongPress() {
     await Haptics.selectionAsync();
   }
+
+  const updateCompletion = useMutation(
+    updateCompletionMutationOptions(
+      api,
+      queryClient,
+      completion.id,
+      (err) => handleError(err),
+      () => {
+        showToast("success", "Completion Updated");
+        editSheetRef.current?.dismiss();
+      },
+    ),
+  );
 
   const deleteCompletion = useMutation(
     deleteCompletionMutationOptions(
@@ -80,14 +98,7 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
           <ContextMenuSeparator />
 
           <ContextMenuGroup>
-            <ContextMenuItem
-              onPress={() =>
-                router.push({
-                  pathname: "/(completion)/[completionId]/edit",
-                  params: { completionId: completion.id },
-                })
-              }
-            >
+            <ContextMenuItem onPress={() => editSheetRef.current?.present()}>
               <Text>Edit Completion</Text>
             </ContextMenuItem>
           </ContextMenuGroup>
@@ -101,6 +112,16 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>
+
+      <EditCompletionSheet
+        sheetRef={editSheetRef}
+        completion={completion}
+        isSaving={updateCompletion.isPending}
+        onSubmit={async (values) => {
+          await updateCompletion.mutateAsync(values);
+        }}
+        onCancel={() => editSheetRef.current?.dismiss()}
+      />
 
       <DeleteSheet />
     </>

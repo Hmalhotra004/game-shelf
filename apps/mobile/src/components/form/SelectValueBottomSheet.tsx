@@ -98,6 +98,7 @@ function SelectValueBottomSheet<T extends string>({
     <BottomSheetModal
       ref={sheetRef}
       index={0}
+      stackBehavior="push"
       enableDynamicSizing
       maxDynamicContentSize={MAX_SHEET_HEIGHT}
       enablePanDownToClose
