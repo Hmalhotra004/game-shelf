@@ -5,6 +5,7 @@ import {
   GameType,
   PlatformType,
   ProviderType,
+  PSVersionType,
 } from "./index";
 
 export type CompletionGetMany = {
@@ -22,6 +23,7 @@ export type CompletionGetMany = {
   customImage: string | null;
   platform: PlatformType | null;
   provider: ProviderType | null;
+  PSVersion: PSVersionType;
   dlcName: string | null;
 };
 

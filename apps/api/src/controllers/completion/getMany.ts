@@ -79,6 +79,7 @@ export const getMany = async (req: Request, res: Response) => {
           completionStyle: completion.completionStyle,
           collectionId: completion.collectionId,
           dlcId: completion.dlcId,
+          PSVersion: completion.PSVersion,
           // display info (parent game, and the DLC itself when applicable)
           parentCollectionId: parent.id,
           name: parent.name,
