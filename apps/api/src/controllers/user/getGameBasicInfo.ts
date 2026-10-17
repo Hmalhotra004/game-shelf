@@ -26,6 +26,7 @@ export const getGameBasicInfo = async (req: Request, res: Response) => {
           platform: true,
           provider: true,
           PSVersion: true,
+          status: true,
         },
       });
     } else {
@@ -38,6 +39,7 @@ export const getGameBasicInfo = async (req: Request, res: Response) => {
           customImage: dlc.customImage,
           coverImage: dlc.coverImage,
           customCoverImage: dlc.customCoverImage,
+          status: dlc.status,
 
           platform: collection.platform,
           provider: collection.provider,

@@ -1,4 +1,9 @@
-import { PlatformType, ProviderType, PSVersionType } from "./index";
+import {
+  CollectionStatusType,
+  PlatformType,
+  ProviderType,
+  PSVersionType,
+} from "./index";
 
 export type GetGamesType = {
   games: {
@@ -32,6 +37,7 @@ export type GetGameBasicInfoType = {
   platform: PlatformType;
   provider: ProviderType;
   PSVersion: PSVersionType[];
+  status: CollectionStatusType;
 };
 
 export type AccountProfileType = {
