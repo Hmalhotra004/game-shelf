@@ -45,6 +45,7 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
   // (playthrough)/[id]
   "/(playthrough)/[playthroughId]/finish": {
     title: "Finish Playthrough",
+    showHeader: false,
     showAvatar: false,
   },
 
