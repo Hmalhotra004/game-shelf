@@ -10,6 +10,7 @@ import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GameType } from "@repo/schemas/types/index";
 import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
+import { isCompletionStatus } from "@repo/utils/lib/utils";
 import { addCompletionMutationOptions } from "@repo/utils/mutations/completion";
 import { getGameBasicInfo } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -93,7 +94,12 @@ const AddCompletion = () => {
   useEffect(() => {
     if (!game) return;
 
+    if (game.status && isCompletionStatus(game.status)) {
+      form.setValue("completionStatus", game.status);
+    }
+
     if (game.platform) form.setValue("platform", game.platform);
+
     if (game.PSVersion.length > 0) {
       if (game.PSVersion.length === 1)
         form.setValue("PSVersion", game.PSVersion[0]);
