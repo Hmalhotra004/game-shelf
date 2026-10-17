@@ -34,6 +34,7 @@ export const createCompletionSchema = z
 
     collectionId: z.string().trim().optional(),
     dlcId: z.string().trim().optional(),
+    playthroughId: z.string().trim().optional(),
   })
   .refine(
     (data) => {
