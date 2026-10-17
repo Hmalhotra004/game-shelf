@@ -80,7 +80,7 @@ const Playthrough = () => {
               </Text>
 
               <Text className="text-sm text-muted-foreground">
-                {betterTimeText(totalSecs)}
+                Total playtime: {betterTimeText(totalSecs)}
               </Text>
             </View>
           )}
