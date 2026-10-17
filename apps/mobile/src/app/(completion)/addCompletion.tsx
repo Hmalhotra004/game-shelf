@@ -183,7 +183,7 @@ const AddCompletion = () => {
               disabled={isPending}
             />
 
-            {selectedPlatform === "PS" && !isDlc && (
+            {selectedPlatform === "PS" && (
               <FormSelectSheet
                 name="PSVersion"
                 control={form.control}

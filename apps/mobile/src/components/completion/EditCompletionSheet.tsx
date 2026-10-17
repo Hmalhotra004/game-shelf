@@ -6,7 +6,7 @@ import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CompletionGetMany } from "@repo/schemas/types/completion";
 import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
-import { COMPLETION_STYLE_OPTIONS } from "@repo/utils/lib/gameOptions";
+import { COMPLETION_STYLE_OPTIONS, opts } from "@repo/utils/lib/gameOptions";
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -68,6 +68,8 @@ const EditCompletionSheet = ({
     () => ({
       completionStyle: completion.completionStyle,
       totalPlaytime: completion.totalPlaytime ?? 0,
+      PSVersion: completion.PSVersion ?? null,
+      platform: completion.platform,
       completedAt: completion.completedAt
         ? new Date(completion.completedAt).toISOString()
         : null,
@@ -75,6 +77,8 @@ const EditCompletionSheet = ({
     }),
     [
       completion.completionStyle,
+      completion.PSVersion,
+      completion.platform,
       completion.totalPlaytime,
       completion.completedAt,
       completion.notes,
@@ -136,6 +140,10 @@ const EditCompletionSheet = ({
 
   const notes = form.watch("notes");
 
+  const showPSVersion =
+    completion.platform === "PS" &&
+    (completion.gamePSVersions?.length ?? 0) > 1;
+
   return (
     <BottomSheetModal
       ref={sheetRef}
@@ -186,6 +194,16 @@ const EditCompletionSheet = ({
           label="Completed On"
           disabled={isSaving}
         />
+
+        {showPSVersion && (
+          <FormSelectSheet
+            name="PSVersion"
+            control={form.control}
+            label="PS Version*"
+            options={opts(...completion.gamePSVersions)}
+            disabled={isSaving}
+          />
+        )}
 
         <FormTimePicker
           name="totalPlaytime"
