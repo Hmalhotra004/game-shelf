@@ -31,7 +31,7 @@ export type GetGameBasicInfoType = {
   customCoverImage: string | null;
   platform: PlatformType;
   provider: ProviderType;
-  PSVersion: PSVersionType;
+  PSVersion: PSVersionType[];
 };
 
 export type AccountProfileType = {

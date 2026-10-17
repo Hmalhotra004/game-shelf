@@ -1,7 +1,7 @@
 import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
 import z from "zod";
 import { CompletionStatusValues, CompletionStyleValues } from "../enums";
-import { platformSchema } from "./collection";
+import { platformSchema, PSVersionSchema } from "./collection";
 import { GameTypeSchema } from "./index";
 
 export const completionStyleSchema = z.enum(CompletionStyleValues, {
@@ -17,6 +17,8 @@ export const createCompletionSchema = z
     gameType: GameTypeSchema,
     completionStyle: completionStyleSchema,
     completionStatus: completionStatusSchema,
+    platform: platformSchema,
+    PSVersion: PSVersionSchema.nullable(),
 
     totalPlaytime: z
       .number({ error: "Time played is required" })
@@ -51,6 +53,18 @@ export const createCompletionSchema = z
     {
       message: "DLC is required",
       path: ["dlcId"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.platform === "PS") {
+        return !!data.PSVersion;
+      }
+      return true;
+    },
+    {
+      path: ["PSVersion"],
+      error: "PS Version is required when platform is PS",
     },
   );
 
