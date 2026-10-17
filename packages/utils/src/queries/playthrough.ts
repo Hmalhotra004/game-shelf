@@ -1,7 +1,10 @@
-import { infiniteQueryOptions } from "@tanstack/react-query";
+import { GetByIdPlayQuerySchemaType } from "@repo/schemas/schemas/playthrough";
+import { GameType } from "@repo/schemas/types/index";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
 
 import {
+  PlaythroughGetByIdResponseType,
   PlaythroughGetManyFilters,
   PlaythroughGetManyResponse,
 } from "@repo/schemas/types/playthrough";
@@ -9,10 +12,13 @@ import {
 export const PlaythroughQueryKeys = {
   all: ["Playthrough"] as const,
 
-  getManyAll: () => ["Playthrough", "getMany"] as const,
+  getManyAll: () => [...PlaythroughQueryKeys.all, "getMany"] as const,
 
   getMany: (filters: PlaythroughGetManyFilters = {}) =>
-    ["Playthrough", "getMany", filters] as const,
+    [...PlaythroughQueryKeys.all, "getMany", filters] as const,
+
+  getById: (id: string, gameType: GameType) =>
+    [...PlaythroughQueryKeys.all, "getById", id, gameType] as const,
 };
 
 const DEFAULT_LIMIT = 20;
@@ -37,4 +43,25 @@ export const PlaythroughGetManyQueryOptions = (
 
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
+  });
+
+export const getByIdPlayQueryOptions = (
+  api: AxiosInstance,
+  enabled: boolean,
+  id: string,
+  gameType: GameType,
+) =>
+  queryOptions({
+    queryKey: PlaythroughQueryKeys.getById(id, gameType),
+    queryFn: async () => {
+      const response = await api.get<PlaythroughGetByIdResponseType>(
+        `/playthrough/${id}`,
+        {
+          params: { gameType } as GetByIdPlayQuerySchemaType,
+        },
+      );
+
+      return response.data;
+    },
+    enabled,
   });
