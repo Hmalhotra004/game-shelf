@@ -16,11 +16,12 @@ import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 
 import {
   FormDatePicker,
@@ -204,11 +205,16 @@ const AddCollection = () => {
         >
           {/* Game summary */}
           <View className="flex-row items-center gap-4">
-            {game.coverImage && (
+            {game.image && (
               <Image
                 source={{ uri: game.image }}
-                className="h-24 w-[72px] rounded-md bg-muted"
-                resizeMode="cover"
+                style={{
+                  width: 72,
+                  height: 96,
+                  borderRadius: 8,
+                  backgroundColor: THEME[theme].muted,
+                }}
+                contentFit="cover"
               />
             )}
             <View className="flex-1 gap-1">

@@ -47,6 +47,9 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
     title: "Finish Playthrough",
     showAvatar: false,
   },
+
+  // (completion)
+  "/addCompletion": { title: "Add Completion", showHeader: false },
 };
 
 export const DEFAULT_META: Required<ScreenMeta> = {
