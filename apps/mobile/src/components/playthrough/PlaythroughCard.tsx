@@ -261,7 +261,7 @@ const PlaythroughCard = ({ play }: Props) => {
   function finish() {
     router.push({
       pathname: "/(playthrough)/[playthroughId]/finish",
-      params: { playthroughId: play.id },
+      params: { playthroughId: play.id, gameType: play.gameType },
     });
   }
 
