@@ -2,16 +2,22 @@ import { add } from "@/controllers/playthroughs/add";
 import { addTime } from "@/controllers/playthroughs/addTime";
 import { deletePlaythrough } from "@/controllers/playthroughs/deletePlaythrough";
 import { deletePlaythroughSession } from "@/controllers/playthroughs/deletePlaythroughSession";
+import { getByIdPlay } from "@/controllers/playthroughs/getById";
 import { getMany } from "@/controllers/playthroughs/getMany";
 import { updatePlaythrough } from "@/controllers/playthroughs/updatePlathrough";
 import { updateSession } from "@/controllers/playthroughs/updateSession";
 import { authenticateUser } from "@/middlewares/authMiddleware";
-import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
+
+import {
+  validateData,
+  validateQueryParams,
+} from "@/middlewares/validationMiddleware";
 
 import {
   createPlaythroughSchema,
   createPlaythroughSessionSchema,
+  getByIdPlayQuerySchema,
   playthroughListQuerySchema,
   updatePlaythroughSchema,
   updatePlaythroughSessionSchema,
@@ -30,6 +36,14 @@ export default (baseUrl: string, app: Router) => {
     authenticateUser,
     validateData(playthroughListQuerySchema),
     getMany,
+  );
+
+  router.get(
+    "/:playthroughId",
+    authenticateUser,
+    verifyPlaythrough,
+    validateQueryParams(getByIdPlayQuerySchema),
+    getByIdPlay,
   );
 
   router.post(

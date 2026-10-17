@@ -91,6 +91,10 @@ export const playthroughListQuerySchema = z.object({
   lists: z.array(z.string()).optional(),
 });
 
+export const getByIdPlayQuerySchema = z.object({
+  gameType: GameTypeSchema,
+});
+
 // ------------------------------- Types -------------------------------------------
 export type playthroughListQuerySchemaInput = z.input<
   typeof playthroughListQuerySchema
@@ -98,3 +102,4 @@ export type playthroughListQuerySchemaInput = z.input<
 export type PlaythroughListQuerySchemaType = z.infer<
   typeof playthroughListQuerySchema
 >;
+export type GetByIdPlayQuerySchemaType = z.infer<typeof getByIdPlayQuerySchema>;

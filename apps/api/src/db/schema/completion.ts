@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { completionStyle, GameType } from "./enums";
+import { completionStyle, GameType, platform, PSVersion } from "./enums";
 import { collection, dlc, user } from "./index";
 
 import {
@@ -27,6 +27,9 @@ export const completion = pgTable(
     completionStyle: completionStyle("completion_style")
       .notNull()
       .default("Story"),
+
+    platform: platform("platform").notNull(),
+    PSVersion: PSVersion("ps_version"),
 
     collectionId: text("collection_id").references(() => collection.id, {
       onDelete: "cascade",
@@ -57,6 +60,15 @@ export const completion = pgTable(
         (${table.gameType} = 'Game' AND ${table.collectionId} IS NOT NULL AND ${table.dlcId} IS NULL)
         OR
         (${table.gameType} = 'DLC' AND ${table.dlcId} IS NOT NULL AND ${table.collectionId} IS NULL)
+      `,
+    ),
+
+    check(
+      "ps_version_only_for_ps",
+      sql`
+      (${table.platform} = 'PS' AND ${table.PSVersion} IS NOT NULL)
+      OR
+      (${table.platform} != 'PS' AND ${table.PSVersion} IS NULL)
       `,
     ),
   ],

@@ -37,6 +37,26 @@
       ],
       "icon": "database",
       "overrideName": true
+    },
+    "db:old": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": [
+        "--cd=D:/Projects/game-shelf/apps/api",
+        "-c",
+        "pnpm db:old;exec bash"
+      ],
+      "icon": "database",
+      "overrideName": true
+    },
+    "db:prod": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": [
+        "--cd=D:/Projects/game-shelf/apps/api",
+        "-c",
+        "pnpm db:prod;exec bash"
+      ],
+      "icon": "database",
+      "overrideName": true
     }
   },
 

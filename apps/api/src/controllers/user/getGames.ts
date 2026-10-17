@@ -1,5 +1,7 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
+import { collection, dlc } from "@/db/schema";
+import { and, asc, eq } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 export const getGames = async (req: Request, res: Response) => {
@@ -18,20 +20,24 @@ export const getGames = async (req: Request, res: Response) => {
         provider: true,
         igdbId: true,
       },
-      where: (c, { eq }) => eq(c.userId, userId),
+      where: (c, { eq, and }) =>
+        and(eq(c.userId, userId), eq(c.archived, false)),
+      orderBy: (c, { asc }) => asc(c.name),
     });
 
-    const dlcs = await db.query.dlc.findMany({
-      columns: {
-        id: true,
-        collectionId: true,
-        name: true,
-        image: true,
-        coverImage: true,
-        igdbId: true,
-      },
-      where: (d, { eq }) => eq(d.userId, userId),
-    });
+    const dlcs = await db
+      .select({
+        id: dlc.id,
+        collectionId: dlc.collectionId,
+        name: dlc.name,
+        image: dlc.image,
+        coverImage: dlc.coverImage,
+        igdbId: dlc.igdbId,
+      })
+      .from(dlc)
+      .innerJoin(collection, eq(dlc.collectionId, collection.id))
+      .where(and(eq(dlc.userId, userId), eq(collection.archived, false)))
+      .orderBy(asc(dlc.name));
 
     return res.status(200).json({
       games,

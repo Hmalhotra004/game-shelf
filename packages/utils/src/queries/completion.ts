@@ -12,7 +12,7 @@ export const CompletionQueryKeys = {
   getManyAll: () => [...CompletionQueryKeys.all, "getMany"] as const,
 
   getMany: (filters: CompletionGetManyFilters = {}) =>
-    [CompletionQueryKeys.all, "getMany", filters] as const,
+    [...CompletionQueryKeys.all, "getMany", filters] as const,
 };
 
 const DEFAULT_LIMIT = 20;

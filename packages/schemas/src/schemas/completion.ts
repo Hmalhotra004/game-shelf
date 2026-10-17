@@ -1,7 +1,7 @@
 import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
 import z from "zod";
 import { CompletionStatusValues, CompletionStyleValues } from "../enums";
-import { platformSchema } from "./collection";
+import { platformSchema, PSVersionSchema } from "./collection";
 import { GameTypeSchema } from "./index";
 
 export const completionStyleSchema = z.enum(CompletionStyleValues, {
@@ -17,6 +17,8 @@ export const createCompletionSchema = z
     gameType: GameTypeSchema,
     completionStyle: completionStyleSchema,
     completionStatus: completionStatusSchema,
+    platform: platformSchema,
+    PSVersion: PSVersionSchema.nullable(),
 
     totalPlaytime: z
       .number({ error: "Time played is required" })
@@ -32,6 +34,7 @@ export const createCompletionSchema = z
 
     collectionId: z.string().trim().optional(),
     dlcId: z.string().trim().optional(),
+    playthroughId: z.string().trim().optional(),
   })
   .refine(
     (data) => {
@@ -52,23 +55,50 @@ export const createCompletionSchema = z
       message: "DLC is required",
       path: ["dlcId"],
     },
+  )
+  .refine(
+    (data) => {
+      if (data.platform === "PS") {
+        return !!data.PSVersion;
+      }
+      return true;
+    },
+    {
+      path: ["PSVersion"],
+      error: "PS Version is required when platform is PS",
+    },
   );
 
-export const updateCompletionSchema = z.object({
-  completionStyle: completionStyleSchema,
+export const updateCompletionSchema = z
+  .object({
+    completionStyle: completionStyleSchema,
+    platform: platformSchema,
+    PSVersion: PSVersionSchema.nullable(),
 
-  totalPlaytime: z
-    .number({ error: "Time played is required" })
-    .int({ message: "Invalid time format" }),
+    totalPlaytime: z
+      .number({ error: "Time played is required" })
+      .int({ message: "Invalid time format" }),
 
-  completedAt: z.string().trim().nullable(),
+    completedAt: z.string().trim().nullable(),
 
-  notes: z
-    .string()
-    .trim()
-    .max(MAX_NOTES_CHARACTERS, { error: "Character length exceeded" })
-    .nullable(),
-});
+    notes: z
+      .string()
+      .trim()
+      .max(MAX_NOTES_CHARACTERS, { error: "Character length exceeded" })
+      .nullable(),
+  })
+  .refine(
+    (data) => {
+      if (data.platform === "PS") {
+        return !!data.PSVersion;
+      }
+      return true;
+    },
+    {
+      path: ["PSVersion"],
+      error: "PS Version is required when platform is PS",
+    },
+  );
 
 // types
 export type CreateCompletionSchemaType = z.infer<typeof createCompletionSchema>;
