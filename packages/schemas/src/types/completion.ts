@@ -21,9 +21,10 @@ export type CompletionGetMany = {
   name: string | null;
   image: string | null;
   customImage: string | null;
-  platform: PlatformType | null;
+  platform: PlatformType;
   provider: ProviderType | null;
   PSVersion: PSVersionType;
+  gamePSVersions: PSVersionType[];
   dlcName: string | null;
 };
 

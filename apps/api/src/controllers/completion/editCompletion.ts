@@ -10,7 +10,7 @@ export const editCompletion = async (req: Request, res: Response) => {
     const userId = req.user!.id;
     const completionId = req.completion!.id;
 
-    const { completedAt, completionStyle, notes, totalPlaytime } =
+    const { completedAt, completionStyle, notes, totalPlaytime, PSVersion } =
       req.cleanBody as UpdateCompletionSchemaType;
 
     const [updated] = await db
@@ -20,6 +20,7 @@ export const editCompletion = async (req: Request, res: Response) => {
         completionStyle,
         notes,
         totalPlaytime,
+        PSVersion,
       })
       .where(
         and(eq(completion.id, completionId), eq(completion.userId, userId)),

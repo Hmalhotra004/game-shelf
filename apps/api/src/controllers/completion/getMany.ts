@@ -87,6 +87,7 @@ export const getMany = async (req: Request, res: Response) => {
           customImage: parent.customImage,
           platform: parent.platform,
           provider: parent.provider,
+          gamePSVersions: parent.PSVersion,
           dlcName: dlc.name,
         })
         .from(completion)

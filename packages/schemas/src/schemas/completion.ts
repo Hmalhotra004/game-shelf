@@ -68,21 +68,36 @@ export const createCompletionSchema = z
     },
   );
 
-export const updateCompletionSchema = z.object({
-  completionStyle: completionStyleSchema,
+export const updateCompletionSchema = z
+  .object({
+    completionStyle: completionStyleSchema,
+    platform: platformSchema,
+    PSVersion: PSVersionSchema.nullable(),
 
-  totalPlaytime: z
-    .number({ error: "Time played is required" })
-    .int({ message: "Invalid time format" }),
+    totalPlaytime: z
+      .number({ error: "Time played is required" })
+      .int({ message: "Invalid time format" }),
 
-  completedAt: z.string().trim().nullable(),
+    completedAt: z.string().trim().nullable(),
 
-  notes: z
-    .string()
-    .trim()
-    .max(MAX_NOTES_CHARACTERS, { error: "Character length exceeded" })
-    .nullable(),
-});
+    notes: z
+      .string()
+      .trim()
+      .max(MAX_NOTES_CHARACTERS, { error: "Character length exceeded" })
+      .nullable(),
+  })
+  .refine(
+    (data) => {
+      if (data.platform === "PS") {
+        return !!data.PSVersion;
+      }
+      return true;
+    },
+    {
+      path: ["PSVersion"],
+      error: "PS Version is required when platform is PS",
+    },
+  );
 
 // types
 export type CreateCompletionSchemaType = z.infer<typeof createCompletionSchema>;
