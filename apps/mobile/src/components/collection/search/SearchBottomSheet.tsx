@@ -148,6 +148,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
           <SearchBar
             onChangeText={setSearch}
             value={search}
+            focus
           />
         </View>
 

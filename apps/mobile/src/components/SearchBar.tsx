@@ -9,12 +9,14 @@ type Props = {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
+  focus?: boolean;
 };
 
 const SearchBar = ({
   value,
   onChangeText,
   placeholder = "Search...",
+  focus = false,
 }: Props) => {
   const theme = useThemeStore((s) => s.theme);
 
@@ -31,6 +33,7 @@ const SearchBar = ({
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
+        autoFocus={focus}
       />
 
       {value.length > 0 && (
