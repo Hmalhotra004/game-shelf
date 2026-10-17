@@ -5,10 +5,11 @@ import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { handleError, showToast } from "@/lib/utils";
+import { cn, handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GameType } from "@repo/schemas/types/index";
+import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
 import { addCompletionMutationOptions } from "@repo/utils/mutations/completion";
 import { getGameBasicInfo } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -110,6 +111,7 @@ const AddCompletion = () => {
     );
   }
 
+  const notes = form.watch("notes");
   const selectedPlatform = form.watch("platform");
   const imageUri = game?.customImage ?? game.image;
 
@@ -202,14 +204,29 @@ const AddCompletion = () => {
             />
 
             {/* Notes */}
-            <FormTextarea
-              name="notes"
-              control={form.control}
-              label="Notes"
-              placeholder="Anything worth remembering..."
-              numberOfLines={4}
-              disabled={isPending}
-            />
+            <View>
+              <FormTextarea
+                name="notes"
+                control={form.control}
+                label="Notes"
+                placeholder="Anything worth remembering..."
+                numberOfLines={4}
+                disabled={isPending}
+              />
+              <View className="flex-row justify-between">
+                <Text className="text-xs text-destructive">
+                  {form.formState.errors.notes?.message ?? ""}
+                </Text>
+                <Text
+                  className={cn(
+                    "text-xs text-muted-foreground",
+                    form.formState.errors.notes?.message && "text-destructive",
+                  )}
+                >
+                  {notes?.length ?? 0}/{MAX_NOTES_CHARACTERS}
+                </Text>
+              </View>
+            </View>
           </View>
 
           {/* Actions */}
