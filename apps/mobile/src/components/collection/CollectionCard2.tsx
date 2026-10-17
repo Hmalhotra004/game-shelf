@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
 import { betterTimeText, statusColorMap } from "@repo/utils/lib/utils";
+import { formatDate } from "date-fns";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
@@ -16,6 +17,7 @@ import {
   DownloadIcon,
   ImageIcon,
   IndianRupeeIcon,
+  ShoppingBagIcon,
 } from "lucide-react-native";
 
 interface Props {
@@ -106,7 +108,7 @@ const CollectionCard2 = ({ game }: Props) => {
 
         {/* Details */}
         <View className="flex-1 justify-between px-3 py-2.5">
-          {/* Top: title + status */}
+          {/* Top: title + status + purchase date */}
           <View className="gap-2">
             <Text
               className="text-base font-bold leading-tight"
@@ -115,13 +117,25 @@ const CollectionCard2 = ({ game }: Props) => {
               {game.name}
             </Text>
 
-            <View className="flex-row">
+            <View className="flex-row items-center justify-between gap-2">
               <Badge
                 variant="outline"
                 className={cn(statusStyle.bg, statusStyle.border)}
               >
                 <Text className="text-2xs font-semibold">{game.status}</Text>
               </Badge>
+
+              <View className="flex-row items-center gap-1">
+                <ShoppingBagIcon
+                  color={mutedColor}
+                  size={12}
+                />
+                <Text className="text-xs font-medium text-muted-foreground">
+                  {game.dateOfPurchase
+                    ? formatDate(game.dateOfPurchase, "PP")
+                    : "—"}
+                </Text>
+              </View>
             </View>
           </View>
 
