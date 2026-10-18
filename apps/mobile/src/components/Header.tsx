@@ -62,7 +62,7 @@ const Header = ({ className, paddingTop, onBack }: Props) => {
             <AvatarFallback>
               <Text>{user?.name.charAt(0).toUpperCase()}</Text>
             </AvatarFallback>
-            {user?.image && <AvatarImage src={user?.image} />}
+            {user?.image && <AvatarImage source={{ uri: user?.image }} />}
           </Avatar>
         </Pressable>
       ) : null}
