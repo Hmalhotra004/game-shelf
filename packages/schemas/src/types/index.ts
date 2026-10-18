@@ -1,4 +1,5 @@
 import z from "zod";
+import { playthroughStatusSchema } from "../schemas/playthrough";
 
 import {
   platformSchema,
@@ -13,8 +14,10 @@ import {
   SyncTypeSchema,
 } from "../schemas";
 
-import { completionStatusSchema, completionStyleSchema } from "../schemas/completion";
-import { playthroughStatusSchema } from "../schemas/playthrough";
+import {
+  completionStatusSchema,
+  completionStyleSchema,
+} from "../schemas/completion";
 
 export type PlatformType = z.infer<typeof platformSchema>;
 export type ProviderType = z.infer<typeof providerSchema>;
@@ -27,6 +30,7 @@ export type CompletionStyleType = z.infer<typeof completionStyleSchema>;
 export type CompletionStatusType = z.infer<typeof completionStatusSchema>;
 export type SyncType = z.infer<typeof SyncTypeSchema>;
 // export type UserAccountType = z.infer<typeof UserAccountTySchema>;
+export type PlatformAccountType = "steam" | "playstation" | "epic" | "xbox";
 
 export type DataType = { label: string; value: number };
 

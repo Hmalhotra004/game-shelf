@@ -15,7 +15,9 @@ export function cn(...inputs: ClassValue[]) {
 export const toggleIn = <T>(arr: T[], v: T): T[] =>
   arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
 
-export const isCompletionStatus = (value: string): value is CompletionStatusType =>
+export const isCompletionStatus = (
+  value: string,
+): value is CompletionStatusType =>
   (CompletionStatusValues as readonly string[]).includes(value);
 
 export function capitalizeName(name: string) {
