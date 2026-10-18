@@ -1,9 +1,9 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { user } from "@/db/schema";
-import { LinkSteamAccountSchemaType } from "@repo/schemas/schemas/user";
+import { LinkSteamAccountSchemaType } from "@repo/schemas/server/schemas/steam";
 import axios from "axios";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 import {
@@ -56,6 +56,7 @@ export const linkSteamAccount = async (req: Request, res: Response) => {
       .update(user)
       .set({
         steamId,
+        image: sql`COALESCE(NULLIF(${user.image}, ''), ${player.avatarfull})`,
       })
       .where(eq(user.id, userId));
 

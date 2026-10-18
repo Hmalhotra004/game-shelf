@@ -1,21 +1,15 @@
 import { GenericErrorMessage } from "@/constants";
+import { getPSNAuthorization } from "@/lib/PsnApiAuth";
 import type { Request, Response } from "express";
+import { getProfileFromAccountId } from "psn-api";
 
-import {
-  exchangeAccessCodeForAuthTokens,
-  exchangeNpssoForAccessCode,
-  getProfileFromAccountId,
-} from "psn-api";
-
-const platforms = new Set(["PS4", "PS5"]);
-const npsso = process.env.PSNNPPSO!;
+// const platforms = new Set(["PS4", "PS5"]);
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
     const PSNId = req.user!.PSNAccountId!;
 
-    const accessCode = await exchangeNpssoForAccessCode(npsso);
-    const authorization = await exchangeAccessCodeForAuthTokens(accessCode);
+    const authorization = await getPSNAuthorization();
 
     const profile = await getProfileFromAccountId(authorization, PSNId);
 

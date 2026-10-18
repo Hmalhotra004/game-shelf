@@ -140,7 +140,7 @@ async function releaseLock(lockId: string) {
 /* ---------- auth flows ---------- */
 
 async function loginWithNpsso(): Promise<Stored> {
-  const npsso = process.env.PSNNPSO;
+  const npsso = process.env.PSNNPPSO;
   if (!npsso) throw new Error("PSNNPSO is not set");
 
   try {
