@@ -5,7 +5,7 @@ import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { ACCOUNT_PLATFORM_IMAGE, cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { PlatformAccountType } from "@repo/schemas/types/index";
 import type { AccountProfileType } from "@repo/schemas/types/user";
@@ -63,6 +63,8 @@ const AccountCard = ({
     await unlink({ type: TYPE_MAP[platform] });
   };
 
+  const platformImage = ACCOUNT_PLATFORM_IMAGE[platform];
+
   return (
     <>
       <View
@@ -79,12 +81,20 @@ const AccountCard = ({
             <View className="flex-row items-center gap-2.5">
               <View
                 className="size-9 items-center justify-center rounded-lg"
-                style={{ backgroundColor: `${accent}22` }}
+                // style={{ backgroundColor: `${accent}22` }}
               >
-                <Link2Icon
-                  size={18}
-                  color={accent}
-                />
+                {platformImage ? (
+                  <Image
+                    source={ACCOUNT_PLATFORM_IMAGE[platform]}
+                    style={{ width: 32, height: 32 }}
+                    contentFit="cover"
+                  />
+                ) : (
+                  <Link2Icon
+                    size={18}
+                    color={accent}
+                  />
+                )}
               </View>
               <Text className="text-lg font-semibold">{title}</Text>
             </View>

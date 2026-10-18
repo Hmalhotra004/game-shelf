@@ -1,157 +1,242 @@
 import Header from "@/components/Header";
+import Loader from "@/components/Loader";
+import { FormInput } from "@/components/form/form";
+import { Button } from "@/components/ui/button";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
-import { View } from "react-native";
+import { api } from "@/lib/api";
+import { authClient } from "@/lib/authClient";
+import { THEME } from "@/lib/theme";
+import { ACCOUNT_PLATFORM_IMAGE } from "@/lib/utils";
+import { useThemeStore } from "@/store/useThemeStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { linkSteamAccountMutationOptions } from "@repo/utils/mutations/user";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Image } from "expo-image";
+import { Redirect, useRouter } from "expo-router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+import {
+  ChevronDownIcon,
+  ExternalLinkIcon,
+  InfoIcon,
+} from "lucide-react-native";
+
+import {
+  linkSteamAccountSchema,
+  LinkSteamAccountSchemaType,
+} from "@repo/schemas/schemas/user";
+
+import { ACCENT } from "@repo/utils/lib/account";
+import {
+  KeyboardAvoidingView,
+  Linking,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 
 const SteamAccount = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const theme = useThemeStore((s) => s.theme);
+
+  const { data: session } = authClient.useSession();
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  const link = useMutation(linkSteamAccountMutationOptions(api, queryClient));
+
+  const form = useForm<LinkSteamAccountSchemaType>({
+    resolver: zodResolver(linkSteamAccountSchema),
+    defaultValues: { steamId: "" },
+  });
+
+  const linkedSteamId = (
+    session?.user as { steamId?: string | null } | undefined
+  )?.steamId;
+  if (linkedSteamId) return <Redirect href="/profile/accounts" />;
+
+  const isPending = link.isPending;
+
+  const onSubmit = async (values: LinkSteamAccountSchemaType) => {
+    await link.mutateAsync(values);
+    router.back();
+  };
+
   return (
     <View className="flex-1">
       <Header />
 
-      <ScreenWrapper>
-        <View className="flex-1 gap-6">
-          <Text>Coming Soon</Text>
-        </View>
+      <ScreenWrapper paddingTop={16}>
+        <KeyboardAvoidingView
+          className="flex-1"
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <ScrollView
+            className="flex-1"
+            contentContainerClassName="gap-4 pb-8"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Title */}
+            <View className="items-center gap-2">
+              <Image
+                source={ACCOUNT_PLATFORM_IMAGE["steam"]}
+                style={{ width: 48, height: 48 }}
+                contentFit="cover"
+              />
+              <Text className="text-2xl font-bold">
+                Link your Steam account
+              </Text>
+              <Text className="text-center text-sm text-muted-foreground">
+                Connect your Steam account to sync your profile and games
+              </Text>
+            </View>
+
+            {/* Sign in with Steam (not wired yet, same as web TODO) */}
+            <View className="gap-2">
+              <Button
+                disabled
+                style={{ backgroundColor: `${ACCENT["steam"]}22` }}
+              >
+                <Text className="text-foreground">Sign in with</Text>
+                <Image
+                  source={ACCOUNT_PLATFORM_IMAGE["steam"]}
+                  style={{ width: 24, height: 24 }}
+                  contentFit="cover"
+                />
+              </Button>
+              <Text className="text-center text-xs text-muted-foreground">
+                Coming soon
+              </Text>
+            </View>
+
+            {/* Divider */}
+            <View className="flex-row items-center gap-3">
+              <View className="h-px flex-1 bg-border" />
+              <Text className="text-sm text-muted-foreground">OR</Text>
+              <View className="h-px flex-1 bg-border" />
+            </View>
+
+            {/* Manual form */}
+            <View className="gap-3 rounded-2xl border border-border bg-card p-4">
+              <Text className="text-sm text-muted-foreground">
+                Enter your SteamID manually
+              </Text>
+
+              <FormInput
+                name="steamId"
+                control={form.control}
+                placeholder="76561199092075371"
+                keyboardType="number-pad"
+                disabled={isPending}
+              />
+
+              <Button
+                disabled={isPending}
+                onPress={form.handleSubmit(onSubmit)}
+              >
+                {isPending ? <Loader /> : <Text>Link account</Text>}
+              </Button>
+            </View>
+
+            {/* How to find SteamID (collapsible) */}
+            <View className="overflow-hidden rounded-2xl border border-border bg-card">
+              <Pressable
+                onPress={() => setHelpOpen((v) => !v)}
+                className="flex-row items-center justify-between px-4 py-4 active:bg-muted"
+              >
+                <Text className="font-semibold">How to find your SteamID</Text>
+                <View
+                  style={{
+                    transform: [{ rotate: helpOpen ? "180deg" : "0deg" }],
+                  }}
+                >
+                  <ChevronDownIcon
+                    size={18}
+                    color={THEME[theme].mutedForeground}
+                  />
+                </View>
+              </Pressable>
+
+              {helpOpen && (
+                <View className="gap-3 border-t border-border px-4 py-4">
+                  {[
+                    "Open your Steam profile",
+                    "Click on your username",
+                    "Copy the number from the profile URL",
+                  ].map((step, i) => (
+                    <View
+                      key={step}
+                      className="flex-row items-start gap-3"
+                    >
+                      <View className="size-6 items-center justify-center rounded-full bg-primary/10">
+                        <Text className="text-xs font-semibold text-primary">
+                          {i + 1}
+                        </Text>
+                      </View>
+                      <Text className="flex-1 text-sm text-muted-foreground">
+                        {step}
+                      </Text>
+                    </View>
+                  ))}
+
+                  <Text className="text-xs text-muted-foreground">
+                    Example: steamcommunity.com/profiles/
+                    <Text className="text-xs font-medium text-foreground">
+                      76561199092075371
+                    </Text>
+                  </Text>
+
+                  <Button
+                    variant="outline"
+                    onPress={() =>
+                      Linking.openURL("https://steamcommunity.com/my")
+                    }
+                  >
+                    <ExternalLinkIcon
+                      size={16}
+                      color={THEME[theme].foreground}
+                    />
+                    <Text>Open Steam profile</Text>
+                  </Button>
+                </View>
+              )}
+            </View>
+
+            {/* Things to know */}
+            <View className="gap-2 rounded-2xl bg-muted/50 p-4">
+              <View className="flex-row items-center gap-2">
+                <InfoIcon
+                  size={16}
+                  color={THEME[theme].mutedForeground}
+                />
+                <Text className="font-semibold">Things to know</Text>
+              </View>
+
+              <Text className="text-sm text-muted-foreground">
+                {"\u2022"} Set your Steam profile privacy to{" "}
+                <Text className="text-sm font-medium text-foreground">
+                  Public
+                </Text>
+                .
+              </Text>
+
+              <Text className="text-sm text-muted-foreground">
+                {"\u2022"} Your{" "}
+                <Text className="text-sm font-medium text-foreground">
+                  17-digit SteamID
+                </Text>{" "}
+                is not your username.
+              </Text>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ScreenWrapper>
     </View>
   );
 };
 
 export default SteamAccount;
-
-// export const Route = createFileRoute(
-//   "/_mainLayout/profile/account-links/steam",
-// )({
-//   beforeLoad: ({ context }) => {
-//     if (context.steamId !== null) {
-//       throw redirect({
-//         to: "/profile/account-links",
-//       });
-//     }
-//   },
-//   component: RouteComponent,
-// });
-
-// type FormData = z.infer<typeof linkSteamAccountSchema>;
-
-// function RouteComponent() {
-//   const { queryClient } = Route.useRouteContext();
-//   const router = useRouter();
-
-//   const link = useMutation(linkSteamAccountMutationOptions(api, queryClient));
-
-//   const form = useForm<FormData>({
-//     resolver: zodResolver(linkSteamAccountSchema),
-//     defaultValues: {
-//       steamId: "",
-//     },
-//   });
-
-//   async function onSubmit(values: FormData) {
-//     await link.mutateAsync(values);
-//     router.history.back();
-//   }
-
-//   const isPending = link.isPending;
-
-//   // TODO:make responsive
-//   // TODO:better how to get steamID
-//   // TODO:Sign in via steam
-
-//   return (
-//     <div className="flex mx-auto gap-16 max-w-5xl">
-//       <Card>
-//         <CardHeader className="text-center">
-//           <CardTitle>Link your Steam Account</CardTitle>
-//           <CardDescription>
-//             Connect your Steam account to sync your profile and games
-//           </CardDescription>
-//         </CardHeader>
-
-//         <CardContent className="flex flex-col gap-6">
-//           <Button
-//             size="lg"
-//             className="w-full"
-//             disabled={isPending}
-//           >
-//             Sign in with Steam
-//           </Button>
-
-//           <div className="flex items-center gap-3">
-//             <Separator className="flex-1" />
-//             <span className="text-sm text-muted-foreground">OR</span>
-//             <Separator className="flex-1" />
-//           </div>
-
-//           <form
-//             onSubmit={form.handleSubmit(onSubmit)}
-//             className="flex flex-col gap-3"
-//           >
-//             <p className="text-sm text-muted-foreground">
-//               Enter your SteamID manually
-//             </p>
-
-//             <FormInput
-//               name="steamId"
-//               control={form.control}
-//               placeholder="76561199092075371"
-//               disabled={isPending}
-//             />
-
-//             <Button
-//               type="submit"
-//               className="w-full"
-//               disabled={isPending}
-//             >
-//               Link Account
-//             </Button>
-//           </form>
-//         </CardContent>
-
-//         <CardFooter className="flex flex-col gap-3 border-t pt-4">
-//           <CardTitle className="text-base font-semibold">
-//             Things to know
-//           </CardTitle>
-
-//           <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
-//             <li>
-//               Set your Steam profile privacy to{" "}
-//               <span className="font-medium text-foreground">Public</span>.
-//             </li>
-//             <li>
-//               Your{" "}
-//               <span className="font-medium text-foreground">
-//                 13-digit SteamID
-//               </span>{" "}
-//               is not your username.
-//             </li>
-//           </ul>
-//         </CardFooter>
-//       </Card>
-
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>How to find your SteamID</CardTitle>
-//           <CardDescription>
-//             Follow these simple steps to get your SteamID
-//           </CardDescription>
-//         </CardHeader>
-
-//         <CardContent className="space-y-3 text-sm text-muted-foreground">
-//           <ol className="list-decimal pl-5 space-y-2">
-//             <li>Open your Steam profile</li>
-//             <li>Click on your username</li>
-//             <li>Copy the number from the profile URL</li>
-//           </ol>
-
-//           <p className="text-xs">
-//             Example: https://steamcommunity.com/profiles/
-//             <span className="font-medium text-foreground">
-//               76561199092075371
-//             </span>
-//           </p>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   );
-// }
