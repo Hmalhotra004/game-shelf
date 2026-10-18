@@ -1,3 +1,4 @@
+import { SearchByUsernamePSNType } from "@repo/schemas/types/psn";
 import { AccountProfileType } from "@repo/schemas/types/user";
 import { queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
@@ -36,8 +37,9 @@ export const searchPSNByUsernameQueryOptions = (
   queryOptions({
     queryKey: PSNQueryKeys.searchByUsername(query),
     queryFn: async () => {
-      const response = await api.get<AccountProfileType>(
+      const response = await api.get<SearchByUsernamePSNType>(
         `/PSN/searchByUsername`,
+        { params: { query } },
       );
 
       return response.data;

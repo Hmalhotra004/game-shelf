@@ -19,4 +19,4 @@ export const searchByUsernamePSN = z.object({
 
 // ------------------------------- Types -------------------------------------------
 
-export type SearchByUsernamePSNType = z.infer<typeof searchByUsernamePSN>;
+export type SearchByUsernamePSNSchemaType = z.infer<typeof searchByUsernamePSN>;
