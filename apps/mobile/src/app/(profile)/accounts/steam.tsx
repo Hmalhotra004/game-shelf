@@ -6,10 +6,12 @@ import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { authClient } from "@/lib/authClient";
+import { refreshSession } from "@/lib/refreshSession";
 import { THEME } from "@/lib/theme";
 import { ACCOUNT_PLATFORM_IMAGE } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ACCENT } from "@repo/utils/lib/account";
 import { linkSteamAccountMutationOptions } from "@repo/utils/mutations/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
@@ -28,7 +30,6 @@ import {
   LinkSteamAccountSchemaType,
 } from "@repo/schemas/schemas/user";
 
-import { ACCENT } from "@repo/utils/lib/account";
 import {
   KeyboardAvoidingView,
   Linking,
@@ -62,6 +63,7 @@ const SteamAccount = () => {
 
   const onSubmit = async (values: LinkSteamAccountSchemaType) => {
     await link.mutateAsync(values);
+    await refreshSession();
     router.back();
   };
 

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
+import { refreshSession } from "@/lib/refreshSession";
 import { THEME } from "@/lib/theme";
 import { ACCOUNT_PLATFORM_IMAGE, cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
@@ -46,7 +47,11 @@ const AccountCard = ({
   );
 
   const { mutateAsync: unlink, isPending } = useMutation(
-    unlinkAccountMutationOptions(api, queryClient),
+    unlinkAccountMutationOptions(
+      api,
+      queryClient,
+      async () => await refreshSession(),
+    ),
   );
 
   const accent = ACCENT[platform];
