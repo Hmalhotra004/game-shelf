@@ -1,12 +1,12 @@
 import { LinkSteamAccountSchemaType } from "@repo/schemas/schemas/steam";
 import { SteamQueryKeys } from "@repo/utils/queries/steam";
 import { mutationOptions, QueryClient } from "@tanstack/react-query";
-import { AxiosInstance, isAxiosError } from "axios";
-import { toast } from "sonner";
+import { AxiosInstance } from "axios";
 
 export const linkSteamAccountMutationOptions = (
   api: AxiosInstance,
   queryClient: QueryClient,
+  onError: (error: Error) => void,
   onSuccess?: () => void,
 ) =>
   mutationOptions({
@@ -17,12 +17,7 @@ export const linkSteamAccountMutationOptions = (
       await queryClient.invalidateQueries({
         queryKey: SteamQueryKeys.getProfile(),
       });
-      toast.success("Account Linked");
       onSuccess?.();
     },
-    onError: (e) => {
-      if (isAxiosError(e)) {
-        toast.error(e.response?.data.error);
-      }
-    },
+    onError: (e) => onError(e),
   });

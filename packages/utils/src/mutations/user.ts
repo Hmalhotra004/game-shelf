@@ -2,12 +2,12 @@ import { UnlinkAccountSchemaType } from "@repo/schemas/schemas/user";
 import { PSNQueryKeys } from "@repo/utils/queries/psn";
 import { SteamQueryKeys } from "@repo/utils/queries/steam";
 import { mutationOptions, QueryClient } from "@tanstack/react-query";
-import { AxiosInstance, isAxiosError } from "axios";
-import { toast } from "sonner";
+import { AxiosInstance } from "axios";
 
 export const unlinkAccountMutationOptions = (
   api: AxiosInstance,
   queryClient: QueryClient,
+  onError: (error: Error) => void,
   onSuccess?: () => void,
 ) =>
   mutationOptions({
@@ -21,12 +21,7 @@ export const unlinkAccountMutationOptions = (
       await queryClient.invalidateQueries({
         queryKey: SteamQueryKeys.getProfile(),
       });
-      toast.success("unlinked success");
       onSuccess?.();
     },
-    onError: (e) => {
-      if (isAxiosError(e)) {
-        toast.error(e.response?.data.error);
-      }
-    },
+    onError: (e) => onError(e),
   });

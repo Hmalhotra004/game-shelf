@@ -5,6 +5,10 @@ export const linkPSNAccountSchema = z.object({
     .string({ error: "AccountId is required" })
     .trim()
     .min(2, { error: "AccountId is required" }),
+  PSNAccountUsername: z
+    .string({ error: "AccountUsername is required" })
+    .trim()
+    .min(2, { error: "AccountUsername is required" }),
 });
 
 export type LinkPSNAccountSchemaType = z.infer<typeof linkPSNAccountSchema>;
