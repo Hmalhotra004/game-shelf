@@ -18,11 +18,6 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
   "/playthrough": { title: "Playthroughs", showBack: false },
   "/completion": { title: "Completions", showBack: false },
 
-  // (profile)
-  "/profile": { title: "Profile", showAvatar: false },
-  // "/settings": { title: "Settings", showAvatar: false },
-  // "/lists": { title: "Lists" },
-
   // (collection)
   "/add": { title: "Add Collection", showHeader: false },
 
@@ -51,6 +46,14 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
 
   // (completion)
   "/addCompletion": { title: "Add Completion", showHeader: false },
+
+  // (profile)
+  "/profile": { title: "Profile", showAvatar: false },
+  "/lists": { title: "Lists", showAvatar: false },
+  "/wishlist": { title: "Wishlist", showAvatar: false },
+  "/accounts": { title: "Wishlist", showAvatar: false },
+  "/stats": { title: "Wishlist", showAvatar: false },
+  "/settings": { title: "Settings", showAvatar: false },
 };
 
 export const DEFAULT_META: Required<ScreenMeta> = {
