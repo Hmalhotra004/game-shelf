@@ -1,7 +1,7 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { user } from "@/db/schema";
-import { LinkSteamAccountSchemaType } from "@repo/schemas/schemas/user";
+import { LinkSteamAccountSchemaType } from "@repo/schemas/server/schemas/steam";
 import axios from "axios";
 import { eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
