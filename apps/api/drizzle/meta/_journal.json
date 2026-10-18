@@ -64,6 +64,13 @@
       "when": 1792340596195,
       "tag": "0008_dlc_no_npComuniationid",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792341002919,
+      "tag": "0009_npCommunicationId_to_npCommunicationIds",
+      "breakpoints": true
     }
   ]
 }

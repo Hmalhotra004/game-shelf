@@ -42,7 +42,7 @@ export const collection = pgTable(
     archived: boolean("archived").notNull().default(false),
 
     igdbId: text("igdbId").notNull(),
-    npCommunicationId: text("np_communication_id"),
+    npCommunicationIds: text("np_communication_ids"),
     steamAppId: text("steam_app_id"),
     steamGridDBId: text("steam_grid_db_id"),
 
