@@ -91,6 +91,39 @@ export const collection = pgTable(
       table.steamAppId,
       table.provider,
     ),
+
+    // in the collection table's constraints array
+    check(
+      "np_ids_is_object",
+      sql`jsonb_typeof(${table.npCommunicationIds}) = 'object'`,
+    ),
+
+    // only PS3/PS4/PS5 keys allowed (no PS1/PS2/garbage)
+    check(
+      "np_ids_allowed_keys",
+      sql`(${table.npCommunicationIds} - ARRAY['PS3','PS4','PS5']) = '{}'::jsonb`,
+    ),
+
+    // every key must also be a version the collection actually owns
+    check(
+      "np_ids_keys_in_ps_version",
+      sql`(${table.npCommunicationIds} - ${table.PSVersion}::text[]) = '{}'::jsonb`,
+    ),
+
+    // non-PS collections can't have trophy IDs
+    check(
+      "np_ids_only_for_ps",
+      sql`${table.platform} = 'PS' OR ${table.npCommunicationIds} = '{}'::jsonb`,
+    ),
+
+    // values must be strings shaped like NPWR12345_00
+    check(
+      "np_ids_value_format",
+      sql`NOT jsonb_path_exists(
+    ${table.npCommunicationIds},
+    '$.* ? (@.type() != "string" || !(@ like_regex "^NPWR[0-9]{5}_[0-9]{2}$"))'
+  )`,
+    ),
   ],
 );
 
