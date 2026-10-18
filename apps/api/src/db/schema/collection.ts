@@ -3,11 +3,13 @@ import { nanoid } from "nanoid";
 import { PSVersion, ownershipType, platform, provider, status } from "./enums";
 import { user } from "./user";
 
+import { PSVersionTrophyType } from "@repo/schemas/types/index";
 import {
   boolean,
   check,
   index,
   integer,
+  jsonb,
   numeric,
   pgTable,
   text,
@@ -42,7 +44,10 @@ export const collection = pgTable(
     archived: boolean("archived").notNull().default(false),
 
     igdbId: text("igdbId").notNull(),
-    npCommunicationIds: text("np_communication_ids"),
+    npCommunicationIds: jsonb("np_communication_ids")
+      .$type<Partial<Record<PSVersionTrophyType, string>>>()
+      .notNull()
+      .default({}),
     steamAppId: text("steam_app_id"),
     steamGridDBId: text("steam_grid_db_id"),
 

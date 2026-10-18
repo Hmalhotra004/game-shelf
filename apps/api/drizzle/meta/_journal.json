@@ -71,6 +71,13 @@
       "when": 1792341002919,
       "tag": "0009_npCommunicationId_to_npCommunicationIds",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792341111863,
+      "tag": "0010_npCommunicationIds_jsonb",
+      "breakpoints": true
     }
   ]
 }
