@@ -6,7 +6,7 @@ import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { refreshSession } from "@/lib/refreshSession";
 import { THEME } from "@/lib/theme";
-import { ACCOUNT_PLATFORM_IMAGE, cn } from "@/lib/utils";
+import { ACCOUNT_PLATFORM_IMAGE, cn, handleError } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { PlatformAccountType } from "@repo/schemas/types/index";
 import type { AccountProfileType } from "@repo/schemas/types/user";
@@ -50,6 +50,7 @@ const AccountCard = ({
     unlinkAccountMutationOptions(
       api,
       queryClient,
+      (err) => handleError(err),
       async () => await refreshSession(),
     ),
   );

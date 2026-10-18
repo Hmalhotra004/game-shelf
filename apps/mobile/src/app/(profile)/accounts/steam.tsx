@@ -8,7 +8,7 @@ import { api } from "@/lib/api";
 import { authClient } from "@/lib/authClient";
 import { refreshSession } from "@/lib/refreshSession";
 import { THEME } from "@/lib/theme";
-import { ACCOUNT_PLATFORM_IMAGE } from "@/lib/utils";
+import { ACCOUNT_PLATFORM_IMAGE, handleError } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ACCENT } from "@repo/utils/lib/account";
@@ -47,7 +47,11 @@ const SteamAccount = () => {
   const { data: session } = authClient.useSession();
   const [helpOpen, setHelpOpen] = useState(false);
 
-  const link = useMutation(linkSteamAccountMutationOptions(api, queryClient));
+  const link = useMutation(
+    linkSteamAccountMutationOptions(api, queryClient, (err) =>
+      handleError(err),
+    ),
+  );
 
   const form = useForm<LinkSteamAccountSchemaType>({
     resolver: zodResolver(linkSteamAccountSchema),
