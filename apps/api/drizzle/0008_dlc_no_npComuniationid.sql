@@ -1,0 +1,1 @@
+ALTER TABLE "dlc" DROP COLUMN "np_communication_id";

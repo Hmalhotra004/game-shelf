@@ -112,7 +112,6 @@ export const dlc = pgTable(
     archived: boolean("archived").notNull().default(false),
 
     igdbId: text("igdbId").notNull(),
-    npCommunicationId: text("np_communication_id"),
     steamAppId: text("steam_app_id"),
     steamGridDBId: text("steam_grid_db_id"),
 
