@@ -12,7 +12,7 @@ import { ACCOUNT_PLATFORM_IMAGE } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ACCENT } from "@repo/utils/lib/account";
-import { linkSteamAccountMutationOptions } from "@repo/utils/mutations/user";
+import { linkSteamAccountMutationOptions } from "@repo/utils/mutations/steam";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Redirect, useRouter } from "expo-router";
@@ -28,7 +28,7 @@ import {
 import {
   linkSteamAccountSchema,
   LinkSteamAccountSchemaType,
-} from "@repo/schemas/schemas/user";
+} from "@repo/schemas/schemas/steam";
 
 import {
   KeyboardAvoidingView,
