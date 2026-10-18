@@ -1,3 +1,4 @@
+import { PlatformAccountType } from "@repo/schemas/types/index";
 import { GenericErrorMessage } from "@repo/utils/constants";
 import { capitalizeName } from "@repo/utils/lib/utils";
 import { isAxiosError } from "axios";
@@ -31,3 +32,10 @@ export function handleError(error: Error, text1?: string) {
 
   showToast("error", message, text1);
 }
+
+export const ACCOUNT_PLATFORM_IMAGE: Record<PlatformAccountType, number> = {
+  steam: require("../../assets/steam-96.png"),
+  playstation: require("../../assets/playstation-96.png"),
+  epic: require("../../assets/epic-96.png"),
+  xbox: require("../../assets/xbox-96.png"),
+};
