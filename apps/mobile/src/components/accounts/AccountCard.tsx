@@ -1,4 +1,5 @@
 import Loader from "@/components/Loader";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
@@ -12,7 +13,7 @@ import { ACCENT, TYPE_MAP } from "@repo/utils/lib/account";
 import { unlinkAccountMutationOptions } from "@repo/utils/mutations/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { useRouter, type Href } from "expo-router";
+import { useRouter } from "expo-router";
 import { ChevronRightIcon, Link2Icon } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 
@@ -89,18 +90,15 @@ const AccountCard = ({
             </View>
 
             {comingSoon ? (
-              <View className="rounded-full bg-muted px-2.5 py-1">
+              <Badge variant="secondary">
                 <Text className="text-xs font-medium text-muted-foreground">
                   Coming soon
                 </Text>
-              </View>
+              </Badge>
             ) : linked ? (
-              <View className="flex-row items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1">
-                <View className="size-1.5 rounded-full bg-green-500" />
-                <Text className="text-xs font-medium text-green-600">
-                  Connected
-                </Text>
-              </View>
+              <Badge>
+                <Text className="text-xs font-medium">Connected</Text>
+              </Badge>
             ) : null}
           </View>
 
@@ -153,10 +151,8 @@ const AccountCard = ({
             </Text>
           ) : (
             <Pressable
-              onPress={() =>
-                router.push(`/profile/accounts/${platform}` as Href)
-              }
-              className="flex-row items-center justify-between rounded-xl bg-muted/50 px-4 py-3 active:bg-muted"
+              onPress={() => router.push(`/(profile)/accounts/${platform}`)}
+              className="flex-row items-center justify-between rounded-xl"
             >
               <View className="flex-1 pr-3">
                 <Text className="font-medium">Link your {title} account</Text>
