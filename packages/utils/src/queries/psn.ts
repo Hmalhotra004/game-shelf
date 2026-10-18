@@ -37,7 +37,7 @@ export const searchPSNByUsernameQueryOptions = (
   queryOptions({
     queryKey: PSNQueryKeys.searchByUsername(query),
     queryFn: async () => {
-      const response = await api.get<SearchByUsernamePSNType>(
+      const response = await api.get<SearchByUsernamePSNType[]>(
         `/PSN/searchByUsername`,
         { params: { query } },
       );
