@@ -5,13 +5,13 @@ import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { authClient } from "@/lib/authClient";
+import { AppRoute } from "@/lib/screens";
+import { THEME } from "@/lib/theme";
+import { useThemeStore } from "@/store/useThemeStore";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 
-import { AppRoute } from "@/lib/screens";
-import { THEME } from "@/lib/theme";
-import { useThemeStore } from "@/store/useThemeStore";
 import {
   ChevronRightIcon,
   HeartIcon,
