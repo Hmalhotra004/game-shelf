@@ -12,6 +12,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const normalize = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]/g, "");
+
 export const toggleIn = <T>(arr: T[], v: T): T[] =>
   arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
 

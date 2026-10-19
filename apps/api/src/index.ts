@@ -10,16 +10,12 @@ import express from "express";
 import helmet from "helmet";
 import http from "node:http";
 import { ORIGINS } from "./constants";
+import { backgroundJobs } from "./jobs";
 import { boss, startBoss } from "./lib/boss";
 import { isProd } from "./lib/isProd";
 import { logger } from "./lib/logger";
 import { redis } from "./lib/redis";
 import { requestLogger } from "./middlewares/logger";
-
-import {
-  ensureResolvePlatformIdsQueue,
-  registerResolvePlatformIds,
-} from "@/jobs/resolvePlatformIds";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
@@ -59,8 +55,7 @@ async function start() {
 
   // Boss + queues BEFORE accepting traffic
   await startBoss();
-  await ensureResolvePlatformIdsQueue();
-  await registerResolvePlatformIds();
+  await backgroundJobs();
 
   server.listen(PORT, "0.0.0.0", () => {
     logger.info(`Server running on port ${PORT}`);
@@ -83,8 +78,6 @@ try {
   logger.info({
     prod: isProd(),
   });
-
-  // await resolvePlatformIds();
 } catch (err) {
   logger.fatal({ err }, "Failed to start server");
   process.exit(1);
