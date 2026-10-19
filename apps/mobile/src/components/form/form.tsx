@@ -26,6 +26,7 @@ import {
 
 import {
   KeyboardTypeOptions,
+  Pressable,
   StyleProp,
   TextInputProps,
   TextStyle,
@@ -171,7 +172,7 @@ export const FormInputPassword: FormControlFunc<{
       {({ onChange, onBlur, value, invalid }) => (
         <View
           className={cn(
-            "flex-row h-10 items-center rounded-md border border-border bg-card w-full",
+            "flex-row h-10 items-center rounded-md border border-border bg-card w-full pr-2",
             invalid && "border-destructive",
             disabled && "opacity-50",
             className,
@@ -191,10 +192,9 @@ export const FormInputPassword: FormControlFunc<{
             )}
           />
 
-          <Button
-            variant="ghost"
+          <Pressable
             onPress={() => setShow((v) => !v)}
-            className="bg-background text-foreground rounded-full"
+            className="bg-transparent pl-2"
           >
             {show ? (
               <EyeIcon
@@ -207,7 +207,7 @@ export const FormInputPassword: FormControlFunc<{
                 color={iconColor}
               />
             )}
-          </Button>
+          </Pressable>
         </View>
       )}
     </FormBase>
