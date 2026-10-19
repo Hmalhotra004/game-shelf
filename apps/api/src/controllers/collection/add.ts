@@ -1,15 +1,19 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { collection, dlc, listItem } from "@/db/schema";
+import { queueResolveNPCId } from "@/jobs/resolveNPCId";
 import { CreateCollectionSchemaType } from "@repo/schemas/schemas/collection";
 import { and, eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 export const addCollection = async (req: Request, res: Response) => {
   const userId = req.user.id;
+  const PSNAccountId = req.user.PSNAccountId;
 
   try {
     const data = req.cleanBody as CreateCollectionSchemaType;
+
+    let newGame: typeof collection.$inferSelect | undefined;
 
     if (data.isDLC) {
       if (!data.collectionId) {
@@ -63,7 +67,7 @@ export const addCollection = async (req: Request, res: Response) => {
           );
       });
     } else {
-      await db.transaction(async (tx) => {
+      newGame = await db.transaction(async (tx) => {
         const [createdGame] = await tx
           .insert(collection)
           .values({
@@ -122,11 +126,29 @@ export const addCollection = async (req: Request, res: Response) => {
                 eq(collection.userId, userId),
               ),
             );
+          return createdGame;
         }
       });
     }
 
-    // TODO: add BGT to sync npcommunicationId or SteamAppId
+    // TODO: add BGT to sync SteamAppId
+    if (newGame && newGame.platform === "PS") {
+      try {
+        if (PSNAccountId) {
+          await queueResolveNPCId({
+            collectionId: newGame.id,
+            PSNAccountId: PSNAccountId,
+            collectionName: newGame.name,
+            PSVersion: newGame.PSVersion,
+          });
+        }
+      } catch (err) {
+        req.log.error(
+          { err, collectionId: newGame.id },
+          "QUEUE_RESOLVE_NPC_ID_ERROR",
+        );
+      }
+    }
 
     return res.sendStatus(204);
   } catch (err) {

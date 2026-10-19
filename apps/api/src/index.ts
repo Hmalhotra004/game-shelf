@@ -75,6 +75,13 @@ process.on("SIGINT", () => void shutdown("SIGINT"));
 try {
   await start();
 
+  // await resolveNPCId({
+  //   collectionId: "GpcmcItAR4aT6tCKYigOW",
+  //   PSNAccountId: "6544526231083665499",
+  //   collectionName: "Resident Evil 4",
+  //   PSVersion: ["PS4", "PS5"],
+  // });
+
   logger.info({
     prod: isProd(),
   });
