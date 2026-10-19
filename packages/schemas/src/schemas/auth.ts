@@ -75,3 +75,4 @@ export const changePasswordSchema = z
 
 export type EmailSchemaType = z.infer<typeof emailSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+export type SignupSchemaType = z.infer<typeof signupSchema>;
