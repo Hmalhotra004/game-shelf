@@ -12,7 +12,8 @@ import { useRouter } from "expo-router";
 import { LibraryIcon } from "lucide-react-native";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const login = () => {
   const [error, setError] = useState<string | null>(null);
@@ -51,16 +52,16 @@ const login = () => {
 
   return (
     <ScreenWrapper>
-      <ScrollView
-        contentContainerClassName="flex-grow px-6 pb-8 pt-12"
+      <KeyboardAwareScrollView
+        contentContainerClassName="flex-grow pb-12 pt-12"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View className="flex-1 items-center justify-center pb-10">
+        <View className="flex-1 items-center justify-center pb-10 gap-2">
           <View className="h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/40">
             <LibraryIcon
               size={32}
-              color={THEME[theme].primary}
+              color={THEME[theme].background}
             />
           </View>
 
@@ -68,7 +69,7 @@ const login = () => {
             GameShelf
           </Text>
 
-          <Text className="mt-2 text-center text-base text-muted-foreground">
+          <Text className="-mt-1 text-center text-base text-muted-foreground">
             Every game you own, play and finish — in one place.
           </Text>
         </View>
@@ -93,7 +94,7 @@ const login = () => {
           />
 
           <Pressable
-            onPress={() => router.push("/(auth)/forgot-password")}
+            onPress={() => router.push({ pathname: "/(auth)/forgot-password" })}
             disabled={pending}
             hitSlop={8}
             className="self-end"
@@ -110,9 +111,9 @@ const login = () => {
           )}
 
           <Button
+            size="lg"
             onPress={form.handleSubmit(onSubmit)}
             disabled={pending}
-            className="h-14 rounded-2xl"
           >
             {pending ? (
               <Loader />
@@ -121,11 +122,26 @@ const login = () => {
             )}
           </Button>
 
-          <Text className="mt-2 text-center text-xs text-muted-foreground">
+          <View className="flex-row items-center justify-center gap-1">
+            <Text className="text-sm text-muted-foreground">
+              Don't have an account?
+            </Text>
+            <Pressable
+              onPress={() => router.push({ pathname: "/(auth)/sign-up" })}
+              disabled={pending}
+              hitSlop={8}
+            >
+              <Text className="text-sm font-semibold text-primary">
+                Sign up
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* <Text className="mt-2 text-center text-xs text-muted-foreground">
             Steam · PlayStation · Xbox · Epic
-          </Text>
+          </Text> */}
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </ScreenWrapper>
   );
 };
