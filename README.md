@@ -1,135 +1,234 @@
-# Turborepo starter
+# 🎮 GameShelf
 
-This Turborepo starter is maintained by the Turborepo core team.
+### Your games. Your collection. Your journey.
 
-## Using this example
+**GameShelf is a personal game collection manager built for gamers who want more than a list of games.**
 
-Run the following command:
+Keep track of what you own, what you're playing, what you've completed, your DLCs, playthroughs, wishlists, custom lists, trophies, and gaming accounts — all in one place.
 
-```sh
-npx create-turbo@latest
-```
+---
 
-## What's inside?
+## ✨ Why GameShelf?
 
-This Turborepo includes the following packages/apps:
+Your game library is probably scattered across multiple platforms.
 
-### Apps and Packages
+PlayStation knows some of your games.  
+Steam knows another part of your library.  
+Physical games sit on your shelf.  
+Your wishlist is somewhere else.  
+And remembering what you played, when you bought it, or whether you've actually finished it?
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+That's where **GameShelf** comes in.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+> **One place for your entire gaming collection.**
 
-### Utilities
+GameShelf is designed to give your collection structure while keeping the experience simple, fast, and personal.
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 🗂️ Build Your Collection
 
-### Build
+Add the games you own and keep all the important information together.
 
-To build all apps and packages, run the following command:
+Track things like:
 
-```
-cd my-turborepo
+- 🎮 Platform
+- 🏷️ Provider
+- 💰 Purchase price
+- 📅 Purchase date
+- 🖼️ Game artwork
+- 📦 DLC
+- ⭐ Completion status
+- 🎯 Playthroughs
+- 🏆 Trophies & achievements
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+Whether it's a digital purchase, a physical copy, or a game from one of your gaming platforms, GameShelf gives it a home.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+---
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 🎯 Track Your Gaming Journey
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Owning a game is only the beginning.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+GameShelf lets you keep track of your journey through your games.
 
-### Develop
+### Playthroughs
 
-To develop all apps and packages, run the following command:
+Keep track of individual playthroughs instead of treating a game as simply "played" or "not played."
 
-```
-cd my-turborepo
+### Completions
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+Record your completed games and DLC separately, giving you a clearer picture of what you've actually finished.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+### Progress
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+See where your collection stands and what still needs your attention.
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+---
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+## 📦 Games & DLC — Together
 
-### Remote Caching
+Games aren't always just games.
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Expansions, downloadable content, editions, and additional content can become a major part of a collection.
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+GameShelf treats **DLC as a first-class part of your collection**, allowing you to associate DLC with its parent game and track its completion independently.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+---
 
-```
-cd my-turborepo
+## ❤️ Your Wishlist
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+Found a game you want to play someday?
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+Keep it in GameShelf instead of letting it disappear into a browser bookmark or forgotten note.
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Build a wishlist of games you're interested in and keep your future gaming queue organized.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+---
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+## 📚 Custom Lists
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+Your collection doesn't have to be organized one way.
 
-## Useful Links
+Create your own lists for whatever matters to you.
 
-Learn more about the power of Turborepo:
+For example:
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+- 🔥 Games I want to play next
+- 🏆 Platinum goals
+- 👾 RPG backlog
+- 🎃 Halloween games
+- ⭐ All-time favorites
+- 🎮 Games to replay
+- 📅 Games for this year
+
+**Your collection. Your rules.**
+
+---
+
+## 🔗 Connect Your Gaming Accounts
+
+GameShelf is designed to work alongside the platforms you already use.
+
+Current integrations include:
+
+- PlayStation Network
+- Steam
+- IGDB
+- SteamGridDB
+
+These integrations help GameShelf enrich your collection with game information, artwork, account data, and gaming metadata.
+
+---
+
+## 📊 Understand Your Collection
+
+Your collection is more than a number.
+
+GameShelf includes statistics and insights that help you understand your gaming habits and collection.
+
+See things like:
+
+- Collection size
+- Completion progress
+- Platform breakdown
+- Gaming statistics
+- Playthrough progress
+
+Turn your library into something you can actually explore.
+
+---
+
+## 📱 Built for Mobile
+
+GameShelf is currently focused on a **mobile-first experience**.
+
+The app is built with modern React Native and Expo technologies to provide a fast, native-feeling experience for managing your collection wherever you are.
+
+Whether you're browsing your library from the couch or adding a new game after a purchase, GameShelf is designed to stay out of your way.
+
+---
+
+# 🧭 The Vision
+
+GameShelf isn't trying to be another storefront.
+
+It isn't trying to replace PlayStation, Steam, Xbox, or the platforms where you actually play.
+
+Instead, it's meant to become the **personal layer on top of your gaming ecosystem**.
+
+A place where your entire gaming history belongs to you.
+
+From the first game you bought...
+
+to the game you've played five times...
+
+to the one you've been meaning to finish for three years.
+
+**GameShelf remembers it all.**
+
+---
+
+# 🛠️ Built With
+
+GameShelf is built as a modern TypeScript monorepo.
+
+### Applications
+
+- **Mobile** — Expo + React Native
+- **API** — Express + TypeScript
+
+### Shared Packages
+
+- **Schemas** — Shared Zod schemas, enums, and types
+- **Utils** — Shared queries, mutations, stores, hooks, and utilities
+
+### Backend
+
+- Node.js
+- Express
+- PostgreSQL
+- Drizzle ORM
+- Socket.IO
+
+### Mobile
+
+- Expo
+- React Native
+- Expo Router
+- NativeWind
+- TanStack React Query
+- Zustand
+- React Hook Form
+- Zod
+- FlashList
+
+---
+
+# 🗺️ What's Next?
+
+GameShelf is actively evolving.
+
+The long-term goal is to make it a complete home for your gaming life — from **discovering games** to **owning them**, **playing them**, **tracking them**, and ultimately **finishing them**.
+
+A web experience is also planned for the future.
+
+---
+
+# ⭐ The Goal
+
+There are countless games.
+
+Your time isn't unlimited.
+
+GameShelf helps you answer the questions that matter:
+
+> **What do I own?**  
+> **What should I play next?**  
+> **What have I finished?**  
+> **What's still waiting for me?**  
+> **What has my gaming journey looked like?**
+
+### Welcome to your shelf.
+
+**Welcome to GameShelf. 🎮**
