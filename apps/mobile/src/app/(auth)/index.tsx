@@ -1,5 +1,5 @@
+import { FormInput, FormInputPassword } from "@/components/form/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { authClient } from "@/lib/authClient";
@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginSchemaType } from "@repo/schemas/schemas/auth";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 const login = () => {
@@ -49,43 +49,21 @@ const login = () => {
       <View>
         <Text>login</Text>
 
-        <Controller
+        <FormInput
           name="email"
           control={form.control}
-          render={({ field: { onChange, onBlur, value }, fieldState }) => (
-            <>
-              <Input
-                placeholder="Email"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                autoComplete="email"
-                editable={!pending}
-              />
-              {fieldState.error && <Text>{fieldState.error.message}</Text>}
-            </>
-          )}
+          autoFocus
+          placeholder="Email"
+          keyboardType="email-address"
+          autoComplete="email"
+          disabled={pending}
         />
 
-        <Controller
+        <FormInputPassword
           name="password"
           control={form.control}
-          render={({ field: { onChange, onBlur, value }, fieldState }) => (
-            <>
-              <Input
-                placeholder="Password"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                secureTextEntry
-                autoComplete="password"
-                editable={!pending}
-              />
-              {fieldState.error && <Text>{fieldState.error.message}</Text>}
-            </>
-          )}
+          placeholder="Password"
+          disabled={pending}
         />
 
         {error && (
