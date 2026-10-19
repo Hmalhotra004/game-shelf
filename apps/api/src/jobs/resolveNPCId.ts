@@ -4,8 +4,8 @@ import { boss } from "@/lib/boss";
 import { logger } from "@/lib/logger";
 import { getPSNAuthorization } from "@/lib/PsnApiAuth";
 import { normalize } from "@/lib/utils";
-import { PSVersionTrophyType, PSVersionType } from "@repo/schemas/types/index";
-import { eq } from "drizzle-orm";
+import { PSVersionTrophyType } from "@repo/schemas/types/index";
+import { and, eq } from "drizzle-orm";
 import { getUserTitles } from "psn-api";
 
 const QUEUE_NAME = "resolve-npc-ids";
@@ -15,7 +15,7 @@ type ResolveNPCIdPayload = {
   collectionId: string;
   PSNAccountId: string;
   collectionName: string;
-  PSVersion: PSVersionType[];
+  userId: string;
 };
 
 // The code you're writing. No pg-boss in here.
@@ -23,12 +23,25 @@ export async function resolveNPCId({
   collectionId,
   PSNAccountId,
   collectionName,
-  PSVersion,
+  userId,
 }: ResolveNPCIdPayload) {
   const log = logger.child({ collectionId });
 
+  const [row] = await db
+    .select({
+      PSVersion: collection.PSVersion,
+      npCommunicationIds: collection.npCommunicationIds,
+    })
+    .from(collection)
+    .where(and(eq(collection.id, collectionId), eq(collection.userId, userId)));
+
+  if (!row) {
+    log.warn("RESOLVE_NPC_ID_COLLECTION_NOT_FOUND");
+    return { resolved: {}, unresolved: [] as PSVersionTrophyType[] };
+  }
+
   // Only PS3/PS4/PS5 have trophy IDs (matches the DB constraint)
-  const versions = PSVersion.filter(
+  const versions = row.PSVersion.filter(
     (v): v is PSVersionTrophyType => v !== "PS1" && v !== "PS2",
   );
 
@@ -91,7 +104,9 @@ export async function resolveNPCId({
     await db
       .update(collection)
       .set({ npCommunicationIds: resolved })
-      .where(eq(collection.id, collectionId));
+      .where(
+        and(eq(collection.id, collectionId), eq(collection.userId, userId)),
+      );
   }
 
   log.info({ resolved, unresolved }, "RESOLVE_NPC_ID_RESULT");
@@ -120,7 +135,7 @@ export async function registerResolveNPCId() {
         collectionId: job.data.collectionId,
         PSNAccountId: job.data.PSNAccountId,
         collectionName: job.data.collectionName,
-        PSVersion: job.data.PSVersion,
+        userId: job.data.userId,
       });
       log.info("RESOLVE_NPC_ID_COMPLETED");
     } catch (err) {

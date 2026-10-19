@@ -126,8 +126,9 @@ export const addCollection = async (req: Request, res: Response) => {
                 eq(collection.userId, userId),
               ),
             );
-          return createdGame;
         }
+
+        return createdGame;
       });
     }
 
@@ -139,7 +140,7 @@ export const addCollection = async (req: Request, res: Response) => {
             collectionId: newGame.id,
             PSNAccountId: PSNAccountId,
             collectionName: newGame.name,
-            PSVersion: newGame.PSVersion,
+            userId: userId,
           });
         }
       } catch (err) {
