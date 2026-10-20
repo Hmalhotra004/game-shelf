@@ -193,6 +193,7 @@ function SelectableListSheet<
         <SearchBar
           onChangeText={setSearch}
           value={search}
+          inSheet
         />
 
         {tabs && tabs.length > 1 && (
