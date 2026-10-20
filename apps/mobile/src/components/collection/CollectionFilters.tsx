@@ -7,7 +7,7 @@ import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { CollectionStatusType, PlatformType } from "@repo/schemas/types/index";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { useQuery } from "@tanstack/react-query";
-import { memo, useMemo, useRef } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import {
@@ -22,6 +22,8 @@ import {
 } from "@repo/utils/lib/gameOptions";
 
 const CollectionFilters = () => {
+  const [searchKey, setSearchKey] = useState(0);
+
   const search = useCollectionFilterStore((s) => s.search);
   const platform = useCollectionFilterStore((s) => s.platform);
   const lists = useCollectionFilterStore((s) => s.lists);
@@ -46,11 +48,17 @@ const CollectionFilters = () => {
     [data],
   );
 
+  const handleClear = useCallback(() => {
+    reset();
+    setSearchKey((k) => k + 1);
+  }, [reset]);
+
   return (
     <View className="mb-3 gap-3">
       <SearchBar
-        value={search}
-        onChangeText={setSearch}
+        key={searchKey}
+        defaultValue={search}
+        onDebouncedChange={setSearch}
         placeholder="Search collection..."
       />
 
@@ -89,7 +97,7 @@ const CollectionFilters = () => {
           <Button
             variant="ghost"
             size="sm"
-            onPress={reset}
+            onPress={handleClear}
           >
             <Text>Clear</Text>
           </Button>

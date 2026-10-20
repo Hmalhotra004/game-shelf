@@ -1,28 +1,34 @@
 import { Input } from "@/components/ui/input";
 import { THEME } from "@/lib/theme";
-import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { useDebounce } from "@repo/utils/hooks/useDebounce";
 import { SearchIcon, XIcon } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Button } from "./ui/button";
 
 type Props = {
-  value: string;
-  onChangeText: (text: string) => void;
+  onDebouncedChange: (text: string) => void;
+  defaultValue?: string;
   placeholder?: string;
   focus?: boolean;
-  inSheet?: boolean;
+  delay?: number;
 };
 
 const SearchBar = ({
-  value,
-  onChangeText,
+  onDebouncedChange,
+  defaultValue = "",
   placeholder = "Search...",
   focus = false,
-  inSheet = false,
+  delay = 400,
 }: Props) => {
+  const [text, setText] = useState(defaultValue);
+  const debounced = useDebounce(text.trim(), delay);
   const theme = useThemeStore((s) => s.theme);
+
+  useEffect(() => {
+    onDebouncedChange(debounced);
+  }, [debounced, onDebouncedChange]);
 
   return (
     <View className="relative">
@@ -33,40 +39,24 @@ const SearchBar = ({
         />
       </View>
 
-      {inSheet ? (
-        <BottomSheetTextInput
-          placeholder={placeholder}
-          value={value}
-          onChangeText={onChangeText}
-          autoFocus={focus}
-          autoComplete="off"
-          spellCheck={false}
-          autoCapitalize="none"
-          keyboardType="visible-password"
-          className={cn(
-            "dark:bg-input/30 border-input bg-background text-foreground flex h-10 w-full min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9",
-            "pl-9",
-          )}
-        />
-      ) : (
-        <Input
-          className="pl-9"
-          placeholder={placeholder}
-          value={value}
-          onChangeText={onChangeText}
-          autoFocus={focus}
-          autoComplete="off"
-          spellCheck={false}
-          autoCapitalize="none"
-          keyboardType="visible-password"
-        />
-      )}
+      <Input
+        className="pl-9"
+        placeholder={placeholder}
+        value={text}
+        onChangeText={setText}
+        autoFocus={focus}
+        autoComplete="off"
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        keyboardType="visible-password"
+      />
 
-      {value.length > 0 && (
+      {text.length > 0 && (
         <Button
           variant="ghost"
           size="icon"
-          onPress={() => onChangeText("")}
+          onPress={() => setText("")}
           className="absolute right-0 top-0 bottom-0 items-center justify-center z-10"
         >
           <XIcon
