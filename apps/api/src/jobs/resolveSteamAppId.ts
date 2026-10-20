@@ -249,6 +249,7 @@ export async function resolveSteamAppId({
         .where(
           and(
             eq(collection.userId, userId),
+            eq(collection.provider, game.provider),
             eq(collection.steamAppId, foundId),
             ne(collection.id, collectionId),
           ),
