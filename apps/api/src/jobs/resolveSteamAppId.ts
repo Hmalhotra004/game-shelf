@@ -1,14 +1,15 @@
 import { db } from "@/db";
 import { collection, dlc } from "@/db/schema";
 import { logger } from "@/lib/logger";
-import { normalize } from "@/lib/utils";
+import { normalize, stripEdition } from "@/lib/utils";
 import axios from "axios";
 import { and, eq, ne } from "drizzle-orm";
 import type { Logger } from "pino";
 
 const STORE_API = "https://store.steampowered.com/api";
 const REQUEST_DELAY_MS = 350; // Store API is rate limited, stay well under it
-const MAX_EXACT_CANDIDATES = 5;
+// Strict on purpose: a wrong ID is worse than a missing one.
+const MAX_CANDIDATES = 8;
 
 export type ResolveSteamAppIdPayload = {
   collectionId: string;
@@ -98,29 +99,56 @@ async function verifyGame(
   return namesMatch(details.name, needle) ? "correct" : "incorrect";
 }
 
-// Strict on purpose: a wrong ID is worse than a missing one.
 async function findGameId(
   steam: SteamClient,
-  name: string,
-  needle: string,
+  game: { name: string; edition: string | null },
   log: Log,
 ): Promise<string | null> {
-  const items = await steam.search(name);
-  const exact = items
-    .filter((i) => normalize(i.name) === needle)
-    .slice(0, MAX_EXACT_CANDIDATES);
+  const baseName = stripEdition(game.name, game.edition);
+  const base = normalize(baseName);
+  const fullName = normalize(game.name);
+  const editionKey = game.edition ? normalize(game.edition) : null;
 
-  const games: string[] = [];
-  for (const item of exact) {
-    const details = await steam.getDetails(String(item.id));
-    if (details?.type === "game") games.push(String(item.id));
+  // Steam search is fuzzy, so try the name as typed, the base name, and base + edition
+  const terms = [
+    ...new Set(
+      [
+        game.name,
+        baseName,
+        game.edition ? `${baseName} ${game.edition}` : null,
+      ].filter(Boolean) as string[],
+    ),
+  ];
+
+  // Keep every Steam title whose base name matches
+  const found = new Map<string, string>(); // appId -> Steam name
+  for (const term of terms) {
+    for (const item of await steam.search(term)) {
+      if (normalize(stripEdition(item.name)) === base) {
+        found.set(String(item.id), item.name);
+      }
+    }
   }
 
-  if (games.length === 1) return games[0];
-
-  if (games.length > 1) {
-    log.warn({ games }, "RESOLVE_STEAM_APP_ID_GAME_AMBIGUOUS");
+  const games: { id: string; name: string }[] = [];
+  for (const [id, name] of [...found].slice(0, MAX_CANDIDATES)) {
+    const details = await steam.getDetails(id);
+    if (details?.type === "game") games.push({ id, name });
   }
+
+  if (games.length === 1) return games[0].id;
+  if (!games.length) return null;
+
+  // Several editions on Steam: prefer the one that matches what the user owns
+  const preferred = games.filter((g) =>
+    editionKey
+      ? normalize(g.name).includes(editionKey)
+      : normalize(g.name) === fullName,
+  );
+
+  if (preferred.length === 1) return preferred[0].id;
+
+  log.warn({ games }, "RESOLVE_STEAM_APP_ID_GAME_AMBIGUOUS");
   return null;
 }
 
@@ -211,6 +239,7 @@ export async function resolveSteamAppId({
       platform: collection.platform,
       provider: collection.provider,
       steamAppId: collection.steamAppId,
+      edition: collection.edition,
     })
     .from(collection)
     .where(and(eq(collection.id, collectionId), eq(collection.userId, userId)));
@@ -221,7 +250,7 @@ export async function resolveSteamAppId({
   }
 
   const steam = createSteamClient();
-  const needle = normalize(game.name);
+  const needle = normalize(stripEdition(game.name, game.edition));
   const existingId = game.steamAppId ? String(game.steamAppId) : null;
 
   let gameAppId = existingId;
@@ -236,7 +265,7 @@ export async function resolveSteamAppId({
     gameTrusted = true;
   } else {
     // No ID yet, or the saved one is wrong: look for the right one
-    const foundId = await findGameId(steam, game.name, needle, log);
+    const foundId = await findGameId(steam, game, log);
 
     if (!foundId) {
       gameStatus = "not_found";

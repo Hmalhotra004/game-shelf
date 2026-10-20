@@ -3,7 +3,7 @@ import { collection } from "@/db/schema";
 import { boss } from "@/lib/boss";
 import { logger } from "@/lib/logger";
 import { getPSNAuthorization } from "@/lib/PsnApiAuth";
-import { normalize } from "@/lib/utils";
+import { normalize, stripEdition } from "@/lib/utils";
 import { PSVersionTrophyType } from "@repo/schemas/types/index";
 import { and, eq } from "drizzle-orm";
 import { getUserTitles } from "psn-api";
@@ -66,11 +66,11 @@ export async function resolveNPCId({
     offset = page.nextOffset;
   }
 
-  const needle = normalize(collectionName);
+  const needle = normalize(stripEdition(collectionName));
 
   const candidates = titles.map((t) => ({
     name: t.trophyTitleName,
-    normalized: normalize(t.trophyTitleName),
+    normalized: normalize(stripEdition(t.trophyTitleName)),
     npCommunicationId: t.npCommunicationId,
     platforms: t.trophyTitlePlatform.split(",").map((p) => p.trim()),
   }));
