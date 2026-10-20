@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { collection, dlc } from "@/db/schema";
 import { logger } from "@/lib/logger";
-import { normalize, stripEdition } from "@/lib/utils";
+import { normalize, stripEdition, stripRemaster } from "@/lib/utils";
 import axios from "axios";
 import { and, eq, ne } from "drizzle-orm";
 import type { Logger } from "pino";
@@ -105,50 +105,75 @@ async function findGameId(
   log: Log,
 ): Promise<string | null> {
   const baseName = stripEdition(game.name, game.edition);
-  const base = normalize(baseName);
   const fullName = normalize(game.name);
   const editionKey = game.edition ? normalize(game.edition) : null;
 
-  // Steam search is fuzzy, so try the name as typed, the base name, and base + edition
-  const terms = [
-    ...new Set(
-      [
-        game.name,
-        baseName,
-        game.edition ? `${baseName} ${game.edition}` : null,
-      ].filter(Boolean) as string[],
-    ),
+  const plainKey = (n: string) => normalize(stripEdition(n));
+  const looseKey = (n: string) => normalize(stripRemaster(stripEdition(n)));
+
+  // Strictest first; later tiers run only if the earlier ones find nothing
+  const tiers = [
+    // 1. base name: "Control"
+    { term: baseName, key: plainKey, target: plainKey(baseName) },
+    // 2. base + edition: "Control Ultimate Edition"
+    ...(game.edition
+      ? [
+          {
+            term: `${baseName} ${game.edition}`,
+            key: plainKey,
+            target: plainKey(baseName),
+          },
+        ]
+      : []),
+    // 3. last resort, also drop Remastered/HD: "Alan Wake Remastered" -> "Alan Wake"
+    {
+      term: stripRemaster(baseName),
+      key: looseKey,
+      target: looseKey(baseName),
+    },
   ];
 
-  // Keep every Steam title whose base name matches
-  const found = new Map<string, string>(); // appId -> Steam name
-  for (const term of terms) {
-    for (const item of await steam.search(term)) {
-      if (normalize(stripEdition(item.name)) === base) {
-        found.set(String(item.id), item.name);
+  const tried = new Set<string>();
+
+  for (const tier of tiers) {
+    const signature = `${normalize(tier.term)}|${tier.target}`;
+    if (!tier.target || tried.has(signature)) continue;
+    tried.add(signature);
+
+    const items = await steam.search(tier.term);
+    const matched = items
+      .filter((i) => tier.key(i.name) === tier.target)
+      .slice(0, MAX_CANDIDATES);
+
+    const games: { id: string; name: string }[] = [];
+    for (const item of matched) {
+      const details = await steam.getDetails(String(item.id));
+      if (details?.type === "game") {
+        games.push({ id: String(item.id), name: item.name });
       }
     }
+
+    if (games.length === 1) return games[0].id;
+
+    if (games.length > 1) {
+      // Several editions on Steam: prefer the one matching what the user owns
+      const preferred = games.filter((g) =>
+        editionKey
+          ? normalize(g.name).includes(editionKey)
+          : normalize(g.name) === fullName,
+      );
+      if (preferred.length === 1) return preferred[0].id;
+
+      // Ambiguous at this tier: stop instead of loosening further
+      log.warn(
+        { games, term: tier.term },
+        "RESOLVE_STEAM_APP_ID_GAME_AMBIGUOUS",
+      );
+      return null;
+    }
+    // zero matches: fall through to the next tier
   }
 
-  const games: { id: string; name: string }[] = [];
-  for (const [id, name] of [...found].slice(0, MAX_CANDIDATES)) {
-    const details = await steam.getDetails(id);
-    if (details?.type === "game") games.push({ id, name });
-  }
-
-  if (games.length === 1) return games[0].id;
-  if (!games.length) return null;
-
-  // Several editions on Steam: prefer the one that matches what the user owns
-  const preferred = games.filter((g) =>
-    editionKey
-      ? normalize(g.name).includes(editionKey)
-      : normalize(g.name) === fullName,
-  );
-
-  if (preferred.length === 1) return preferred[0].id;
-
-  log.warn({ games }, "RESOLVE_STEAM_APP_ID_GAME_AMBIGUOUS");
   return null;
 }
 

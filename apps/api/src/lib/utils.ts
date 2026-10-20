@@ -15,3 +15,9 @@ export function stripEdition(name: string, edition?: string | null) {
 
   return out.replace(EDITION_SUFFIX, "").trim();
 }
+
+const REMASTER_SUFFIX = /[\s:–—-]+(?:hd\s+)?(?:remastered|remaster|hd)\s*$/i;
+
+// "Alan Wake Remastered" -> "Alan Wake"
+export const stripRemaster = (name: string) =>
+  name.replace(REMASTER_SUFFIX, "").trim();
