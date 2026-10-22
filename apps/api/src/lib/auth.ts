@@ -5,6 +5,7 @@ import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, genericOAuth } from "better-auth/plugins";
+import { buildOtpEmail } from "./emailTemplates/OtpEmail";
 import { sendEmail } from "./sendEmail";
 
 export const auth = betterAuth({
@@ -86,23 +87,17 @@ export const auth = betterAuth({
       storeOTP: "encrypted",
       async sendVerificationOTP({ email, otp, type }) {
         if (type === "sign-in") {
-          await sendEmail(
-            email,
-            "Login to your account by otp",
-            `Your verification code is: ${otp}`,
-          );
+          const { subject, text, html } = buildOtpEmail({ otp, type });
+          await sendEmail(email, subject, text, html);
         } else if (type === "email-verification") {
-          await sendEmail(
-            email,
-            "Verify your email address",
-            `Your verification code is: ${otp}`,
-          );
+          const { subject, text, html } = buildOtpEmail({ otp, type });
+          await sendEmail(email, subject, text, html);
         } else {
-          await sendEmail(
-            email,
-            "Verify email to reset password",
-            `Your verification code is: ${otp}`,
-          );
+          const { subject, text, html } = buildOtpEmail({
+            otp,
+            type: "forget-password",
+          });
+          await sendEmail(email, subject, text, html);
         }
       },
     }),
