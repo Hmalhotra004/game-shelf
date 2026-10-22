@@ -5,7 +5,6 @@ import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
 import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
-import { useDebounce } from "@repo/utils/hooks/useDebounce";
 import { searchGameQueryOptions } from "@repo/utils/queries/igdb";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
@@ -27,13 +26,12 @@ interface Props {
 const MIN_QUERY_LENGTH = 2;
 
 const SearchBottomSheet = ({ sheetRef }: Props) => {
-  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const theme = useThemeStore((s) => s.theme);
   const router = useRouter();
 
-  const debouncedSearch = useDebounce(search.trim(), 400);
   const canSearch = debouncedSearch.length >= MIN_QUERY_LENGTH;
 
   useEffect(() => {
@@ -146,8 +144,7 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
       <View className="flex-1 px-4">
         <View className="mb-2">
           <SearchBar
-            onChangeText={setSearch}
-            value={search}
+            onDebouncedChange={setDebouncedSearch}
             focus
           />
         </View>

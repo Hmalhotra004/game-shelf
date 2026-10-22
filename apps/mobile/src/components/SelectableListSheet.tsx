@@ -190,10 +190,7 @@ function SelectableListSheet<
       }}
     >
       <View className="flex-1 px-4">
-        <SearchBar
-          onChangeText={setSearch}
-          value={search}
-        />
+        <SearchBar onDebouncedChange={setSearch} />
 
         {tabs && tabs.length > 1 && (
           <View className="my-3 flex-row rounded-xl bg-muted p-1">

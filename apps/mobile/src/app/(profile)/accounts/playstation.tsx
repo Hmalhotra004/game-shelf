@@ -12,14 +12,13 @@ import { ACCOUNT_PLATFORM_IMAGE, cn, handleError } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SearchByUsernamePSNType } from "@repo/schemas/types/psn";
-import { useDebounce } from "@repo/utils/hooks/useDebounce";
 import { linkPSNAccountMutationOptions } from "@repo/utils/mutations/psn";
 import { searchPSNByUsernameQueryOptions } from "@repo/utils/queries/psn";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Redirect, useRouter } from "expo-router";
 import { CheckIcon } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -39,8 +38,7 @@ const Playstation = () => {
 
   const { data: session } = authClient.useSession();
 
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search.trim());
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const canSearch = debouncedSearch.length >= MIN_QUERY_LENGTH;
 
@@ -146,6 +144,11 @@ const Playstation = () => {
     );
   };
 
+  useEffect(() => {
+    form.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
+
   return (
     <View className="flex-1">
       <Header />
@@ -171,11 +174,7 @@ const Playstation = () => {
           </View>
 
           <SearchBar
-            value={search}
-            onChangeText={(text) => {
-              setSearch(text);
-              clearSelection();
-            }}
+            onDebouncedChange={setDebouncedSearch}
             placeholder="Search PSN username"
             focus
           />

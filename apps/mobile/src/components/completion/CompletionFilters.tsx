@@ -7,7 +7,7 @@ import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { CompletionStyleType, PlatformType } from "@repo/schemas/types/index";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { useQuery } from "@tanstack/react-query";
-import { memo, useMemo, useRef } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import {
@@ -22,6 +22,8 @@ import {
 } from "@repo/utils/lib/gameOptions";
 
 const CompletionFilters = () => {
+  const [searchKey, setSearchKey] = useState(0);
+
   const search = useCompletionFilterStore((s) => s.search);
   const platform = useCompletionFilterStore((s) => s.platform);
   const lists = useCompletionFilterStore((s) => s.lists);
@@ -46,12 +48,18 @@ const CompletionFilters = () => {
     [data],
   );
 
+  const handleClear = useCallback(() => {
+    reset();
+    setSearchKey((k) => k + 1);
+  }, [reset]);
+
   return (
     <View className="mb-3 gap-3">
       <SearchBar
-        value={search}
-        onChangeText={setSearch}
-        placeholder="Search collection..."
+        key={searchKey}
+        defaultValue={search}
+        onDebouncedChange={setSearch}
+        placeholder="Search completion..."
       />
 
       <ScrollView
@@ -89,7 +97,7 @@ const CompletionFilters = () => {
           <Button
             variant="ghost"
             size="sm"
-            onPress={reset}
+            onPress={handleClear}
           >
             <Text>Clear</Text>
           </Button>
