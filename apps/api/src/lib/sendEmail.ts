@@ -1,3 +1,4 @@
+import path from "node:path";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -20,5 +21,12 @@ export async function sendEmail(
     subject,
     text,
     html,
+    attachments: [
+      {
+        filename: "game-shelf-logo.png",
+        path: path.join(process.cwd(), "src/assets/icon.png"),
+        cid: "game-shelf-logo",
+      },
+    ],
   });
 }

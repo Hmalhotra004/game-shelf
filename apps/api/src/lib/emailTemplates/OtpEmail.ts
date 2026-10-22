@@ -115,9 +115,15 @@ export function buildOtpEmail({
               <td align="center" class="px" style="padding:36px 32px 8px 32px;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td align="center" class="bg-primary" width="44" height="44" style="width:44px;height:44px;background-color:${LIGHT.primary};border-radius:12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;line-height:44px;">
-                      <span class="text-primary-fg" style="color:${LIGHT.primaryForeground};">G</span>
-                    </td>
+                    <td align="center" class="bg-primary" width="44" height="44" style="width:44px;height:44px; background-color:${LIGHT.primary};border-radius:12px;overflow:hidden;">
+                        <img
+                          src="cid:game-shelf-logo"
+                          width="44"
+                          height="44"
+                          alt="Game Shelf"
+                          style="display:block;width:44px;height:44px;object-fit:contain;"
+                        />
+                      </td>
                   </tr>
                 </table>
                 <div class="text-fg" style="margin-top:12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.2px;color:${LIGHT.foreground};">
