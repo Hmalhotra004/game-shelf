@@ -1,5 +1,6 @@
 import { BASE_URL } from "@repo/utils/constants";
 import axios from "axios";
+import { router } from "expo-router";
 import { authClient } from "./authClient";
 
 export const api = axios.create({
@@ -20,3 +21,23 @@ api.interceptors.request.use(async (config) => {
 
   return config;
 });
+
+let signingOut = false;
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && !signingOut) {
+      signingOut = true;
+      try {
+        await authClient.signOut();
+      } catch {
+        // session is already invalid server-side; ignore
+      } finally {
+        signingOut = false;
+        router.replace({ pathname: "/(auth)" });
+      }
+    }
+    return Promise.reject(error);
+  },
+);

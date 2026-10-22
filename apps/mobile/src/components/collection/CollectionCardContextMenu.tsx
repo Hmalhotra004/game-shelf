@@ -115,7 +115,7 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
               <Text>Edit Collection</Text>
             </ContextMenuItem>
 
-            <ContextMenuItem
+            {/* <ContextMenuItem
               onPress={() =>
                 router.push({
                   pathname: "/(collection)/[collectionId]/manage-dlcs",
@@ -124,9 +124,9 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
               }
             >
               <Text>Manage DLCs</Text>
-            </ContextMenuItem>
+            </ContextMenuItem> */}
 
-            <ContextMenuItem
+            {/* <ContextMenuItem
               disabled
               onPress={() =>
                 router.push({
@@ -136,9 +136,9 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
               }
             >
               <Text>Manage Microtransactions</Text>
-            </ContextMenuItem>
+            </ContextMenuItem> */}
 
-            <ContextMenuItem
+            {/* <ContextMenuItem
               disabled
               onPress={() =>
                 router.push({
@@ -148,7 +148,7 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
               }
             >
               <Text>Change Images</Text>
-            </ContextMenuItem>
+            </ContextMenuItem> */}
           </ContextMenuGroup>
 
           <ContextMenuSeparator />

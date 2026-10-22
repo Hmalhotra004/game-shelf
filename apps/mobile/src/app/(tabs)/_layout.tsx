@@ -18,6 +18,9 @@ export default function TabsLayout() {
 
   if (!session) return <Redirect href={{ pathname: "/(auth)" }} />;
 
+  if (!session.user.emailVerified)
+    return <Redirect href={{ pathname: "/(auth)/email-verification" }} />;
+
   const SHEETS: Record<string, RefObject<BottomSheetModal | null>> = {
     index: searchRef,
     collection: searchRef,
