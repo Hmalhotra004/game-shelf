@@ -10,6 +10,7 @@ import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { OTP_LENGTH } from "@repo/utils/constants";
 import { Option } from "@repo/utils/lib/gameOptions";
 import type { ClassValue } from "clsx";
 import { formatDate } from "date-fns";
@@ -27,6 +28,7 @@ import {
 import {
   KeyboardTypeOptions,
   Pressable,
+  TextInput as RNTextInput,
   StyleProp,
   TextInputProps,
   TextStyle,
@@ -210,6 +212,86 @@ export const FormInputPassword: FormControlFunc<{
           </Pressable>
         </View>
       )}
+    </FormBase>
+  );
+};
+
+// ─── FormOTPInput ─────────────────────────────────────────────────────────────
+export const FormOTPInput: FormControlFunc<{
+  length?: number;
+  autoFocus?: boolean;
+  className?: ClassValue;
+  onValueChange?: (value: string) => void;
+  onComplete?: (value: string) => void;
+}> = ({
+  disabled,
+  length = OTP_LENGTH,
+  autoFocus,
+  className,
+  onValueChange,
+  onComplete,
+  ...props
+}) => {
+  const inputRef = useRef<RNTextInput>(null);
+  const [focused, setFocused] = useState(false);
+
+  return (
+    <FormBase {...props}>
+      {({ onChange, onBlur, value, invalid }) => {
+        const pin: string = value ?? "";
+
+        return (
+          <Pressable
+            onPress={() => inputRef.current?.focus()}
+            className={cn("flex-row gap-2 self-center", className)}
+          >
+            {Array.from({ length }).map((_, i) => {
+              const active =
+                focused &&
+                (i === pin.length ||
+                  (i === length - 1 && pin.length === length));
+
+              return (
+                <View
+                  key={i}
+                  className={cn(
+                    "h-14 w-12 items-center justify-center rounded-lg border-2",
+                    active ? "border-primary" : "border-border",
+                    invalid && "border-destructive",
+                    disabled && "opacity-50",
+                  )}
+                >
+                  <Text className="text-xl font-semibold">{pin[i] ?? ""}</Text>
+                </View>
+              );
+            })}
+
+            <RNTextInput
+              ref={inputRef}
+              value={pin}
+              onChangeText={(t) => {
+                const clean = t.replace(/\D/g, "").slice(0, length);
+                onChange(clean);
+                onValueChange?.(clean);
+                if (clean.length === length) onComplete?.(clean);
+              }}
+              onFocus={() => setFocused(true)}
+              onBlur={() => {
+                setFocused(false);
+                onBlur();
+              }}
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              autoComplete="sms-otp"
+              maxLength={length}
+              autoFocus={autoFocus}
+              editable={!disabled}
+              caretHidden
+              className="absolute inset-0 opacity-0"
+            />
+          </Pressable>
+        );
+      }}
     </FormBase>
   );
 };
