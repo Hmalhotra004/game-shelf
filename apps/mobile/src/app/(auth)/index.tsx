@@ -93,7 +93,7 @@ const login = () => {
             disabled={pending}
           />
 
-          <Pressable
+          {/* <Pressable
             onPress={() => router.push({ pathname: "/(auth)/forgot-password" })}
             disabled={pending}
             hitSlop={8}
@@ -102,7 +102,7 @@ const login = () => {
             <Text className="text-sm font-medium text-primary">
               Forgot password?
             </Text>
-          </Pressable>
+          </Pressable> */}
 
           {error && (
             <View className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3">
