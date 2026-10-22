@@ -1,6 +1,7 @@
 import { getProfile } from "@/controllers/psn/getProfile";
 import { linkPSNAccount } from "@/controllers/psn/linkPSN";
 import { searchByUsername } from "@/controllers/psn/searchByUsername";
+import { verifyNPCID } from "@/controllers/psn/verifyNPCId";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyPSN } from "@/middlewares/userMiddleware";
 import { Router } from "express";
@@ -33,6 +34,8 @@ export default (baseUrl: string, app: Router) => {
     validateData(linkPSNAccountSchema),
     linkPSNAccount,
   );
+
+  router.get("/verifyNPCID", authenticateUser, verifyNPCID);
 
   app.use(baseUrl, router);
 };

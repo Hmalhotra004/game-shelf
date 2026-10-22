@@ -5,6 +5,7 @@ import { UpdateCollectionSchemaType } from "@repo/schemas/schemas/collection";
 import { and, eq, inArray } from "drizzle-orm";
 import type { Request, Response } from "express";
 
+// TODO:resolve NPCId on PSVersion Change
 export const update = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;

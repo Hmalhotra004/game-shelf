@@ -31,6 +31,7 @@ export type CompletionStatusType = z.infer<typeof completionStatusSchema>;
 export type SyncType = z.infer<typeof SyncTypeSchema>;
 // export type UserAccountType = z.infer<typeof UserAccountTySchema>;
 export type PlatformAccountType = "steam" | "playstation" | "epic" | "xbox";
+export type PSVersionTrophyType = Exclude<PSVersionType, "PS1" | "PS2">;
 
 export type DataType = { label: string; value: number };
 

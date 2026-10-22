@@ -1,15 +1,21 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { collection, dlc, listItem } from "@/db/schema";
+import { queueResolveNPCId } from "@/jobs/resolveNPCId";
+import { queueResolveSteamAppId } from "@/jobs/Resolvesteamappid.job";
 import { CreateCollectionSchemaType } from "@repo/schemas/schemas/collection";
 import { and, eq, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 export const addCollection = async (req: Request, res: Response) => {
   const userId = req.user.id;
+  const PSNAccountId = req.user.PSNAccountId;
 
   try {
     const data = req.cleanBody as CreateCollectionSchemaType;
+
+    let newGame: typeof collection.$inferSelect | undefined;
+    let steamCollectionId: string | undefined;
 
     if (data.isDLC) {
       if (!data.collectionId) {
@@ -18,7 +24,7 @@ export const addCollection = async (req: Request, res: Response) => {
         });
       }
 
-      await db.transaction(async (tx) => {
+      const parentId = await db.transaction(async (tx) => {
         const [existingCollection] = await tx
           .select({
             id: collection.id,
@@ -32,9 +38,7 @@ export const addCollection = async (req: Request, res: Response) => {
             ),
           );
 
-        if (!existingCollection) {
-          return res.status(404).json({ message: "Game not found" });
-        }
+        if (!existingCollection) return null;
 
         await tx.insert(dlc).values({
           igdbId: String(data.igdbId),
@@ -61,9 +65,18 @@ export const addCollection = async (req: Request, res: Response) => {
               eq(collection.userId, userId),
             ),
           );
+
+        return existingCollection.id;
       });
+
+      if (!parentId) {
+        return res.status(404).json({ message: "Game not found" });
+      }
+
+      // The job re-resolves the parent game and all of its DLCs
+      steamCollectionId = parentId;
     } else {
-      await db.transaction(async (tx) => {
+      newGame = await db.transaction(async (tx) => {
         const [createdGame] = await tx
           .insert(collection)
           .values({
@@ -123,10 +136,46 @@ export const addCollection = async (req: Request, res: Response) => {
               ),
             );
         }
+
+        return createdGame;
       });
+
+      steamCollectionId = newGame.id;
     }
 
-    // TODO: add BGT to sync npcommunicationId or SteamAppId
+    // Steam app ID sync: runs for every game and every DLC add
+    if (steamCollectionId) {
+      try {
+        await queueResolveSteamAppId({
+          collectionId: steamCollectionId,
+          userId,
+        });
+      } catch (err) {
+        req.log.error(
+          { err, collectionId: steamCollectionId },
+          "QUEUE_RESOLVE_STEAM_APP_ID_ERROR",
+        );
+      }
+    }
+
+    // PSN trophy ID sync: only for newly added PS games
+    if (newGame && newGame.platform === "PS") {
+      try {
+        if (PSNAccountId) {
+          await queueResolveNPCId({
+            collectionId: newGame.id,
+            PSNAccountId: PSNAccountId,
+            collectionName: newGame.name,
+            userId: userId,
+          });
+        }
+      } catch (err) {
+        req.log.error(
+          { err, collectionId: newGame.id },
+          "QUEUE_RESOLVE_NPC_ID_ERROR",
+        );
+      }
+    }
 
     return res.sendStatus(204);
   } catch (err) {

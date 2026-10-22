@@ -1,0 +1,1 @@
+ALTER TABLE "collection" RENAME COLUMN "np_communication_id" TO "np_communication_ids";
