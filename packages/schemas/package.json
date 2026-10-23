@@ -16,7 +16,6 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/utils": "workspace:*",
     "@types/node": "^26.2.0",
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0",

@@ -1,8 +1,8 @@
-import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
 import z from "zod";
 import { CompletionStatusValues, CompletionStyleValues } from "../enums";
 import { platformSchema, PSVersionSchema } from "./collection";
 import { GameTypeSchema } from "./index";
+import { MAX_NOTES_CHARACTERS } from "./playthrough";
 
 export const completionStyleSchema = z.enum(CompletionStyleValues, {
   error: "Completion style is requried",
