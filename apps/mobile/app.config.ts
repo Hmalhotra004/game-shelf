@@ -47,6 +47,7 @@ const config: ExpoConfig = {
         },
       },
     ],
+    "@react-native-community/datetimepicker",
     "expo-build-properties",
     "expo-font",
     "expo-image",
