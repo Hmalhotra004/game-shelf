@@ -3,11 +3,14 @@ import { Text } from "@/components/ui/text";
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
-import { updatePlaythroughSchema } from "@repo/schemas/schemas/playthrough";
 import { PlaythroughStatusType as Status } from "@repo/schemas/types/index";
-import { MAX_NOTES_CHARACTERS } from "@repo/utils/constants";
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import {
+  MAX_NOTES_CHARACTERS,
+  updatePlaythroughSchema,
+} from "@repo/schemas/schemas/playthrough";
 
 import {
   BackHandler,
