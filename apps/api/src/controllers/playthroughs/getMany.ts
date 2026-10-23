@@ -30,8 +30,8 @@ const statusOrder = sql`CASE ${playthrough.status}
   WHEN 'Active' THEN 0
   WHEN 'On Hold' THEN 1
   WHEN 'Completed' THEN 2
-  WHEN 'Archived' THEN 4
-  ELSE 3
+  WHEN 'Archived' THEN 3
+  ELSE 4
 END`;
 
 const lastPlayedAt = sql<Date | null>`(
@@ -133,8 +133,8 @@ export const getMany = async (req: Request, res: Response) => {
         .where(where)
         // id as tiebreaker => stable pages for infinite scroll
         .orderBy(
-          sql`${lastPlayedAt} DESC NULLS LAST`,
-          asc(statusOrder),
+          asc(statusOrder), // Active always first
+          sql`${lastPlayedAt} DESC NULLS LAST`, // then most recently played within each status
           asc(effectiveName),
           asc(playthrough.id),
         )
