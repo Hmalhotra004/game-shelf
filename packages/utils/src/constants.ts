@@ -5,7 +5,7 @@
 
 export const OTP_LENGTH = 6;
 
-export const BASE_URL = "https://game-shelf-prod.onrender.com"
+export const BASE_URL = "https://game-shelf-prod.onrender.com";
 
 export const overviewLabels = [
   "Games",
