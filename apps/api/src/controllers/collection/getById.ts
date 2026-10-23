@@ -50,7 +50,6 @@ export const getById = async (req: Request, res: Response) => {
           completions: dlc.completions,
           status: dlc.status,
           ownershipType: dlc.ownershipType,
-          npCommunicationId: dlc.npCommunicationId,
           steamAppId: dlc.steamAppId,
           collectionId: dlc.collectionId,
         })
@@ -164,7 +163,7 @@ export const getById = async (req: Request, res: Response) => {
       PSVersion: game.PSVersion,
       status: game.status,
       ownershipType: game.ownershipType,
-      npCommunicationId: game.npCommunicationId,
+      npCommunicationIds: game.npCommunicationIds,
       steamAppId: game.steamAppId,
       steamGridDBId: game.steamGridDBId,
       dlcCount: game.dlcCount,
