@@ -1,5 +1,5 @@
 import { PlatformAccountType } from "@repo/schemas/types/index";
-import { GenericErrorMessage } from "@repo/utils/constants";
+import { DEV_URL, GenericErrorMessage, PROD_URL } from "@repo/utils/constants";
 import { capitalizeName } from "@repo/utils/lib/utils";
 import { isAxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
@@ -9,6 +9,8 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const BASE_URL = __DEV__ ? DEV_URL : PROD_URL;
 
 export function showToast(
   type: ToastOptions["type"],

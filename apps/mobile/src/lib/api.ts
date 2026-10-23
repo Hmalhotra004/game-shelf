@@ -1,7 +1,7 @@
-import { BASE_URL } from "@repo/utils/constants";
 import axios from "axios";
 import { router } from "expo-router";
 import { authClient } from "./authClient";
+import { BASE_URL } from "./utils";
 
 export const api = axios.create({
   baseURL: `${BASE_URL}/api`,
