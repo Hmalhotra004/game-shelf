@@ -11,7 +11,7 @@ const config: ExpoConfig = {
   userInterfaceStyle: "automatic",
   ios: {
     icon: "./assets/expo.icon",
-    buildNumber: "1",
+    buildNumber: "2",
     backgroundColor: "#ffffff",
     bundleIdentifier: "com.gameshelf.gameshelf",
     infoPlist: {
@@ -19,7 +19,7 @@ const config: ExpoConfig = {
     },
   },
   android: {
-    versionCode: 1,
+    versionCode: 2,
     package: "com.gameshelf.gameshelf",
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
