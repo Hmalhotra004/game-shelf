@@ -1,6 +1,7 @@
 import { CompletionGetManyResponse } from "@repo/schemas/types/completion";
 import { CollectionQueryKeys } from "@repo/utils/queries/collection";
 import { CompletionQueryKeys } from "@repo/utils/queries/completion";
+import { PlaythroughQueryKeys } from "@repo/utils/queries/playthrough";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { UserQueryKeys } from "@repo/utils/queries/user";
 import { AxiosInstance } from "axios";
@@ -45,6 +46,9 @@ export const addCompletionMutationOptions = (
       });
       await queryClient.invalidateQueries({
         queryKey: CompletionQueryKeys.getManyAll(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: PlaythroughQueryKeys.getManyAll(),
       });
       onSuccess?.();
     },
