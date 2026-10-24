@@ -10,8 +10,8 @@ const config: ExpoConfig = {
   scheme: "game-shelf",
   userInterfaceStyle: "automatic",
   ios: {
-    icon: "./assets/expo.icon",
     buildNumber: "2",
+    icon: "./assets/expo.icon",
     backgroundColor: "#ffffff",
     bundleIdentifier: "com.gameshelf.gameshelf",
     infoPlist: {
@@ -21,11 +21,12 @@ const config: ExpoConfig = {
   android: {
     versionCode: 2,
     package: "com.gameshelf.gameshelf",
+    predictiveBackGestureEnabled: false,
+    permissions: ["REQUEST_INSTALL_PACKAGES"],
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#080808",
     },
-    predictiveBackGestureEnabled: false,
   },
   web: {
     output: "static",

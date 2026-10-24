@@ -4,6 +4,7 @@ import collection from "./collection";
 import completion from "./completion";
 import igdb from "./igdb";
 import list from "./list";
+import mobile from "./mobile";
 import playthrough from "./playthrough";
 import psn from "./psn";
 import stats from "./stats";
@@ -29,6 +30,7 @@ export default (): Router => {
   psn("/PSN", router);
   steam("/steam", router);
   igdb("/igdb", router);
+  mobile("/mobile", router);
 
   return router;
 };

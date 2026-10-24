@@ -37,3 +37,10 @@ export type DataType = { label: string; value: number };
 
 export type Theme = "dark" | "light";
 export type CollectionCardVariant = "compact" | "overlay" | "slideUp";
+
+export type ReleaseInfo = {
+  version: string; // "0.1.2" (leading "v" stripped)
+  notes: string;
+  apkUrl: string;
+  pageUrl: string; // fallback: open the release page in the browser
+};

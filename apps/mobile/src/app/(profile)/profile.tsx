@@ -15,8 +15,8 @@ import { Pressable, View } from "react-native";
 import {
   ChevronRightIcon,
   HeartIcon,
+  InfoIcon,
   Link2Icon,
-  ListIcon,
   LogOutIcon,
   SettingsIcon,
   type LucideIcon,
@@ -30,12 +30,12 @@ type MenuItem = {
 };
 
 const MENU: MenuItem[] = [
-  {
-    label: "Manage Lists",
-    icon: ListIcon,
-    href: "/(profile)/lists",
-    disabled: true,
-  },
+  // {
+  //   label: "Manage Lists",
+  //   icon: ListIcon,
+  //   href: "/(profile)/lists",
+  //   disabled: true,
+  // },
   {
     label: "Manage WishList",
     icon: HeartIcon,
@@ -58,6 +58,12 @@ const MENU: MenuItem[] = [
     label: "Settings",
     icon: SettingsIcon,
     href: "/(profile)/settings",
+    disabled: true,
+  },
+  {
+    label: "About",
+    icon: InfoIcon,
+    href: "/(profile)/about",
     disabled: true,
   },
 ];
