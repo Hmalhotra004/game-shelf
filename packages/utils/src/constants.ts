@@ -13,3 +13,5 @@ export const overviewLabels = [
 ];
 
 export const GenericErrorMessage = "Something Went Wrong!";
+
+export const REPO = "Hmalhotra004/game-shelf";
