@@ -1,3 +1,4 @@
+import AppUpdateGate from "@/components/AppUpdateGate";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { useThemeStore } from "@/store/useThemeStore";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -54,6 +55,7 @@ export default function RootLayout() {
                 <Slot />
 
                 <Toast />
+                <AppUpdateGate />
                 <PortalHost />
               </SafeAreaProvider>
             </BottomSheetModalProvider>
