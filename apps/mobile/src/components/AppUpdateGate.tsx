@@ -9,8 +9,9 @@ import { useQuery } from "@tanstack/react-query";
 import { compareVersions, validate } from "compare-versions";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
-import { DownloadIcon, X } from "lucide-react-native";
+import { DownloadIcon } from "lucide-react-native";
 import { useEffect, useMemo, useState } from "react";
+import { AppState, Linking, Platform, ScrollView, View } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -18,15 +19,6 @@ import {
   getLatestReleaseQueryOptions,
   getMobileVersionQueryOptions,
 } from "@repo/utils/queries/app";
-
-import {
-  AppState,
-  Linking,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
 
 const getCurrentAppVersion = () =>
   Application.nativeApplicationVersion ?? Constants.expoConfig?.version ?? null;
@@ -138,45 +130,59 @@ export default function AppUpdateGate() {
   const busy = progress !== null;
 
   const notes = release?.notes ? (
-    <ScrollView className="max-h-64">
+    <ScrollView className="flex-1">
       <Markdown
         style={markdownStyle}
         onLinkPress={(url) => {
           Linking.openURL(url).catch(() => {});
-          return false; // stop the library's default handling
+          return false;
         }}
       >
         {formatNotes(release.notes)}
       </Markdown>
     </ScrollView>
-  ) : null;
+  ) : (
+    <View className="flex-1" />
+  );
 
   const actions = (
     <View className="gap-2">
       {error && <Text className="text-destructive">{error}</Text>}
-      <Button
-        size="lg"
-        onPress={install}
-        disabled={!release || busy}
-      >
-        <Icon
-          as={DownloadIcon}
-          size={18}
-        />
-        <Text>
-          {busy
-            ? `Downloading ${Math.round((progress ?? 0) * 100)}%`
-            : "Update now"}
-        </Text>
-      </Button>
-      {/* If GitHub is unreachable during a forced update, still give a way out */}
-      {!release && release !== undefined ? null : null}
+      <View className="gap-2">
+        <Button
+          size="lg"
+          onPress={install}
+          disabled={!release || busy}
+        >
+          <Icon
+            as={DownloadIcon}
+            size={18}
+          />
+          <Text>
+            {busy
+              ? `Downloading ${Math.round((progress ?? 0) * 100)}%`
+              : "Update now"}
+          </Text>
+        </Button>
+
+        {!forceUpdate && (
+          <Button
+            size="lg"
+            variant="outline"
+            disabled={busy}
+            onPress={() => setDismissed(release?.version ?? null)}
+          >
+            <Text>Not Now</Text>
+          </Button>
+        )}
+      </View>
+
       {!release && (
         <Button
           variant="outline"
           onPress={() =>
             Linking.openURL(
-              `https://github.com/Hmalhotra004/game-shelf/releases`,
+              "https://github.com/Hmalhotra004/game-shelf/releases",
             )
           }
         >
@@ -189,15 +195,17 @@ export default function AppUpdateGate() {
   if (forceUpdate) {
     return (
       <View
-        className="absolute inset-0 z-50 bg-background px-6"
+        className="absolute inset-0 z-50 bg-background px-4"
         style={{
-          paddingTop: insets.top + 32,
+          paddingTop: insets.top + 24,
           paddingBottom: insets.bottom + 24,
         }}
       >
-        <View className="flex-1 justify-center gap-6">
-          <View className="gap-3">
-            <Text className="text-left text-3xl">Update required</Text>
+        <View className="flex-1 gap-6">
+          <View className="gap-2">
+            <Text className="text-left font-semibold text-3xl">
+              Update required
+            </Text>
             <Text className="text-muted-foreground text-base leading-6">
               This version is no longer supported. Please update to continue.
             </Text>
@@ -228,19 +236,24 @@ export default function AppUpdateGate() {
 
   return (
     <View
-      className="absolute inset-0 z-50 justify-end bg-black/50"
-      style={{ paddingBottom: insets.bottom }}
+      className="absolute inset-0 z-50 bg-background px-4"
+      style={{
+        paddingTop: insets.top + 24,
+        paddingBottom: insets.bottom + 24,
+      }}
     >
-      <View className="gap-4 rounded-t-2xl bg-card p-5">
+      <View className="flex-1 gap-4">
         <View className="flex-row items-center justify-between">
-          <Text className="text-xl font-inter-semiBold">
+          <Text className="text-left font-semibold text-3xl">
             Update {release?.version} available
           </Text>
-          <Pressable
+
+          {/* <Button
+            size="icon"
+            variant="ghost"
             accessibilityRole="button"
             accessibilityLabel="Dismiss update prompt"
             disabled={busy}
-            className="size-9 items-center justify-center rounded-md active:bg-accent"
             onPress={() => setDismissed(release?.version ?? null)}
           >
             <Icon
@@ -248,8 +261,9 @@ export default function AppUpdateGate() {
               size={18}
               className="text-muted-foreground"
             />
-          </Pressable>
+          </Button> */}
         </View>
+
         {notes}
         {actions}
       </View>
