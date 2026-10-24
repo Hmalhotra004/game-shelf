@@ -54,6 +54,7 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
   "/accounts": { title: "Accounts", showAvatar: false },
   "/stats": { title: "Stats", showAvatar: false },
   "/settings": { title: "Settings", showAvatar: false },
+  "/about": { title: "About", showAvatar: false },
 
   // (accounts)
   "/accounts/steam": { title: "Steam", showAvatar: false },

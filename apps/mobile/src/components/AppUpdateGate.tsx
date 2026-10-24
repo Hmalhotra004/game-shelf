@@ -3,31 +3,24 @@ import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { downloadAndInstall } from "@/lib/updater";
+import {
+  downloadAndInstall,
+  getCurrentAppVersion,
+  isNewerVersion,
+} from "@/lib/updater";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useQuery } from "@tanstack/react-query";
-import { compareVersions, validate } from "compare-versions";
-import * as Application from "expo-application";
-import Constants from "expo-constants";
 import { DownloadIcon } from "lucide-react-native";
 import { useEffect, useMemo, useState } from "react";
 import { AppState, Linking, Platform, ScrollView, View } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useUpdateStore } from "@/store/useUpdateStore";
 import {
   getLatestReleaseQueryOptions,
   getMobileVersionQueryOptions,
 } from "@repo/utils/queries/app";
-
-const getCurrentAppVersion = () =>
-  Application.nativeApplicationVersion ?? Constants.expoConfig?.version ?? null;
-
-const isNewerVersion = (target?: string, current?: string | null) => {
-  if (!target || !current) return false;
-  if (!validate(target) || !validate(current)) return false;
-  return compareVersions(target, current) > 0;
-};
 
 const withMentions = (md: string) =>
   md.replace(
@@ -49,7 +42,9 @@ const linkifyUrls = (md: string) =>
 const formatNotes = (md: string) => withMentions(linkifyUrls(md));
 
 export default function AppUpdateGate() {
-  const [dismissed, setDismissed] = useState<string | null>(null);
+  const dismissed = useUpdateStore((s) => s.dismissed);
+  const setDismissed = useUpdateStore((s) => s.setDismissed);
+
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
