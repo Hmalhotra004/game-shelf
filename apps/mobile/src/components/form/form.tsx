@@ -28,9 +28,12 @@ import {
 import {
   KeyboardTypeOptions,
   Pressable,
+  ReturnKeyTypeOptions,
   TextInput as RNTextInput,
   StyleProp,
+  SubmitBehavior,
   TextInputProps,
+  TextInputSubmitEditingEvent,
   TextStyle,
   View,
 } from "react-native";
@@ -125,6 +128,9 @@ export const FormInput: FormControlFunc<{
   maxLength?: TextInputProps["maxLength"];
   autoFocus?: boolean;
   className?: ClassValue;
+  returnKeyType?: ReturnKeyTypeOptions;
+  submitBehavior?: SubmitBehavior;
+  onSubmitEditing?: (e: TextInputSubmitEditingEvent) => void;
 }> = ({
   disabled,
   placeholder,
@@ -133,6 +139,9 @@ export const FormInput: FormControlFunc<{
   maxLength,
   className,
   autoFocus,
+  returnKeyType,
+  submitBehavior,
+  onSubmitEditing,
   ...props
 }) => (
   <FormBase {...props}>
@@ -147,6 +156,9 @@ export const FormInput: FormControlFunc<{
         maxLength={maxLength}
         editable={!disabled}
         autoFocus={autoFocus}
+        returnKeyType={returnKeyType}
+        submitBehavior={submitBehavior}
+        onSubmitEditing={onSubmitEditing}
         className={cn(
           "h-10 rounded-md border border-border bg-card px-3 py-2",
           "text-sm text-foreground placeholder:text-muted-foreground",
@@ -164,7 +176,19 @@ export const FormInputPassword: FormControlFunc<{
   placeholder?: string;
   className?: ClassValue;
   autoFocus?: boolean;
-}> = ({ disabled, placeholder, className, autoFocus, ...props }) => {
+  returnKeyType?: ReturnKeyTypeOptions;
+  submitBehavior?: SubmitBehavior;
+  onSubmitEditing?: (e: TextInputSubmitEditingEvent) => void;
+}> = ({
+  disabled,
+  placeholder,
+  className,
+  autoFocus,
+  returnKeyType,
+  submitBehavior,
+  onSubmitEditing,
+  ...props
+}) => {
   const [show, setShow] = useState(false);
   const theme = useThemeStore((state) => state.theme);
   const iconColor = theme === "dark" ? "#ffffff" : "#000000";
@@ -188,6 +212,9 @@ export const FormInputPassword: FormControlFunc<{
             secureTextEntry={!show}
             editable={!disabled}
             autoFocus={autoFocus}
+            returnKeyType={returnKeyType}
+            submitBehavior={submitBehavior}
+            onSubmitEditing={onSubmitEditing}
             className={cn(
               "flex-1 text-sm text-foreground placeholder:text-muted-foreground border-0 bg-background",
               className,

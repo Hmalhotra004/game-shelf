@@ -19,7 +19,7 @@ export const signupSchema = z
     name: z
       .string({ error: "Name is required" })
       .trim()
-      .min(1, { error: "name is required" }),
+      .min(1, { error: "Name is required" }),
 
     email: z
       .email({ error: "Email is required" })

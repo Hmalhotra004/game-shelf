@@ -13,7 +13,11 @@ import { LibraryIcon } from "lucide-react-native";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+
+import {
+  KeyboardAwareScrollView,
+  KeyboardController,
+} from "react-native-keyboard-controller";
 
 const SignUp = () => {
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +58,7 @@ const SignUp = () => {
   return (
     <ScreenWrapper>
       <KeyboardAwareScrollView
+        bottomOffset={250}
         contentContainerClassName="flex-grow pb-12 pt-12"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -75,7 +80,7 @@ const SignUp = () => {
           </Text>
         </View>
 
-        <View className="gap-4">
+        <View className="gap-4 pr-1">
           <FormInput
             name="name"
             control={form.control}
@@ -83,6 +88,9 @@ const SignUp = () => {
             placeholder="Name"
             autoComplete="name"
             disabled={pending}
+            returnKeyType="next"
+            submitBehavior="submit"
+            onSubmitEditing={() => KeyboardController.setFocusTo("next")}
           />
 
           <FormInput
@@ -92,6 +100,9 @@ const SignUp = () => {
             keyboardType="email-address"
             autoComplete="email"
             disabled={pending}
+            returnKeyType="next"
+            submitBehavior="submit"
+            onSubmitEditing={() => KeyboardController.setFocusTo("next")}
           />
 
           <FormInputPassword
@@ -99,6 +110,9 @@ const SignUp = () => {
             control={form.control}
             placeholder="Password"
             disabled={pending}
+            returnKeyType="next"
+            submitBehavior="submit"
+            onSubmitEditing={() => KeyboardController.setFocusTo("next")}
           />
 
           <FormInputPassword
@@ -106,6 +120,8 @@ const SignUp = () => {
             control={form.control}
             placeholder="Confirm password"
             disabled={pending}
+            returnKeyType="done"
+            onSubmitEditing={form.handleSubmit(onSubmit)}
           />
 
           {error && (
