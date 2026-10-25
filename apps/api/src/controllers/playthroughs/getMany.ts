@@ -40,6 +40,9 @@ const lastPlayedAt = sql<Date | null>`(
   WHERE ${playthroughSession.playthroughId} = ${playthrough.id}
 )`;
 
+// last play date, or creation time for playthroughs with no sessions yet
+const recentActivity = sql`COALESCE(${lastPlayedAt}, ${playthrough.createdAt})`;
+
 export const getMany = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
@@ -105,11 +108,9 @@ export const getMany = async (req: Request, res: Response) => {
         .select({
           ...getTableColumns(playthrough),
 
-          lastPlayedAt: sql<string | null>`(
-    SELECT MAX(${playthroughSession.playDate})
-    FROM ${playthroughSession}
-    WHERE ${playthroughSession.playthroughId} = ${playthrough.id}
-  )`.mapWith((v) => (v ? new Date(v) : null)),
+          lastPlayedAt: sql<string | null>`${lastPlayedAt}`.mapWith((v) =>
+            v ? new Date(v) : null,
+          ),
 
           // game
           gameName: collection.name,
@@ -134,7 +135,7 @@ export const getMany = async (req: Request, res: Response) => {
         // id as tiebreaker => stable pages for infinite scroll
         .orderBy(
           asc(statusOrder), // Active always first
-          sql`${lastPlayedAt} DESC NULLS LAST`, // then most recently played within each status
+          sql`${recentActivity} DESC`, // newest activity first within each status
           asc(effectiveName),
           asc(playthrough.id),
         )
