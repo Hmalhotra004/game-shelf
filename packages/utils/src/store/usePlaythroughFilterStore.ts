@@ -23,7 +23,7 @@ interface Actions {
 const initialState: State = {
   search: "",
   platform: [],
-  status: [],
+  status: ["Active"],
   lists: [],
 };
 

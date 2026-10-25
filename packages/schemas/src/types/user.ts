@@ -23,6 +23,9 @@ export type GetGamesType = {
     collectionId: string;
     name: string;
     image: string | null;
+    customImage: string | null;
+    platform: PlatformType;
+    provider: ProviderType;
   }[];
 };
 

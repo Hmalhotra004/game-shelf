@@ -20,9 +20,9 @@ const IMAGE_WIDTH = 64;
 const CARD_HEIGHT = 80;
 
 const isGame = (item: GameItem | DlcItem): item is GameItem =>
-  "platform" in item;
+  !("collectionId" in item);
 
-const StartPlaythroughCard = ({ item, selected, onPress }: Props) => {
+const SelectableListSheetCard = ({ item, selected, onPress }: Props) => {
   const theme = useThemeStore((s) => s.theme);
   const game = isGame(item) ? item : null;
 
@@ -65,9 +65,14 @@ const StartPlaythroughCard = ({ item, selected, onPress }: Props) => {
         >
           {item.name}
         </Text>
-        <Text className="text-xs text-muted-foreground">
-          {game ? String(game.platform) : "DLC"}
-        </Text>
+        <View className="gap-1 flex-row">
+          <Text className="text-xs text-muted-foreground">{item.platform}</Text>
+          {!game && (
+            <Text className="text-xs text-muted-foreground">
+              {"\u2022"} DLC
+            </Text>
+          )}
+        </View>
       </View>
 
       {/* Selection indicator */}
@@ -85,4 +90,4 @@ const StartPlaythroughCard = ({ item, selected, onPress }: Props) => {
   );
 };
 
-export default memo(StartPlaythroughCard);
+export default memo(SelectableListSheetCard);

@@ -1,4 +1,4 @@
-import StartPlaythroughCard from "@/components/playthrough/StartPlaythroughCard";
+import SelectableListSheetCard from "@/components/SelectableListSheetCard";
 import { api } from "@/lib/api";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { GameType } from "@repo/schemas/types/index";
@@ -67,7 +67,7 @@ const AddCompletionSheet = ({ sheetRef }: Props) => {
       onConfirm={handleConfirm}
       onOpenChange={setIsOpen}
       renderItem={({ item, selected, onPress }) => (
-        <StartPlaythroughCard
+        <SelectableListSheetCard
           item={item}
           selected={selected}
           onPress={onPress}

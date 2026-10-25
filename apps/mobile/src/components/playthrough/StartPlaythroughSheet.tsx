@@ -1,4 +1,4 @@
-import StartPlaythroughCard from "@/components/playthrough/StartPlaythroughCard";
+import SelectableListSheetCard from "@/components/SelectableListSheetCard";
 import { api } from "@/lib/api";
 import { handleError } from "@/lib/utils";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -77,7 +77,7 @@ const StartPlaythroughSheet = ({ sheetRef }: Props) => {
       onOpenChange={setIsOpen}
       onDismiss={() => startPlaythrough.reset()}
       renderItem={({ item, selected, onPress }) => (
-        <StartPlaythroughCard
+        <SelectableListSheetCard
           item={item}
           selected={selected}
           onPress={onPress}

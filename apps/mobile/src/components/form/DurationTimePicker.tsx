@@ -2,7 +2,7 @@ import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 import type { ClassValue } from "clsx";
 import { cssInterop } from "nativewind";
-import { Fragment, memo } from "react";
+import { Fragment, memo, useRef } from "react";
 import { TextInput, View } from "react-native";
 
 import {
@@ -50,6 +50,9 @@ export const DurationTimePicker = memo(function DurationTimePicker({
   const useSheetInput = inBottomSheet ?? !!sheetContext;
   const Input = useSheetInput ? BottomSheetTextInput : TextInput;
 
+  const inputRefs = useRef<(TextInput | null | undefined)[]>([]);
+  const lastIndex = UNITS.length - 1;
+
   const total = Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
   const parts: Record<Field, number> = {
     hours: Math.floor(total / 3600),
@@ -78,11 +81,18 @@ export const DurationTimePicker = memo(function DurationTimePicker({
 
           <View className="items-center gap-1">
             <Input
+              ref={(el: TextInput | null | undefined) => {
+                inputRefs.current[i] = el;
+              }}
               value={pad(parts[u.field], u.size)}
               onChangeText={(t) => update(u.field, u.max, t)}
               editable={!disabled}
               keyboardType="number-pad"
-              returnKeyType="done"
+              returnKeyType={i === lastIndex ? "done" : "next"}
+              submitBehavior={i === lastIndex ? "blurAndSubmit" : "submit"}
+              onSubmitEditing={() => {
+                if (i < lastIndex) inputRefs.current[i + 1]?.focus();
+              }}
               selectTextOnFocus
               accessibilityLabel={u.label}
               className={cn(
