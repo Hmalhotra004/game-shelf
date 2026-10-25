@@ -101,3 +101,14 @@ export type Artworks = {
   width: number;
   artwork_type: number;
 };
+
+export type IGDBGameLike = Pick<
+  IGDBGetByIdType,
+  "id" | "name" | "first_release_date"
+> &
+  Partial<
+    Pick<
+      IGDBGetByIdType,
+      "cover" | "artworks" | "external_games" | "parent_game" | "game_type"
+    >
+  >;
