@@ -1,4 +1,5 @@
 import { getById } from "@/controllers/igdb/getById";
+import { getByIdTest } from "@/controllers/igdb/getByIdTest";
 import { getToken } from "@/controllers/igdb/getToken";
 import { searchGame } from "@/controllers/igdb/searchGame";
 import { test } from "@/controllers/igdb/test";
@@ -11,6 +12,8 @@ export default (baseUrl: string, app: Router) => {
   router.get("/search", authenticateUser, searchGame);
 
   router.get("/test", authenticateUser, test);
+
+  router.get("/:igdbId/test", authenticateUser, getByIdTest);
 
   router.get("/:igdbId", authenticateUser, getById);
 
