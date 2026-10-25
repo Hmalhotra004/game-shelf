@@ -33,6 +33,8 @@ export const getGames = async (req: Request, res: Response) => {
         image: dlc.image,
         coverImage: dlc.coverImage,
         igdbId: dlc.igdbId,
+        platform: collection.platform,
+        provider: collection.provider,
       })
       .from(dlc)
       .innerJoin(collection, eq(dlc.collectionId, collection.id))
