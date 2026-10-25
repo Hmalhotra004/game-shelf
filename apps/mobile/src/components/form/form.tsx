@@ -198,7 +198,7 @@ export const FormInputPassword: FormControlFunc<{
       {({ onChange, onBlur, value, invalid }) => (
         <View
           className={cn(
-            "flex-row h-10 items-center rounded-md border border-border bg-card w-full pr-2",
+            "flex-row h-10 items-center rounded-md border border-border bg-card dark:bg-input/30 w-full",
             invalid && "border-destructive",
             disabled && "opacity-50",
             className,
@@ -216,14 +216,14 @@ export const FormInputPassword: FormControlFunc<{
             submitBehavior={submitBehavior}
             onSubmitEditing={onSubmitEditing}
             className={cn(
-              "flex-1 text-sm text-foreground placeholder:text-muted-foreground border-0 bg-background",
+              "flex-1 text-sm text-foreground placeholder:text-muted-foreground border-0 bg-transparent dark:bg-transparent",
               className,
             )}
           />
 
           <Pressable
             onPress={() => setShow((v) => !v)}
-            className="bg-transparent pl-2"
+            className="p-2"
           >
             {show ? (
               <EyeIcon
