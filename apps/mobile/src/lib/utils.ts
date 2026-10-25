@@ -5,6 +5,7 @@ import { isAxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import Toast, { ToastOptions } from "react-native-toast-message";
 import { twMerge } from "tailwind-merge";
+import Constants from "expo-constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -41,3 +42,8 @@ export const ACCOUNT_PLATFORM_IMAGE: Record<PlatformAccountType, number> = {
   epic: require("../../assets/epic-96.png"),
   xbox: require("../../assets/xbox-96.png"),
 };
+
+export const configScheme = Constants.expoConfig?.scheme;
+export const scheme = Array.isArray(configScheme)
+  ? configScheme[0]
+  : (configScheme ?? "game-shelf");

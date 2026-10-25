@@ -1,26 +1,30 @@
 import { ExpoConfig } from "expo/config";
 import pkg from "./package.json";
 
+const IS_DEV = process.env.APP_VARIANT === "development";
+
 const config: ExpoConfig = {
-  name: "Game Shelf",
+  name: IS_DEV ? "Game Shelf (Dev)" : "Game Shelf",
   slug: "game-shelf",
   version: pkg.version,
   orientation: "portrait",
   icon: "./assets/images/icon.png",
-  scheme: "game-shelf",
+  scheme: IS_DEV ? "game-shelf-dev" : "game-shelf",
   userInterfaceStyle: "automatic",
   ios: {
     buildNumber: "3",
     icon: "./assets/expo.icon",
     backgroundColor: "#ffffff",
-    bundleIdentifier: "com.gameshelf.gameshelf",
+    bundleIdentifier: IS_DEV
+      ? "com.gameshelf.gameshelf.dev"
+      : "com.gameshelf.gameshelf",
     infoPlist: {
       UIBackgroundModes: [],
     },
   },
   android: {
     versionCode: 3,
-    package: "com.gameshelf.gameshelf",
+    package: IS_DEV ? "com.gameshelf.gameshelf.dev" : "com.gameshelf.gameshelf",
     predictiveBackGestureEnabled: false,
     permissions: ["REQUEST_INSTALL_PACKAGES"],
     adaptiveIcon: {
