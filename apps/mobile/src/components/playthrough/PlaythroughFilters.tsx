@@ -2,12 +2,9 @@ import MultiSelectBottomSheet from "@/components/form/MultiSelectBottomSheet";
 import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { api } from "@/lib/api";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { PlatformType, PlaythroughStatusType } from "@repo/schemas/types/index";
-import { listGetManyQueryOptions } from "@repo/utils/queries/list";
-import { useQuery } from "@tanstack/react-query";
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import {
@@ -16,7 +13,6 @@ import {
 } from "@repo/utils/store/usePlaythroughFilterStore";
 
 import {
-  Option,
   PLATFORM_OPTIONS,
   PLAYTHROUGH_STATUS_OPTIONS,
 } from "@repo/utils/lib/gameOptions";
@@ -26,27 +22,27 @@ const PlaythroughFilters = () => {
 
   const search = usePlaythroughFilterStore((s) => s.search);
   const platform = usePlaythroughFilterStore((s) => s.platform);
-  const lists = usePlaythroughFilterStore((s) => s.lists);
+  // const lists = usePlaythroughFilterStore((s) => s.lists);
   const status = usePlaythroughFilterStore((s) => s.status);
   const setSearch = usePlaythroughFilterStore((s) => s.setSearch);
   const setPlatform = usePlaythroughFilterStore((s) => s.setPlatform);
   const setStatus = usePlaythroughFilterStore((s) => s.setStatus);
-  const setLists = usePlaythroughFilterStore((s) => s.setLists);
+  // const setLists = usePlaythroughFilterStore((s) => s.setLists);
   const reset = usePlaythroughFilterStore((s) => s.reset);
   const activeCount = usePlaythroughFilterStore(selectActiveFilterCount);
 
   const platformSheetRef = useRef<BottomSheetModal>(null);
   const statusSheetRef = useRef<BottomSheetModal>(null);
-  const listsSheetRef = useRef<BottomSheetModal>(null);
+  // const listsSheetRef = useRef<BottomSheetModal>(null);
 
-  const { data, isLoading, isError, error } = useQuery(
-    listGetManyQueryOptions(api),
-  );
+  // const { data, isLoading, isError, error } = useQuery(
+  //   listGetManyQueryOptions(api),
+  // );
 
-  const listOptions = useMemo<Option<string>[]>(
-    () => (data ?? []).map((l) => ({ value: l.id, label: l.name })),
-    [data],
-  );
+  // const listOptions = useMemo<Option<string>[]>(
+  //   () => (data ?? []).map((l) => ({ value: l.id, label: l.name })),
+  //   [data],
+  // );
 
   const handleClear = useCallback(() => {
     reset();
@@ -84,14 +80,14 @@ const PlaythroughFilters = () => {
           <Text>Status{status.length ? ` (${status.length})` : ""}</Text>
         </Button>
 
-        <Button
+        {/* <Button
           size="sm"
           disabled={isLoading || isError}
           variant={lists.length ? "default" : "outline"}
           onPress={() => listsSheetRef.current?.present()}
         >
           <Text>Lists{lists.length ? ` (${lists.length})` : ""}</Text>
-        </Button>
+        </Button> */}
 
         {activeCount > 0 && (
           <Button
@@ -120,13 +116,13 @@ const PlaythroughFilters = () => {
         sheetRef={statusSheetRef}
       />
 
-      <MultiSelectBottomSheet
+      {/* <MultiSelectBottomSheet
         title="Lists"
         options={listOptions}
         value={lists}
         onChange={setLists}
         sheetRef={listsSheetRef}
-      />
+      /> */}
     </View>
   );
 };

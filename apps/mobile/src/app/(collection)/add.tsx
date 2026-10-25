@@ -17,7 +17,6 @@ import { PlatformType } from "@repo/schemas/types/index";
 import { GetGamesType } from "@repo/schemas/types/user";
 import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
-import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
@@ -59,17 +58,17 @@ const AddCollection = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: lists, isLoading: isLoadingLists } = useQuery(
-    listGetManyQueryOptions(api),
-  );
+  // const { data: lists, isLoading: isLoadingLists } = useQuery(
+  //   listGetManyQueryOptions(api),
+  // );
   const { data: game, isLoading: isLoadingGame } = useQuery(
     getByIdQueryOptions(api, Number(igdbId)),
   );
 
-  const listOptions = (lists ?? []).map((d) => ({
-    label: d.name,
-    value: d.id,
-  }));
+  // const listOptions = (lists ?? []).map((d) => ({
+  //   label: d.name,
+  //   value: d.id,
+  // }));
 
   const addGame = useMutation(
     addCollectionMutationOptions(
@@ -202,7 +201,8 @@ const AddCollection = () => {
   }
 
   const isPending = addGame.isPending;
-  const isLoading = isLoadingGame || isLoadingLists || isLoadingUserGames;
+  const isLoading = isLoadingGame || isLoadingUserGames;
+  // const isLoading = isLoadingGame || isLoadingLists || isLoadingUserGames;
 
   if (isLoadingGame || !game) {
     return (
@@ -356,14 +356,14 @@ const AddCollection = () => {
                   options={getOwnershipTypeOptions(false)}
                   disabled={isPending}
                 />
-                <FormMultiSelectSheet
+                {/* <FormMultiSelectSheet
                   name="lists"
                   control={form.control}
                   label="Custom Lists"
                   placeholder="Select custom lists"
                   options={listOptions}
                   disabled={isPending}
-                />
+                /> */}
               </>
             )}
 
