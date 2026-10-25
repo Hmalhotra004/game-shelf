@@ -21,7 +21,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 import {
   FormDatePicker,
@@ -198,7 +199,8 @@ const AddCollection = () => {
       <Header />
 
       <ScreenWrapper>
-        <ScrollView
+        <KeyboardAwareScrollView
+          bottomOffset={170}
           contentContainerClassName="gap-6 pb-10"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -475,7 +477,7 @@ const AddCollection = () => {
               <Text>Cancel</Text>
             </Button>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </ScreenWrapper>
     </View>
   );
