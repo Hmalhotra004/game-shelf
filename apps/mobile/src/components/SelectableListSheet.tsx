@@ -189,11 +189,11 @@ function SelectableListSheet<
         onDismiss?.();
       }}
     >
-      <View className="flex-1 px-4">
+      <View className="flex-1 px-4 gap-3">
         <SearchBar onDebouncedChange={setSearch} />
 
         {tabs && tabs.length > 1 && (
-          <View className="my-3 flex-row rounded-xl bg-muted p-1">
+          <View className="flex-row rounded-xl bg-muted p-1">
             {tabs.map(({ value, label }) => {
               const active = tab === value;
               return (
@@ -241,7 +241,7 @@ function SelectableListSheet<
           />
         )}
 
-        <View className="flex-row gap-3 pb-6 pt-3">
+        <View className="flex-row gap-3 pb-6">
           <Button
             variant="outline"
             className="flex-1"

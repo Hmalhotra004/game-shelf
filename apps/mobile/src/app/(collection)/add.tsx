@@ -1,16 +1,20 @@
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
+import SelectableListSheet from "@/components/SelectableListSheet";
+import SelectableListSheetCard from "@/components/SelectableListSheetCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { handleError, showToast } from "@/lib/utils";
+import { cn, handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DLCs } from "@repo/schemas/types/igdb";
 import { PlatformType } from "@repo/schemas/types/index";
+import { GetGamesType } from "@repo/schemas/types/user";
 import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
 import { listGetManyQueryOptions } from "@repo/utils/queries/list";
@@ -19,8 +23,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -42,6 +46,10 @@ import {
   createCollectionSchema,
   CreateCollectionSchemaType,
 } from "@repo/schemas/schemas/collection";
+
+type GameItem = GetGamesType["games"][number];
+
+const getSearchText = (item: GameItem) => item.name;
 
 const AddCollection = () => {
   const { igdbId } = useLocalSearchParams<{ igdbId: string }>();
@@ -106,10 +114,28 @@ const AddCollection = () => {
   const selectedPlatform = form.watch("platform");
   const dlcValues = form.watch("DLCs");
   const baseDate = form.watch("dateOfPurchase");
+  const collectionId = form.watch("collectionId");
 
   const { data: userGames, isLoading: isLoadingUserGames } = useQuery(
     userGetCollectionQueryOptions(api, isDlc),
   );
+
+  const parentSheetRef = useRef<BottomSheetModal>(null);
+
+  const selectedParent = userGames?.games.find((g) => g.id === collectionId);
+
+  const getParentItems = useCallback(
+    (): GameItem[] => userGames?.games ?? [],
+    [userGames],
+  );
+
+  const handleSelectParent = (id: string) => {
+    form.setValue("collectionId", id, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+    parentSheetRef.current?.dismiss();
+  };
 
   const parentGame = isDlc
     ? userGames?.games.find(
@@ -342,16 +368,50 @@ const AddCollection = () => {
             )}
 
             {isDlc && (
-              <FormSelectSheet
+              <Controller
                 name="collectionId"
                 control={form.control}
-                label="Parent Game*"
-                placeholder="Select parent game"
-                options={(userGames?.games ?? []).map((g) => ({
-                  value: g.id,
-                  label: g.name,
-                }))}
-                disabled={isPending}
+                render={({}) => (
+                  <View className="gap-2">
+                    <Text className="text-sm font-medium text-foreground">
+                      Parent Game*
+                    </Text>
+
+                    <Pressable
+                      onPress={() => parentSheetRef.current?.present()}
+                      disabled={isPending}
+                      className={cn(
+                        "h-10 dark:bg-input/30 flex-row items-center justify-between rounded-md border bg-card px-3",
+                        form.formState.errors.collectionId
+                          ? "border-destructive"
+                          : "border-border",
+                        isPending && "opacity-50",
+                      )}
+                    >
+                      <Text
+                        numberOfLines={1}
+                        className={cn(
+                          "flex-1 text-base",
+                          selectedParent
+                            ? "text-foreground"
+                            : "text-muted-foreground",
+                        )}
+                      >
+                        {selectedParent?.name ?? "Select parent game"}
+                      </Text>
+                      <ChevronDownIcon
+                        size={16}
+                        color={THEME[theme].mutedForeground}
+                      />
+                    </Pressable>
+
+                    {form.formState.errors.collectionId && (
+                      <Text className="text-sm text-destructive">
+                        {form.formState.errors.collectionId.message}
+                      </Text>
+                    )}
+                  </View>
+                )}
               />
             )}
           </View>
@@ -479,6 +539,23 @@ const AddCollection = () => {
           </View>
         </KeyboardAwareScrollView>
       </ScreenWrapper>
+
+      <SelectableListSheet<GameItem>
+        sheetRef={parentSheetRef}
+        getItems={getParentItems}
+        getSearchText={getSearchText}
+        emptyText={() => "No games found"}
+        isLoading={isLoadingUserGames}
+        confirmLabel="Select"
+        onConfirm={handleSelectParent}
+        renderItem={({ item, selected, onPress }) => (
+          <SelectableListSheetCard
+            item={item}
+            selected={selected}
+            onPress={onPress}
+          />
+        )}
+      />
     </View>
   );
 };
