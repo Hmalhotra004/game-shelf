@@ -55,7 +55,7 @@ export const createCollectionSchema = z
     steamAppId: z.string().trim().nullable(),
     lists: z.array(z.string().trim()).nullable(),
     isDLC: z.boolean().default(false).optional(),
-    collectionId: z.string().trim().optional(),
+    collectionId: z.uuidv7().trim().optional(),
     DLCs: z.array(createDLCSchema).optional(),
   })
   .refine(

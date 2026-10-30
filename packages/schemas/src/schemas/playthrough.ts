@@ -11,8 +11,8 @@ export const playthroughStatusSchema = z.enum(PlaythroughStatusValues, {
 
 export const createPlaythroughSchema = z
   .object({
-    collectionId: z.string().trim().optional(),
-    dlcId: z.string().trim().optional(),
+    collectionId: z.uuidv7().trim().optional(),
+    dlcId: z.uuidv7().trim().optional(),
     gameType: GameTypeSchema,
   })
   .refine(

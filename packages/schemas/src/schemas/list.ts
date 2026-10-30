@@ -16,7 +16,7 @@ export const updateListSchema = z.object({
 
 export const createListItemSchema = z.object({
   collectionId: z
-    .string({ error: "Game is requried" })
+    .uuidv7({ error: "Game is requried" })
     .trim()
     .min(1, { error: "Game is requried" }),
 });

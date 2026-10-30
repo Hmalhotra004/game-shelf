@@ -32,9 +32,9 @@ export const createCompletionSchema = z
       .max(MAX_NOTES_CHARACTERS, { error: "Character length exceeded" })
       .nullable(),
 
-    collectionId: z.string().trim().optional(),
-    dlcId: z.string().trim().optional(),
-    playthroughId: z.string().trim().optional(),
+    collectionId: z.uuidv7().trim().optional(),
+    dlcId: z.uuidv7().trim().optional(),
+    playthroughId: z.uuidv7().trim().optional(),
   })
   .refine(
     (data) => {
