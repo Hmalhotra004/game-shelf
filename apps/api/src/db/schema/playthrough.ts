@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 import { GameType, playthroughStatus } from "./enums";
 import { collection, completion, dlc, user } from "./index";
 
@@ -10,14 +10,15 @@ import {
   pgTable,
   text,
   timestamp,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 export const playthrough = pgTable(
   "playthrough",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
     startedAt: timestamp("started_at", { mode: "date" }).defaultNow(),
     finishedAt: timestamp("finished_at", { mode: "date" }),
@@ -29,19 +30,19 @@ export const playthrough = pgTable(
     gameType: GameType("game_type").notNull().default("Game"),
     notes: text("notes"),
 
-    collectionId: text("collection_id").references(() => collection.id, {
+    collectionId: uuid("collection_id").references(() => collection.id, {
       onDelete: "cascade",
     }),
 
-    dlcId: text("dlc_id").references(() => dlc.id, {
+    dlcId: uuid("dlc_id").references(() => dlc.id, {
       onDelete: "cascade",
     }),
 
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    completionId: text("completion_id").references(() => completion.id, {
+    completionId: uuid("completion_id").references(() => completion.id, {
       onDelete: "set null",
     }),
 
@@ -70,18 +71,18 @@ export const playthrough = pgTable(
 export const playthroughSession = pgTable(
   "playthrough_session",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
     playDate: timestamp("play_date", { mode: "date" }).notNull(),
     secondsPlayed: integer("seconds_played").notNull(),
 
-    playthroughId: text("playthrough_id")
+    playthroughId: uuid("playthrough_id")
       .notNull()
       .references(() => playthrough.id, { onDelete: "cascade" }),
 
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
