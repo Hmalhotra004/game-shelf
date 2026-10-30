@@ -1,9 +1,9 @@
+import { PSVersionTrophyType } from "@repo/schemas/types/index";
 import { sql } from "drizzle-orm";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 import { PSVersion, ownershipType, platform, provider, status } from "./enums";
 import { user } from "./user";
 
-import { PSVersionTrophyType } from "@repo/schemas/types/index";
 import {
   boolean,
   check,
@@ -15,14 +15,15 @@ import {
   text,
   timestamp,
   unique,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 export const collection = pgTable(
   "collection",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
     name: text("name").notNull(),
     edition: text("edition"),
@@ -51,7 +52,7 @@ export const collection = pgTable(
     steamAppId: text("steam_app_id"),
     steamGridDBId: text("steam_grid_db_id"),
 
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
@@ -130,9 +131,9 @@ export const collection = pgTable(
 export const dlc = pgTable(
   "dlc",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
     name: text("name").notNull(),
     dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }),
@@ -153,10 +154,10 @@ export const dlc = pgTable(
     steamAppId: text("steam_app_id"),
     steamGridDBId: text("steam_grid_db_id"),
 
-    collectionId: text("collection_id")
+    collectionId: uuid("collection_id")
       .notNull()
       .references(() => collection.id, { onDelete: "cascade" }),
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 

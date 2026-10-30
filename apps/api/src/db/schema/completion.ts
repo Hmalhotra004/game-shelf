@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 import { completionStyle, GameType, platform, PSVersion } from "./enums";
 import { collection, dlc, user } from "./index";
 
@@ -10,14 +10,15 @@ import {
   pgTable,
   text,
   timestamp,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 export const completion = pgTable(
   "completion",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
     gameType: GameType("game_type").notNull().default("Game"),
     totalPlaytime: integer("total_playtime"),
@@ -31,15 +32,15 @@ export const completion = pgTable(
     platform: platform("platform").notNull(),
     PSVersion: PSVersion("ps_version"),
 
-    collectionId: text("collection_id").references(() => collection.id, {
+    collectionId: uuid("collection_id").references(() => collection.id, {
       onDelete: "cascade",
     }),
 
-    dlcId: text("dlc_id").references(() => dlc.id, {
+    dlcId: uuid("dlc_id").references(() => dlc.id, {
       onDelete: "cascade",
     }),
 
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 

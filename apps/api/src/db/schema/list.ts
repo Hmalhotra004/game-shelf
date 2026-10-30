@@ -1,17 +1,25 @@
-import { index, pgTable, text, timestamp, unique } from "drizzle-orm/pg-core";
-import { nanoid } from "nanoid";
+import { v7 as uuidv7 } from "uuid";
 import { collection, user } from "./index";
+
+import {
+  index,
+  pgTable,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const list = pgTable(
   "list",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
     name: text("name").notNull(),
 
-    userId: text("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
@@ -23,14 +31,14 @@ export const list = pgTable(
 export const listItem = pgTable(
   "list_item",
   {
-    id: text("id")
+    id: uuid("id")
       .primaryKey()
-      .$defaultFn(() => nanoid()),
+      .$defaultFn(() => uuidv7()),
 
-    listId: text("list_id")
+    listId: uuid("list_id")
       .notNull()
       .references(() => list.id, { onDelete: "cascade" }),
-    collectionId: text("collection_id")
+    collectionId: uuid("collection_id")
       .notNull()
       .references(() => collection.id, { onDelete: "cascade" }),
 

@@ -85,6 +85,13 @@
       "when": 1792341343940,
       "tag": "0011_npCommunicationIds_constrains",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793360147395,
+      "tag": "0012_uuid_ids_migration",
+      "breakpoints": true
     }
   ]
 }

@@ -16,7 +16,7 @@ export type UnlinkAccountSchemaType = z.infer<typeof unlinkAccountSchema>;
 
 // ------------------------------- Query Schema -------------------------------------------
 export const gameBasicInfoQuerySchema = z.object({
-  id: z.string({ error: "Id is required" }).min(1, { error: "id is required" }),
+  id: z.uuidv7({ error: "Id is required" }).min(1, { error: "id is required" }),
   gameType: GameTypeSchema,
 });
 
