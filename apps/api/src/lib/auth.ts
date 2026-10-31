@@ -5,6 +5,7 @@ import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, genericOAuth } from "better-auth/plugins";
+import { v7 as uuidv7 } from "uuid";
 import { buildOtpEmail } from "./emailTemplates/OtpEmail";
 import { sendEmail } from "./sendEmail";
 
@@ -15,6 +16,9 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    },
+    database: {
+      generateId: () => uuidv7(),
     },
   },
   database: drizzleAdapter(db, {
