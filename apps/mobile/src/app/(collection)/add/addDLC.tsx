@@ -118,7 +118,7 @@ const AddDLC = () => {
     if (game.name) form.setValue("name", game.name);
     if (game.image) form.setValue("image", game.image);
     if (game.coverImage) form.setValue("coverImage", game.coverImage);
-    if (game.steamAppId) form.setValue("steamAppId", game.steamAppId);
+    if (game.steamAppId) form.setValue("steamAppId", String(game.steamAppId));
   }, [game, form]);
 
   // Preselect the parent game when we already own it
