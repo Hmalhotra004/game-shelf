@@ -51,7 +51,6 @@ export const getById = async (req: Request, res: Response) => {
       genres: game.genres ?? [],
       dlcs,
       isBundle,
-      bundleItems,
       bundleGames: bundleItems.filter((i) => !i.isDlc),
       bundleDlcs: bundleItems.filter((i) => i.isDlc),
     });
