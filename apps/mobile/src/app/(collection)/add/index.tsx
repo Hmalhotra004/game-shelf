@@ -1,29 +1,24 @@
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
-import SelectableListSheet from "@/components/SelectableListSheet";
-import SelectableListSheetCard from "@/components/SelectableListSheetCard";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { cn, handleError, showToast } from "@/lib/utils";
+import { handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DLCs } from "@repo/schemas/types/igdb";
 import { PlatformType } from "@repo/schemas/types/index";
-import { GetGamesType } from "@repo/schemas/types/user";
 import { addCollectionMutationOptions } from "@repo/utils/mutations/collection";
 import { getByIdQueryOptions } from "@repo/utils/queries/igdb";
-import { userGetCollectionQueryOptions } from "@repo/utils/queries/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -46,10 +41,6 @@ import {
   CreateCollectionSchemaType,
 } from "@repo/schemas/schemas/collection";
 
-type GameItem = GetGamesType["games"][number];
-
-const getSearchText = (item: GameItem) => item.name;
-
 const AddCollection = () => {
   const { igdbId } = useLocalSearchParams<{ igdbId: string }>();
   const [dlcOpen, setDlcOpen] = useState(false);
@@ -58,17 +49,9 @@ const AddCollection = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // const { data: lists, isLoading: isLoadingLists } = useQuery(
-  //   listGetManyQueryOptions(api),
-  // );
   const { data: game, isLoading: isLoadingGame } = useQuery(
     getByIdQueryOptions(api, Number(igdbId)),
   );
-
-  // const listOptions = (lists ?? []).map((d) => ({
-  //   label: d.name,
-  //   value: d.id,
-  // }));
 
   const addGame = useMutation(
     addCollectionMutationOptions(
@@ -99,7 +82,7 @@ const AddCollection = () => {
       steamAppId: null,
       lists: null,
       isDLC: false,
-      collectionId: "",
+      collectionId: undefined,
       DLCs: [],
     },
   });
@@ -109,55 +92,28 @@ const AddCollection = () => {
     name: "DLCs",
   });
 
-  const isDlc = form.watch("isDLC") ?? false;
   const selectedPlatform = form.watch("platform");
   const dlcValues = form.watch("DLCs");
   const baseDate = form.watch("dateOfPurchase");
-  const collectionId = form.watch("collectionId");
 
-  const { data: userGames, isLoading: isLoadingUserGames } = useQuery(
-    userGetCollectionQueryOptions(api, isDlc),
-  );
+  // A DLC is added through its own screen
+  useEffect(() => {
+    if (game?.isDlc) {
+      router.replace({
+        pathname: "/(collection)/add/addDLC",
+        params: { igdbId },
+      });
+    }
+  }, [game?.isDlc, igdbId, router]);
 
-  const parentSheetRef = useRef<BottomSheetModal>(null);
-
-  const selectedParent = userGames?.games.find((g) => g.id === collectionId);
-
-  const getParentItems = useCallback(
-    (): GameItem[] => userGames?.games ?? [],
-    [userGames],
-  );
-
-  const handleSelectParent = (id: string) => {
-    form.setValue("collectionId", id, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-    parentSheetRef.current?.dismiss();
-  };
-
-  const parentGame = isDlc
-    ? userGames?.games.find(
-        (ug) => ug.igdbId === String(game?.parentGameIgdbId),
-      )
-    : undefined;
-
-  // Prefill from IGDB once the game loads (was running on every render)
+  // Prefill from IGDB once the game loads
   useEffect(() => {
     if (!game) return;
     if (game.name) form.setValue("name", game.name);
     if (game.image) form.setValue("image", game.image);
     if (game.coverImage) form.setValue("coverImage", game.coverImage);
-    if (game.steamAppId) form.setValue("steamAppId", game.steamAppId);
-    if (game.isDlc) form.setValue("isDLC", game.isDlc);
+    if (game.steamAppId) form.setValue("steamAppId", String(game.steamAppId));
   }, [game, form]);
-
-  // Preselect the parent game when this is a DLC we already own
-  useEffect(() => {
-    if (parentGame && !form.getValues("collectionId")) {
-      form.setValue("collectionId", parentGame.id);
-    }
-  }, [parentGame, form]);
 
   useEffect(() => {
     if (!baseDate) return;
@@ -201,10 +157,8 @@ const AddCollection = () => {
   }
 
   const isPending = addGame.isPending;
-  const isLoading = isLoadingGame || isLoadingUserGames;
-  // const isLoading = isLoadingGame || isLoadingLists || isLoadingUserGames;
 
-  if (isLoadingGame || !game) {
+  if (isLoadingGame || !game || game.isDlc) {
     return (
       <View className="flex-1">
         <Header />
@@ -256,7 +210,6 @@ const AddCollection = () => {
           </View>
 
           <View className="gap-4">
-            {/* Name + Edition / Ownership (DLC) */}
             <FormInput
               name="name"
               control={form.control}
@@ -265,23 +218,13 @@ const AddCollection = () => {
               disabled={isPending}
             />
 
-            {!isDlc ? (
-              <FormInput
-                name="edition"
-                control={form.control}
-                label="Edition"
-                placeholder="e.g. Deluxe, GOTY, Standard"
-                disabled={isPending}
-              />
-            ) : (
-              <FormSelectSheet
-                name="ownershipType"
-                control={form.control}
-                label="Ownership Type*"
-                options={getOwnershipTypeOptions(true)}
-                disabled={isPending}
-              />
-            )}
+            <FormInput
+              name="edition"
+              control={form.control}
+              label="Edition"
+              placeholder="e.g. Deluxe, GOTY, Standard"
+              disabled={isPending}
+            />
 
             {/* Date + Amount */}
             <View className="flex-row gap-4">
@@ -306,37 +249,35 @@ const AddCollection = () => {
             </View>
 
             {/* Platform + Provider */}
-            {!isDlc && (
-              <View className="flex-row gap-4">
-                <View className="flex-1">
-                  <FormSelectSheet
-                    name="platform"
-                    control={form.control}
-                    label="Platform*"
-                    options={PLATFORM_OPTIONS}
-                    disabled={isPending}
-                    onValueChange={(p) =>
-                      form.setValue(
-                        "provider",
-                        PROVIDER_OPTIONS[p as PlatformType][0].value,
-                      )
-                    }
-                  />
-                </View>
-                <View className="flex-1">
-                  <FormSelectSheet
-                    name="provider"
-                    control={form.control}
-                    label="Provider*"
-                    options={PROVIDER_OPTIONS[selectedPlatform]}
-                    disabled={isPending}
-                  />
-                </View>
+            <View className="flex-row gap-4">
+              <View className="flex-1">
+                <FormSelectSheet
+                  name="platform"
+                  control={form.control}
+                  label="Platform*"
+                  options={PLATFORM_OPTIONS}
+                  disabled={isPending}
+                  onValueChange={(p) =>
+                    form.setValue(
+                      "provider",
+                      PROVIDER_OPTIONS[p as PlatformType][0].value,
+                    )
+                  }
+                />
               </View>
-            )}
+              <View className="flex-1">
+                <FormSelectSheet
+                  name="provider"
+                  control={form.control}
+                  label="Provider*"
+                  options={PROVIDER_OPTIONS[selectedPlatform]}
+                  disabled={isPending}
+                />
+              </View>
+            </View>
 
             {/* PS Version */}
-            {selectedPlatform === "PS" && !isDlc && (
+            {selectedPlatform === "PS" && (
               <FormMultiSelectSheet
                 name="PSVersion"
                 control={form.control}
@@ -346,74 +287,13 @@ const AddCollection = () => {
               />
             )}
 
-            {/* Ownership + Lists / Parent game (DLC) */}
-            {!isDlc && (
-              <>
-                <FormSelectSheet
-                  name="ownershipType"
-                  control={form.control}
-                  label="Ownership Type*"
-                  options={getOwnershipTypeOptions(false)}
-                  disabled={isPending}
-                />
-                {/* <FormMultiSelectSheet
-                  name="lists"
-                  control={form.control}
-                  label="Custom Lists"
-                  placeholder="Select custom lists"
-                  options={listOptions}
-                  disabled={isPending}
-                /> */}
-              </>
-            )}
-
-            {isDlc && (
-              <Controller
-                name="collectionId"
-                control={form.control}
-                render={({}) => (
-                  <View className="gap-2">
-                    <Text className="text-sm font-medium text-foreground">
-                      Parent Game*
-                    </Text>
-
-                    <Pressable
-                      onPress={() => parentSheetRef.current?.present()}
-                      disabled={isPending}
-                      className={cn(
-                        "h-10 dark:bg-input/30 flex-row items-center justify-between rounded-md border bg-card px-3",
-                        form.formState.errors.collectionId
-                          ? "border-destructive"
-                          : "border-border",
-                        isPending && "opacity-50",
-                      )}
-                    >
-                      <Text
-                        numberOfLines={1}
-                        className={cn(
-                          "flex-1 text-base",
-                          selectedParent
-                            ? "text-foreground"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {selectedParent?.name ?? "Select parent game"}
-                      </Text>
-                      <ChevronDownIcon
-                        size={16}
-                        color={THEME[theme].mutedForeground}
-                      />
-                    </Pressable>
-
-                    {form.formState.errors.collectionId && (
-                      <Text className="text-sm text-destructive">
-                        {form.formState.errors.collectionId.message}
-                      </Text>
-                    )}
-                  </View>
-                )}
-              />
-            )}
+            <FormSelectSheet
+              name="ownershipType"
+              control={form.control}
+              label="Ownership Type*"
+              options={getOwnershipTypeOptions(false)}
+              disabled={isPending}
+            />
           </View>
 
           {/* DLCs */}
@@ -524,7 +404,7 @@ const AddCollection = () => {
             <Button
               className="flex-1"
               onPress={form.handleSubmit(onSubmit)}
-              disabled={isPending || isLoading}
+              disabled={isPending || isLoadingGame}
             >
               <Text>{isPending ? "Adding..." : "Add to Collection"}</Text>
             </Button>
@@ -539,23 +419,6 @@ const AddCollection = () => {
           </View>
         </KeyboardAwareScrollView>
       </ScreenWrapper>
-
-      <SelectableListSheet<GameItem>
-        sheetRef={parentSheetRef}
-        getItems={getParentItems}
-        getSearchText={getSearchText}
-        emptyText={() => "No games found"}
-        isLoading={isLoadingUserGames}
-        confirmLabel="Select"
-        onConfirm={handleSelectParent}
-        renderItem={({ item, selected, onPress }) => (
-          <SelectableListSheetCard
-            item={item}
-            selected={selected}
-            onPress={onPress}
-          />
-        )}
-      />
     </View>
   );
 };

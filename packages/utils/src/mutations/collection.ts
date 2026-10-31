@@ -7,6 +7,7 @@ import { UserQueryKeys } from "@repo/utils/queries/user";
 import { AxiosInstance } from "axios";
 
 import {
+  CreateCollectionBundleSchemaType,
   CreateCollectionSchemaType,
   UpdateCollectionSchemaType,
 } from "@repo/schemas/schemas/collection";
@@ -54,6 +55,31 @@ export const addCollectionMutationOptions = (
       onSuccess?.();
     },
     onError: (err) => onError(err),
+  });
+
+export const addCollectionBundleMutationOptions = (
+  api: AxiosInstance,
+  queryClient: QueryClient,
+  onError: (err: Error) => void,
+  onSuccess: () => void,
+) =>
+  mutationOptions({
+    mutationFn: async (data: CreateCollectionBundleSchemaType) => {
+      await api.post("/collection/bundle", data);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: StatsQueryKeys.getStats(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: CollectionQueryKeys.getManyAll(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: UserQueryKeys.getCollection(),
+      });
+      onSuccess?.();
+    },
+    onError,
   });
 
 export const updateCollectionMutationOptions = (

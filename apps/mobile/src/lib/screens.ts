@@ -20,6 +20,8 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
 
   // (collection)
   "/add": { title: "Add Collection", showHeader: false },
+  "/add/addBundle": { title: "Add Collection", showHeader: false },
+  "/add/addDLC": { title: "Add Collection", showHeader: false },
 
   // (collection)/[id]
   "/[collectionId]": { title: "Game", showHeader: false },

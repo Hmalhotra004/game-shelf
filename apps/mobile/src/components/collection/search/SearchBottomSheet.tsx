@@ -82,7 +82,22 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
   }, []);
 
   const handleAddToCollection = useCallback((game: Game) => {
-    router.push({ pathname: "/(collection)/add", params: { igdbId: game.id } });
+    if (game.isBundle) {
+      router.push({
+        pathname: "/(collection)/add/addBundle",
+        params: { igdbId: game.id },
+      });
+    } else if (game.isDLC) {
+      router.push({
+        pathname: "/(collection)/add/addDLC",
+        params: { igdbId: game.id },
+      });
+    } else {
+      router.push({
+        pathname: "/(collection)/add",
+        params: { igdbId: game.id },
+      });
+    }
   }, []);
 
   const renderItem = useCallback(

@@ -34,6 +34,14 @@ export const providerPlatformRefine = (obj: {
   (obj.platform === "PC" && ["Steam", "Epic"].includes(obj.provider)) ||
   (obj.platform === "XBOX" && ["XBOX", "Physical"].includes(obj.provider));
 
+export const amountSchema = z
+  .string()
+  .trim()
+  .regex(/^(\d+(\.\d{0,2})?|\.\d{1,2})?$/, {
+    error: "Enter a valid amount with at most 2 decimal places",
+  })
+  .nullable();
+
 export const externalIdsSchema = z.object({
   steamAppId: z.string().nullable().optional(),
   npCommunicationId: z.string().nullable().optional(),
@@ -45,7 +53,7 @@ export const createCollectionSchema = z
     name: z.string().trim().min(1, { error: "Name is requried" }),
     dateOfPurchase: z.string().trim().nullable(),
     edition: z.string().trim().nullable(),
-    amount: z.string().trim().nullable(),
+    amount: amountSchema,
     platform: platformSchema,
     provider: providerSchema,
     PSVersion: z.array(PSVersionSchema),
@@ -91,12 +99,54 @@ export const createCollectionSchema = z
     },
   );
 
+export const createCollectionBundleSchema = z
+  .object({
+    dateOfPurchase: z.string().trim().nullable(),
+    amount: amountSchema,
+    platform: platformSchema,
+    provider: providerSchema,
+    PSVersion: z.array(PSVersionSchema),
+    ownershipType: ownershipTypeSchema,
+    lists: z.array(z.string().trim()).nullable(),
+    collections: z.array(
+      z.object({
+        igdbId: z.number().int().min(1, { error: "id is required" }),
+        name: z.string().trim().min(1, { error: "Name is requried" }),
+        amount: amountSchema,
+        image: z.url().trim().nullable(),
+        coverImage: z.url().trim().nullable(),
+        steamAppId: z.string().trim().nullable(),
+        DLCs: z.array(createDLCSchema).optional(),
+      }),
+    ),
+  })
+  .refine(
+    (data) =>
+      providerPlatformRefine({
+        platform: data.platform,
+        provider: data.provider,
+      }),
+    { error: "Invalid provider for this platform", path: ["provider"] },
+  )
+  .refine(
+    (data) => {
+      if (data.platform === "PS") {
+        return data.PSVersion.length >= 1;
+      }
+      return true;
+    },
+    {
+      path: ["PSVersion"],
+      error: "PS Version is required when platform is PS",
+    },
+  );
+
 export const updateCollectionSchema = z
   .object({
     name: z.string().trim().min(1, { error: "Name is requried" }),
     dateOfPurchase: z.string().trim().nullable(),
     edition: z.string().trim().nullable(),
-    amount: z.string().trim().nullable(),
+    amount: amountSchema,
     platform: platformSchema,
     provider: providerSchema,
     status: statusSchema,
@@ -160,6 +210,9 @@ export const updateImagesSchema = z.object({
 
 // ------------------------------- Types -------------------------------------------
 export type CreateCollectionSchemaType = z.infer<typeof createCollectionSchema>;
+export type CreateCollectionBundleSchemaType = z.infer<
+  typeof createCollectionBundleSchema
+>;
 export type UpdateCollectionSchemaType = z.infer<typeof updateCollectionSchema>;
 export type ExternalIdsSchemaType = z.infer<typeof externalIdsSchema>;
 export type UpdateImagesSchemaType = z.infer<typeof updateImagesSchema>;

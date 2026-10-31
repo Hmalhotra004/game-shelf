@@ -1,4 +1,5 @@
 import { addCollection } from "@/controllers/collection/add";
+import { addBundle } from "@/controllers/collection/addBundle";
 import { archiveCollection } from "@/controllers/collection/archiveCollection";
 import { deleteCollection } from "@/controllers/collection/deleteCollection";
 import { getById } from "@/controllers/collection/getById";
@@ -15,6 +16,7 @@ import { Router } from "express";
 
 import {
   collectionListQuerySchema,
+  createCollectionBundleSchema,
   createCollectionSchema,
   externalIdsSchema,
   updateCollectionSchema,
@@ -44,6 +46,13 @@ export default (baseUrl: string, app: Router) => {
     authenticateUser,
     validateData(createCollectionSchema),
     addCollection,
+  );
+
+  router.post(
+    "/bundle",
+    authenticateUser,
+    validateData(createCollectionBundleSchema),
+    addBundle,
   );
 
   router.patch(

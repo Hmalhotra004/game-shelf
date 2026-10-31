@@ -33,20 +33,26 @@ export type IGDBGetByIdType = {
   artworks: Artworks[];
 };
 
-export type GetByIdClientResponse = {
+export type GetByIdClientGameType = {
   id: number;
   name: string;
-  game_type: number;
-  platforms: PlatformType[];
-  image: string;
-  coverImage: string;
-  steamAppId: string | null;
-  summary: string;
-  releaseDate: string;
-  genres: Genres[];
-  dlcs: DLCs[];
+  image: string | null;
+  coverImage: string | null;
+  steamAppId: number | null;
+  gameType: number | null;
   isDlc: boolean;
   parentGameIgdbId: number | null;
+  releaseDate: Date | null;
+};
+
+export type GetByIdClientResponse = GetByIdClientGameType & {
+  platforms: PlatformType[];
+  summary: string;
+  genres: Genres[];
+  dlcs: DLCs[];
+  isBundle: boolean;
+  bundleGames: GetByIdClientGameType[];
+  bundleDlcs: GetByIdClientGameType[];
 };
 
 export type DLCs = {
@@ -101,3 +107,14 @@ export type Artworks = {
   width: number;
   artwork_type: number;
 };
+
+export type IGDBGameLike = Pick<
+  IGDBGetByIdType,
+  "id" | "name" | "first_release_date"
+> &
+  Partial<
+    Pick<
+      IGDBGetByIdType,
+      "cover" | "artworks" | "external_games" | "parent_game" | "game_type"
+    >
+  >;
