@@ -13,7 +13,6 @@ import { getTrophies } from "@/controllers/psn/getTrophies";
 import { getAchievements } from "@/controllers/steam/getAchievements";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyCollection } from "@/middlewares/collectionMiddleware";
-import { verifyPSN, verifySteamId } from "@/middlewares/userMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
 
@@ -42,7 +41,6 @@ export default (baseUrl: string, app: Router) => {
     "/:collectionId/psn/trophies",
     authenticateUser,
     verifyCollection,
-    verifyPSN,
     getTrophies,
   );
 
@@ -50,7 +48,6 @@ export default (baseUrl: string, app: Router) => {
     "/:collectionId/steam/achievements",
     authenticateUser,
     verifyCollection,
-    verifySteamId,
     getAchievements,
   );
 
