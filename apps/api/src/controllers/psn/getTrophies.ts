@@ -21,7 +21,7 @@ export const getTrophies = async (req: Request, res: Response) => {
     });
 
     if (owned.length === 0) {
-      return res.status(200).json({ versions: [] });
+      return res.status(200).json([]);
     }
 
     const authorization = await getPSNAuthorization();
@@ -55,7 +55,7 @@ export const getTrophies = async (req: Request, res: Response) => {
       }),
     );
 
-    return res.status(200).json({ versions });
+    return res.status(200).json(versions);
   } catch (err) {
     req.log.error({ err }, "GET_PSN_TROPHIES_ERROR");
     return res.status(500).json({ error: GenericErrorMessage });
