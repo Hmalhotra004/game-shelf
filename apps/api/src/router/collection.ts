@@ -9,8 +9,11 @@ import { update } from "@/controllers/collection/update";
 import { updateExternalIds } from "@/controllers/collection/updateExternalIds";
 import { updateImages } from "@/controllers/collection/updateImages";
 import { updateSteamGridDBId } from "@/controllers/collection/updateSteamGridDBId";
+import { getTrophies } from "@/controllers/psn/getTrophies";
+import { getAchievements } from "@/controllers/steam/getAchievements";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyCollection } from "@/middlewares/collectionMiddleware";
+import { verifyPSN, verifySteamId } from "@/middlewares/userMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
 import { Router } from "express";
 
@@ -34,6 +37,23 @@ export default (baseUrl: string, app: Router) => {
   );
 
   router.get("/:collectionId", authenticateUser, verifyCollection, getById);
+
+  router.get(
+    "/:collectionId/psn/trophies",
+    authenticateUser,
+    verifyCollection,
+    verifyPSN,
+    getTrophies,
+  );
+
+  router.get(
+    "/:collectionId/steam/achievements",
+    authenticateUser,
+    verifyCollection,
+    verifySteamId,
+    getAchievements,
+  );
+
   router.get(
     "/:collectionId/edit",
     authenticateUser,
@@ -41,6 +61,7 @@ export default (baseUrl: string, app: Router) => {
     getByIdForEdit,
   );
 
+  // POST
   router.post(
     "/",
     authenticateUser,
@@ -55,6 +76,7 @@ export default (baseUrl: string, app: Router) => {
     addBundle,
   );
 
+  // PATCH
   router.patch(
     "/:collectionId/update",
     authenticateUser,
@@ -93,6 +115,7 @@ export default (baseUrl: string, app: Router) => {
     archiveCollection,
   );
 
+  // DELETE
   router.delete(
     "/:collectionId",
     authenticateUser,
