@@ -1,3 +1,4 @@
+import { TrophiesResponse } from "@repo/schemas/types/trophies";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
 
@@ -20,6 +21,12 @@ export const CollectionQueryKeys = {
     [...CollectionQueryKeys.all, "getById", id] as const,
   getById: (id: string, edit: boolean = false) =>
     [...CollectionQueryKeys.all, "getById", id, edit] as const,
+
+  getSteamAchievements: (id: string) =>
+    [...CollectionQueryKeys.all, "getSteamAchievements", id] as const,
+
+  getPSNTrophies: (id: string) =>
+    [...CollectionQueryKeys.all, "getPSNTrophies", id] as const,
 
   linkSteamGrid: (name: string) =>
     [...CollectionQueryKeys.all, "linkSteamGrid", name] as const,
@@ -68,6 +75,36 @@ export const collectionGetByIdForEditQueryOptions = (
     queryFn: async () => {
       const response = await api.get<CollectionGetByIdForEdit>(
         `/collection/${id}/edit`,
+      );
+
+      return response.data;
+    },
+  });
+
+export const collectionGetSteamAchievementsQueryOptions = (
+  api: AxiosInstance,
+  id: string,
+) =>
+  queryOptions({
+    queryKey: CollectionQueryKeys.getSteamAchievements(id),
+    queryFn: async () => {
+      const response = await api.get<TrophiesResponse[]>(
+        `/collection/${id}/steam/achievements`,
+      );
+
+      return response.data;
+    },
+  });
+
+export const collectionGetPSNTrophiesQueryOptions = (
+  api: AxiosInstance,
+  id: string,
+) =>
+  queryOptions({
+    queryKey: CollectionQueryKeys.getPSNTrophies(id),
+    queryFn: async () => {
+      const response = await api.get<TrophiesResponse[]>(
+        `/collection/${id}/psn/trophies`,
       );
 
       return response.data;

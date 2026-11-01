@@ -3,3 +3,5 @@ export type SearchByUsernamePSNType = {
   onlineId: string;
   avatarUrl: string;
 };
+
+export type PSNTrophyType = "bronze" | "silver" | "gold" | "platinum";
