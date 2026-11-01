@@ -8,7 +8,7 @@ import {
   getOnlineSteamPlaySecs,
   getSteamPlaytimeByAppId,
   needsSteamPlaytime,
-} from "@/lib/onlinePlaytime";
+} from "@/lib/steam/onlinePlaytime";
 
 export const getById = async (req: Request, res: Response) => {
   try {
