@@ -1,6 +1,6 @@
 import { STEAM_URL_REGEX } from "@/constants";
+import { resolveSteamImage, SteamImageSizeType } from "@/lib/steam/index";
 import axios from "axios";
-import { resolveSteamImage, SteamImageSizeType } from "../steam";
 import { IGDBCoverSizeType, IGDBGameField } from "./enum";
 
 import {
