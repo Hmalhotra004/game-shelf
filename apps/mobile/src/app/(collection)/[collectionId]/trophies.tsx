@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import TrophyGroupHeader from "@/components/trophies/GroupHeader";
 import TrophySummary from "@/components/trophies/Summary";
 import TrophyItem from "@/components/trophies/TrophyItem";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
@@ -10,7 +11,7 @@ import { PlatformType, ProviderType } from "@repo/schemas/types/index";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import {
@@ -51,6 +52,18 @@ export default function Trophies() {
   const [filter, setFilter] = useState<TrophyFilter>("all");
   const [versionIndex, setVersionIndex] = useState(0);
 
+  // Keys of group headers that are collapsed. Empty = every group expanded.
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+
+  const toggleGroup = useCallback((key: string) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
+
   // PS collections can own several versions (PS4 + PS5), each with its own list.
   const versions = data ?? [];
   const version = versions[Math.min(versionIndex, versions.length - 1)];
@@ -59,6 +72,28 @@ export default function Trophies() {
     () => (version ? buildTrophyRows(version, isPS, filter) : []),
     [version, isPS, filter],
   );
+
+  // Headers only exist when there is more than one group, so with a single
+  // group nothing is ever hidden. Trophy rows follow their header, so hide
+  // every trophy row that sits under a collapsed header.
+  const visibleRows = useMemo(() => {
+    if (collapsed.size === 0) return rows;
+
+    const result: TrophyListRow[] = [];
+    let hidden = false;
+
+    for (const row of rows) {
+      if (row.kind === "header") {
+        hidden = collapsed.has(row.key);
+        result.push(row);
+      } else if (!hidden) {
+        result.push(row);
+      }
+    }
+
+    return result;
+  }, [rows, collapsed]);
+
   const counts = useMemo(
     () => (version ? getCategoryCounts(version.groups, isPS) : []),
     [version, isPS],
@@ -135,7 +170,8 @@ export default function Trophies() {
           <View className="flex-1 justify-center">{stateView}</View>
         ) : (
           <FlashList<TrophyListRow>
-            data={rows}
+            data={visibleRows}
+            extraData={collapsed}
             keyExtractor={(row) => row.key}
             getItemType={(row) => row.kind}
             refreshing={isRefetching}
@@ -190,17 +226,13 @@ export default function Trophies() {
             }
             renderItem={({ item }) =>
               item.kind === "header" ? (
-                <View className="mb-3 mt-0 flex-row items-center gap-3 border-b border-border pb-1">
-                  <Text
-                    className="flex-1 text-base font-semibold"
-                    numberOfLines={1}
-                  >
-                    {item.name}
-                  </Text>
-                  <Text className="shrink-0 text-xs text-muted-foreground">
-                    {item.unlocked}/{item.total}
-                  </Text>
-                </View>
+                <TrophyGroupHeader
+                  name={item.name}
+                  unlocked={item.unlocked}
+                  total={item.total}
+                  collapsed={collapsed.has(item.key)}
+                  onToggle={() => toggleGroup(item.key)}
+                />
               ) : (
                 <TrophyItem
                   trophy={item.trophy}
