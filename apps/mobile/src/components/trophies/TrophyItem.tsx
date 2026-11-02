@@ -42,7 +42,11 @@ function TrophyItemBase({ trophy, isPS }: Props) {
           contentFit="cover"
           blurRadius={isHidden ? 20 : 0}
           transition={150}
-          style={{ width: 52, height: 52, borderRadius: 8 }}
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: 6,
+          }}
         />
       ) : (
         <View className="size-[52px] items-center justify-center rounded-lg bg-muted">
@@ -96,7 +100,7 @@ function TrophyItemBase({ trophy, isPS }: Props) {
             )}
 
             {achieved && !!unlockTime && (
-              <Text className="mt-1 text-[11px] text-success">
+              <Text className="text-[11px] text-success">
                 Unlocked {formatUnlockedDate(unlockTime)}
               </Text>
             )}

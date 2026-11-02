@@ -85,7 +85,7 @@ export default function Trophies() {
       return (
         <View className="gap-3 flex-1">
           <Skeleton className="h-32 w-full rounded-xl" />
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_, i) => (
             <Skeleton
               key={i}
               className="h-20 w-full rounded-xl"
@@ -190,7 +190,7 @@ export default function Trophies() {
             }
             renderItem={({ item }) =>
               item.kind === "header" ? (
-                <View className="mb-3 mt-2 flex-row items-center justify-between border-b border-border pb-1">
+                <View className="mb-3 mt-0 flex-row items-center justify-between border-b border-border pb-1">
                   <Text className="text-base font-semibold">{item.name}</Text>
                   <Text className="text-xs text-muted-foreground">
                     {item.unlocked}/{item.total}
