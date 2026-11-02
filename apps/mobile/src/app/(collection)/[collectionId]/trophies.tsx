@@ -190,9 +190,14 @@ export default function Trophies() {
             }
             renderItem={({ item }) =>
               item.kind === "header" ? (
-                <View className="mb-3 mt-0 flex-row items-center justify-between border-b border-border pb-1">
-                  <Text className="text-base font-semibold">{item.name}</Text>
-                  <Text className="text-xs text-muted-foreground">
+                <View className="mb-3 mt-0 flex-row items-center gap-3 border-b border-border pb-1">
+                  <Text
+                    className="flex-1 text-base font-semibold"
+                    numberOfLines={1}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text className="shrink-0 text-xs text-muted-foreground">
                     {item.unlocked}/{item.total}
                   </Text>
                 </View>
