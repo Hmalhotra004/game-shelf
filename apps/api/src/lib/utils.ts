@@ -21,3 +21,5 @@ const REMASTER_SUFFIX = /[\s:–—-]+(?:hd\s+)?(?:remastered|remaster|hd)\s*$/i
 // "Alan Wake Remastered" -> "Alan Wake"
 export const stripRemaster = (name: string) =>
   name.replace(REMASTER_SUFFIX, "").trim();
+
+export const TROPHY_VERSIONS = ["PS3", "PS4", "PS5"];

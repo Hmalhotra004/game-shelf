@@ -105,12 +105,6 @@ export const collection = pgTable(
       sql`(${table.npCommunicationIds} - ARRAY['PS3','PS4','PS5']) = '{}'::jsonb`,
     ),
 
-    // every key must also be a version the collection actually owns
-    check(
-      "np_ids_keys_in_ps_version",
-      sql`(${table.npCommunicationIds} - ${table.PSVersion}::text[]) = '{}'::jsonb`,
-    ),
-
     // non-PS collections can't have trophy IDs
     check(
       "np_ids_only_for_ps",

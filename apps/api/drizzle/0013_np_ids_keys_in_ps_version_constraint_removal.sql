@@ -1,0 +1,1 @@
+ALTER TABLE "collection" DROP CONSTRAINT "np_ids_keys_in_ps_version";
