@@ -26,5 +26,5 @@ export type TrophiesResponse = {
     name: string;
     isDLC: boolean;
     trophies: TrophiesType[];
-  };
+  }[];
 };
