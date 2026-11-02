@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import {
   CollectionStatusType,
   CompletionStatusType,
+  PlatformType,
   PlaythroughStatusType,
 } from "@repo/schemas/types/index";
 
@@ -126,3 +127,9 @@ export function secondsToHMS(seconds: number): string {
 
   return `${hh} h ${mm} m ${ss} s`;
 }
+
+export const PlatformTrophyMap: Record<PlatformType, string> = {
+  PS: "Trophies",
+  PC: "Acheviements",
+  XBOX: "Acheviements",
+};

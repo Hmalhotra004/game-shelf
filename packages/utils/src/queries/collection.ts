@@ -84,6 +84,7 @@ export const collectionGetByIdForEditQueryOptions = (
 export const collectionGetSteamAchievementsQueryOptions = (
   api: AxiosInstance,
   id: string,
+  enabled: boolean,
 ) =>
   queryOptions({
     queryKey: CollectionQueryKeys.getSteamAchievements(id),
@@ -94,11 +95,13 @@ export const collectionGetSteamAchievementsQueryOptions = (
 
       return response.data;
     },
+    enabled,
   });
 
 export const collectionGetPSNTrophiesQueryOptions = (
   api: AxiosInstance,
   id: string,
+  enabled: boolean,
 ) =>
   queryOptions({
     queryKey: CollectionQueryKeys.getPSNTrophies(id),
@@ -109,4 +112,5 @@ export const collectionGetPSNTrophiesQueryOptions = (
 
       return response.data;
     },
+    enabled,
   });

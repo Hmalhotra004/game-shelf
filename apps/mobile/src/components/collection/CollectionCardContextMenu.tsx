@@ -22,6 +22,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { PlatformTrophyMap } from "@repo/utils/lib/utils";
 
 interface Props {
   children: ReactNode;
@@ -104,6 +105,21 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
           <ContextMenuSeparator />
 
           <ContextMenuGroup>
+            <ContextMenuItem
+              onPress={() =>
+                router.push({
+                  pathname: "/(collection)/[collectionId]/trophies",
+                  params: {
+                    collectionId: game.id,
+                    platform: game.platform,
+                    provider: game.provider,
+                  },
+                })
+              }
+            >
+              <Text>View {PlatformTrophyMap[game.platform]}</Text>
+            </ContextMenuItem>
+
             <ContextMenuItem
               onPress={() =>
                 router.push({
