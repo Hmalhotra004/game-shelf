@@ -12,7 +12,7 @@ const config: ExpoConfig = {
   scheme: IS_DEV ? "game-shelf-dev" : "game-shelf",
   userInterfaceStyle: "automatic",
   ios: {
-    buildNumber: "4",
+    buildNumber: "5",
     icon: "./assets/expo.icon",
     backgroundColor: "#ffffff",
     bundleIdentifier: IS_DEV
@@ -23,7 +23,7 @@ const config: ExpoConfig = {
     },
   },
   android: {
-    versionCode: 4,
+    versionCode: 5,
     package: IS_DEV ? "com.gameshelf.gameshelf.dev" : "com.gameshelf.gameshelf",
     predictiveBackGestureEnabled: false,
     permissions: ["REQUEST_INSTALL_PACKAGES"],
