@@ -209,6 +209,10 @@ The API is organized around:
 - `src/socket`
 - `src/jobs`
 
+The API startup connects Redis, verifies PostgreSQL, starts pg-boss, registers background jobs, and then listens for HTTP traffic. Current jobs resolve PlayStation NP communication IDs and Steam App IDs.
+
+Socket.IO modules exist, but `initSocket(server)` is commented out in the supplied API startup. Verify runtime initialization before implementing behavior that depends on live sockets.
+
 Routes compose middleware and controller handlers.
 
 Feature routers are separated by domain, including collection, completion, list, playthrough, PSN, Steam, SteamGridDB, IGDB, stats, auth, and user.
@@ -223,9 +227,11 @@ Do not put client UI concerns into controllers.
 
 The database uses PostgreSQL with Drizzle ORM.
 
-The schema uses `nanoid()` for application-generated text IDs.
+The current schema uses native PostgreSQL UUID columns for internal primary keys and foreign keys. IDs are generated with UUIDv7 using `uuid` (`v7 as uuidv7`) through Drizzle `$defaultFn`. The historical nanoid/text-ID convention is obsolete for current schema work.
 
 Database schema changes must respect existing migrations and DB constraints.
+
+Migration `0012_uuid_ids_migration.sql` contains a commented data-preserving conversion draft and active type-alter statements. Never assume it safely converts arbitrary existing text IDs; inspect the live DB state and full migration before applying or modifying it.
 
 Do not treat application-level validation as a replacement for an existing DB constraint.
 
@@ -314,7 +320,17 @@ Do not replace `FlashList` with a basic `ScrollView` for large datasets without 
 
 Use stable keys and memoized callbacks where they are already part of the surrounding pattern.
 
-## 15. External services
+## 15. Mobile release/update behavior
+
+The mobile app has an Android APK self-update flow. Before changing it, inspect `AppUpdateGate`, `src/lib/updater.ts`, the shared `ReleaseInfo` type, and the API mobile-version endpoint together.
+
+Development and production app identities are selected through `APP_VARIANT`. Treat package version, Android versionCode, and iOS buildNumber as coordinated release metadata; inspect `package.json`, `app.config.ts`, and `eas.json` before changing them.
+
+Some mobile routes in the supplied snapshot are placeholders: Wishlist, Stats, DLC management, and microtransactions management. Do not describe these as completed features or assume their backend support exists.
+
+The Expo web preview target in the mobile package is not a separate `apps/web` application. The standalone web app remains future scope.
+
+## 16. External services
 
 Known integrations include:
 
@@ -327,7 +343,7 @@ External-service-specific behavior belongs in API/lib/controller layers unless a
 
 Do not expose server secrets to mobile/web clients.
 
-## 16. Verification
+## 17. Verification
 
 For TypeScript changes, prefer running the relevant:
 
@@ -348,7 +364,7 @@ For DB changes, verify:
 - client queries/mutations
 - UI consumers
 
-## 17. Definition of done
+## 18. Definition of done
 
 A task is not complete merely because the edited file compiles.
 

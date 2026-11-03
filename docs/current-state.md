@@ -1,6 +1,6 @@
 # GameShelf Current State
 
-> Living document. Update this when meaningful project direction changes.
+> Living snapshot derived from the updated API, mobile, schemas, and utils archives. Refresh after material code changes.
 
 ## Current repository
 
@@ -14,104 +14,118 @@ packages/
 └── utils/
 ```
 
-## Future
+`apps/web` is planned future scope only. It does not currently exist. The mobile package's Expo web preview target is not a separate web application.
 
-```text
-apps/web
-```
+## Source analyzed
 
-is planned but does not currently exist.
+- Updated API archive
+- Updated mobile archive
+- Updated `@repo/schemas` archive
+- Updated `@repo/utils` archive
+- Existing context Markdown files
 
-Do not write web-specific implementation guidance until the web source exists.
+## Current stack snapshot
 
-## Source analyzed for this context pack
+### API
 
-- API
-- Mobile
-- Schemas
-- Utils
-- Database schema files
+- Express 5 + TypeScript
+- PostgreSQL + Drizzle ORM
+- Better Auth
+- Redis
+- pg-boss background jobs
+- Pino logging
+- Socket.IO modules are present, but `initSocket(server)` is commented out in the current API startup file
+- UUIDv7 internal IDs
+
+### Mobile
+
+- Expo SDK 57
+- Expo Router
+- React Native 0.86
+- NativeWind 4
+- TanStack React Query
+- Zustand
+- React Hook Form + Zod
+- FlashList 2
+- Android APK update/download/install flow (minimum version from API env; latest release metadata for optional/forced APK update)
+
+### Shared packages
+
+- `@repo/schemas`: enums, Zod schemas, request/response/domain types, Socket.IO event types, trophy types
+- `@repo/utils`: queries, mutations, filter stores, hooks, account/game/trophy helpers
 
 ## Current feature areas
 
 ### API
 
 - Auth
-- Collection
+- Collection and DLC
 - Completion
-- DLC
 - Lists
-- Playthroughs
+- Playthroughs and play sessions
 - PSN
 - Steam
 - SteamGridDB
 - IGDB
 - Stats
-- User
-- Socket.IO
-- Background jobs
+- User/account operations
+- Mobile app version information
+- Background jobs for PSN NP communication ID and Steam App ID resolution
 
 ### Mobile
 
-- Auth
-- Home/tabs
+- Authentication
 - Collection
-- Collection details/editing
-- DLC management
+- Collection details/editing and artwork
+- DLC-related routes
+- Trophies
 - Completion
-- Playthrough
-- Profile
-- Accounts
+- Playthroughs and time tracking
+- Profile and connected accounts
 - Lists
-- Wishlist
-- Stats
 - Settings
+- App update gate and APK installer flow
 
-### Shared schemas
+### Known unfinished mobile areas in this snapshot
 
-- Auth
-- Collection
-- Completion
-- DLC
-- List
-- Playthrough
-- PSN
-- Steam
-- User
-- API/domain types
-- Socket event types
-- Stats types
+- Wishlist screen is a placeholder ("Coming Soon").
+- Stats screen is a placeholder ("Coming Soon"), although stats API/types exist.
+- DLC management screen is an empty placeholder.
+- Microtransactions management screen is an empty placeholder.
+- Do not describe these mobile areas as fully implemented.
 
-### Shared utils
+## Current ID convention
 
-- Queries
-- Mutations
-- Filter stores
-- Hooks
-- Game utilities
-- Account utilities
-- Chart utilities
+Internal database primary keys and foreign keys use PostgreSQL UUID columns. New IDs are generated with UUIDv7 through the `uuid` package. This supersedes the old nanoid/text-ID documentation.
+
+## Current database migration snapshot
+
+The API archive includes Drizzle migrations through `0013_np_ids_keys_in_ps_version_constraint_removal.sql`, including `0012_uuid_ids_migration.sql`.
+
+The `0012` file contains a commented-out data-preserving UUID mapping draft followed by active type-alter statements. Inspect the migration and actual database state before applying it; do not assume existing non-UUID text IDs are automatically converted safely.
+
+## Current mobile release snapshot
+
+- Mobile package version: `0.4.0`
+- Android `versionCode`: `5`
+- iOS `buildNumber`: `5`
+- Development and production app identities are selected through `APP_VARIANT`.
+
+These are snapshot values. Check `package.json`, `app.config.ts`, EAS config, and API release/version contract before making release changes.
+
+## Current background processing
+
+pg-boss queue registration is centralized in `src/jobs/index.ts`.
+
+Current jobs resolve PlayStation NP communication IDs and Steam App IDs. Redis and the database are connected during API startup; pg-boss starts and jobs register before the HTTP server begins listening.
 
 ## Current data-fetching model
 
-The mobile root QueryClient uses an offline-first network mode.
-
-Collection data uses infinite pagination.
-
-Collection filters are held in a Zustand store and search is debounced before querying.
-
-## Current migration history
-
-The API includes sequential Drizzle migrations through the NP communication ID constraint work.
-
-The migration history should be considered historical. New DB changes should be represented by new migrations rather than rewriting old migration files.
+The mobile root QueryClient uses offline-first network mode. Collection data uses infinite pagination. Feature filter state is managed with Zustand and search is debounced.
 
 ## Living-project rules
 
-When updating this file:
-
-- Keep it short.
-- Record current work and meaningful state, not every conversation.
-- Remove completed temporary items when they stop being useful.
-- Keep durable architectural decisions in `decisions.md`.
-- Keep stable coding rules in `conventions.md`.
+- Keep this file focused on current state, not permanent design philosophy.
+- Record durable decisions in `decisions.md`.
+- Record stable conventions in `conventions.md`.
+- Recheck the source before treating version numbers, scripts, or feature maturity as current.

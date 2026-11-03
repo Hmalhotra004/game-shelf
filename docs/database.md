@@ -4,7 +4,10 @@
 
 - PostgreSQL
 - Drizzle ORM
-- `nanoid()` text IDs
+- Native PostgreSQL `uuid` primary keys and UUID foreign keys
+- UUIDv7 generation in application code via the `uuid` package (`v7`)
+
+Current Drizzle schemas use `uuid(...)` columns and `$defaultFn(() => uuidv7())` for generated IDs. Do not use the old nanoid/text-ID convention for new records unless the schema is deliberately changed.
 - Neon serverless driver in production
 - node-postgres in local development
 
@@ -321,6 +324,26 @@ listItem
 └── collection
 ```
 
+## ID type and generation
+
+The current API schema uses native PostgreSQL UUID columns for primary keys and UUID foreign keys across the user, authentication, collection, DLC, completion, playthrough, playthrough-session, list, and list-item tables.
+
+New IDs are generated in application code with UUIDv7:
+
+```ts
+import { v7 as uuidv7 } from "uuid";
+
+id: uuid("id")
+  .primaryKey()
+  .$defaultFn(() => uuidv7())
+```
+
+Important distinctions:
+
+- `account.accountId` remains a text provider/account identifier; it is not the UUID primary key.
+- External identifiers such as Steam App IDs, IGDB IDs, PSN IDs, and NP communication IDs remain strings where defined as text/JSON values.
+- When changing IDs or relationships, inspect every API/client type and route parameter that carries an ID.
+
 ## Migration discipline
 
 The API repository contains ordered Drizzle migrations, including migrations for:
@@ -335,6 +358,9 @@ The API repository contains ordered Drizzle migrations, including migrations for
 - NP communication ID → IDs
 - JSONB conversion
 - NP communication ID constraints
+- `0012_uuid_ids_migration.sql` — UUID conversion work for primary keys and foreign keys
+
+**Migration caution:** the supplied `0012_uuid_ids_migration.sql` contains a commented-out data-preserving UUID mapping approach followed by active `ALTER COLUMN ... SET DATA TYPE uuid` statements. Do not assume this file safely converts arbitrary existing nanoid/text values. Before running or changing this migration, inspect the actual database state, the full SQL, and Drizzle's migration status; confirm that existing values are already UUID-compatible or that an explicit data-preserving conversion is in place. Never casually edit or rerun a production migration.
 
 Do not rewrite migration history to make a new change appear simpler. Add a new migration following the repository's established process.
 

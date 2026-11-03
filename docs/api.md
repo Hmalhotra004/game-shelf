@@ -15,6 +15,12 @@ The supplied API uses:
 - pg-boss
 - Pino
 - Axios
+- `uuid` (UUIDv7 ID generation)
+- `compression`
+- `helmet`
+- `cors`
+- `cookie-parser`
+- Resend and Nodemailer (email delivery)
 
 ## Structure
 
@@ -46,6 +52,7 @@ igdb
 stats
 user
 auth
+mobile (app version)
 ```
 
 Keep new controller code inside the appropriate feature directory.
@@ -109,11 +116,34 @@ src/lib/...
 
 Controllers for those providers live under corresponding feature folders.
 
+## Startup and infrastructure
+
+The API startup sequence currently:
+
+1. Connects Redis.
+2. Verifies the database connection with `SELECT 1`.
+3. Starts pg-boss.
+4. Registers background jobs.
+5. Starts the HTTP server.
+
+Redis is created in `src/lib/redis.ts` using `REDIS_URL`, with a localhost fallback for development. pg-boss uses the environment-specific database connection string.
+
+The Express app also configures CORS, request logging, Helmet, compression, cookie parsing, JSON parsing, Better Auth's Node handler, and the API router.
+
+Use the existing startup/shutdown and logging patterns rather than starting infrastructure from individual controllers.
+
 ## Jobs
 
-The API has a job layer under `src/jobs`.
+The API has a job layer under `src/jobs`, backed by `pg-boss`.
 
-A job should encapsulate background processing rather than being mixed into HTTP route handlers.
+Current registered jobs include:
+
+- Resolve PlayStation NP communication IDs for a collection (`resolveNPCId`).
+- Resolve Steam App IDs (and associated DLC IDs) for a collection (`resolveSteamAppId`).
+
+Queue creation/registration is centralized in `src/jobs/index.ts`. The API startup starts pg-boss and registers the background jobs before accepting HTTP traffic.
+
+A job should encapsulate background processing rather than being mixed into HTTP route handlers. Use the existing queue/job pattern for new background work.
 
 ## Socket.IO
 
@@ -124,6 +154,8 @@ src/socket/
 ```
 
 Keep socket authentication/connection/event emission separate from HTTP controllers.
+
+**Current runtime note:** `initSocket(server)` is currently commented out in `src/index.ts`. Socket modules and shared event types exist, but do not assume the Socket.IO server is currently initialized at runtime. Verify before relying on realtime behavior or adding socket-dependent functionality.
 
 ## Response contracts
 
@@ -142,6 +174,25 @@ When changing an API response:
 Never trust a client-provided user ID for authorization when the authenticated user identity is available from the server session.
 
 Resource ownership should be enforced by the existing middleware/pattern.
+
+## API package scripts
+
+The supplied API package exposes:
+
+- `dev`
+- `build`
+- `start`
+- `db`
+- `db:old`
+- `db:prod`
+- `db:push`
+- `db:generate`
+- `db:migrate`
+- `db:migrate:prod`
+- `format`
+- `format:check`
+
+Prefer the existing scripts over inventing commands. Confirm package scripts in the current checkout before running them.
 
 ## API changes checklist
 

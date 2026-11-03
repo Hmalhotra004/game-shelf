@@ -163,6 +163,20 @@ Use the existing middleware for the feature rather than reproducing authorizatio
 
 Validation is handled through the shared schema + validation middleware pattern.
 
+## Database IDs
+
+Current DB schema IDs use native PostgreSQL UUID columns generated with UUIDv7:
+
+```ts
+import { v7 as uuidv7 } from "uuid";
+
+id: uuid("id")
+  .primaryKey()
+  .$defaultFn(() => uuidv7())
+```
+
+Use this existing pattern for new schema fields that represent internal IDs. Do not use the older nanoid/text ID pattern unless the schema is explicitly changed.
+
 ## Database
 
 Use Drizzle ORM.

@@ -13,13 +13,12 @@ The supplied codebase contains functionality for:
 - Play-session/time tracking.
 - Completion tracking.
 - Custom lists.
-- Wishlist.
 - User profile and settings.
 - PSN account integration.
 - Steam account integration.
 - IGDB game search/metadata.
 - SteamGridDB artwork.
-- Statistics.
+- Statistics API endpoints/types.
 - Authentication.
 
 ## Core domain
@@ -158,6 +157,14 @@ Supported statuses:
 - NG+ Run
 - Challenge Run
 - Achievement Run
+
+## Feature maturity notes
+
+The source snapshot includes routes/screens for Wishlist, Stats, and DLC management, but the corresponding mobile screens are currently placeholders ("Coming Soon" or empty content). Do not describe these as complete, user-ready mobile features.
+
+The API has a stats controller/route and shared stats types, but the mobile Stats screen is still a placeholder.
+
+The current mobile Wishlist screen is a placeholder; no dedicated wishlist persistence/API feature was identified in the supplied API/schema packages. Do not assume a complete wishlist backend exists.
 
 ## Product principle
 

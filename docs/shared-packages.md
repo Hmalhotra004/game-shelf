@@ -72,6 +72,7 @@ psn
 socketEvents
 stats
 steam
+trophies
 user
 ```
 
@@ -102,6 +103,7 @@ Feature query modules include:
 - stats
 - Steam
 - user
+- app/version (`app.ts`)
 
 ### Mutations
 
@@ -138,6 +140,10 @@ Known utilities include:
 - chart colors
 - game options
 - general utilities
+- game bundle helpers (`gameBundle`)
+- trophy helpers (`trophies`)
+
+The queries package also includes an app/version query module (`queries/app.ts`).
 
 ## Ownership rule
 

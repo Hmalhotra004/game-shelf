@@ -42,7 +42,11 @@ PostgreSQL + Drizzle ORM is the persistence layer.
 
 ## Decision 010 — IDs
 
-Application-generated DB IDs use nanoid.
+Current database primary keys and foreign keys use native PostgreSQL UUID columns.
+
+Application-generated IDs use UUIDv7 via the `uuid` package (`v7 as uuidv7`) and Drizzle `$defaultFn`.
+
+Do not apply the historical nanoid/text-ID convention to new schema changes.
 
 ## Decision 011 — Game/DLC modeling
 

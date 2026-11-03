@@ -34,7 +34,7 @@ A future `apps/web` application is planned, but it does not currently exist. Do 
 
 ## Architecture
 
-The API owns server-side business logic, persistence, authentication/authorization, external integrations, sockets, and jobs.
+The API owns server-side business logic, persistence, authentication/authorization, external integrations, sockets, and jobs. Current internal DB IDs are UUIDv7 values stored in native PostgreSQL UUID columns. The API uses Redis and pg-boss for infrastructure/background jobs; Socket.IO modules exist, but the server initializer is currently commented out in the supplied startup code.
 
 The mobile app owns Expo Router screens and mobile UI.
 
@@ -68,6 +68,10 @@ GameShelf distinguishes:
 Do not flatten these concepts.
 
 Read `docs/domain-rules.md` before changing related behavior.
+
+Before changing mobile release/update behavior, inspect the app variant configuration, package version, native build numbers, update gate, updater utility, shared release type, and API version endpoint together.
+
+Do not assume Wishlist, Stats, DLC management, or microtransactions screens are complete in the supplied snapshot; several are placeholders. The mobile Expo web preview target is not a standalone `apps/web` workspace.
 
 ## Response style
 

@@ -41,6 +41,8 @@ When web development begins, its conventions must be derived from its actual sou
 
 The shared packages must remain application-agnostic.
 
+The mobile package can be started/exported for web through Expo's web target, but this is not a separate `apps/web` application. A standalone web workspace remains future scope.
+
 ## API
 
 `apps/api` is an Express + TypeScript backend.

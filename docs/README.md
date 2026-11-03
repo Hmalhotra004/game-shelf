@@ -48,6 +48,8 @@ There is no web app currently. `apps/web` is future planned scope only.
 
 ## Source basis
 
-This context pack was generated from the supplied API, mobile, schemas, and utils source archives plus the database schema files supplied in the conversation.
+This context pack was refreshed from the latest supplied API, mobile, schemas, and utils source archives and the existing context Markdown files. The current code snapshot includes UUIDv7 IDs, pg-boss background jobs, Redis startup, and an Android APK updater flow.
 
 The web application source was not supplied because it does not currently exist, so this pack intentionally does not invent web-specific implementation conventions.
+
+The refreshed docs reflect the latest supplied code snapshot. Version/build values and placeholder status can change; always verify the current source before treating them as permanent.
