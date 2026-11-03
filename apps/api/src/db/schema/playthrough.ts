@@ -20,8 +20,8 @@ export const playthrough = pgTable(
       .primaryKey()
       .$defaultFn(() => uuidv7()),
 
-    startedAt: timestamp("started_at", { mode: "date" }).defaultNow(),
-    finishedAt: timestamp("finished_at", { mode: "date" }),
+    startedAt: timestamp("started_at", { mode: "string" }).defaultNow(),
+    finishedAt: timestamp("finished_at", { mode: "string" }),
 
     status: playthroughStatus("status").notNull().default("Active"),
 
@@ -75,7 +75,7 @@ export const playthroughSession = pgTable(
       .primaryKey()
       .$defaultFn(() => uuidv7()),
 
-    playDate: timestamp("play_date", { mode: "date" }).notNull(),
+    playDate: timestamp("play_date", { mode: "string" }).notNull(),
     secondsPlayed: integer("seconds_played").notNull(),
 
     playthroughId: uuid("playthrough_id")

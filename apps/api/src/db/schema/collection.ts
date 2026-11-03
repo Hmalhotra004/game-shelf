@@ -27,7 +27,7 @@ export const collection = pgTable(
 
     name: text("name").notNull(),
     edition: text("edition"),
-    dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }),
+    dateOfPurchase: timestamp("date_of_purchase", { mode: "string" }),
     amount: numeric("amount", { precision: 10, scale: 2 }),
 
     image: text("image"),
@@ -130,7 +130,7 @@ export const dlc = pgTable(
       .$defaultFn(() => uuidv7()),
 
     name: text("name").notNull(),
-    dateOfPurchase: timestamp("date_of_purchase", { mode: "date" }),
+    dateOfPurchase: timestamp("date_of_purchase", { mode: "string" }),
     amount: numeric("amount", { precision: 10, scale: 2 }),
 
     image: text("image"),

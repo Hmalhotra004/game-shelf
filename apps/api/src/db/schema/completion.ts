@@ -22,7 +22,7 @@ export const completion = pgTable(
 
     gameType: GameType("game_type").notNull().default("Game"),
     totalPlaytime: integer("total_playtime"),
-    completedAt: timestamp("completed_at", { mode: "date" }),
+    completedAt: timestamp("completed_at", { mode: "string" }),
     notes: text("notes"),
 
     completionStyle: completionStyle("completion_style")
