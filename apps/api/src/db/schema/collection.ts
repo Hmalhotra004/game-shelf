@@ -27,7 +27,7 @@ export const collection = pgTable(
 
     name: text("name").notNull(),
     edition: text("edition"),
-    dateOfPurchase: timestamp("date_of_purchase", { mode: "string" }),
+    dateOfPurchase: timestamp("date_of_purchase", { withTimezone: true }),
     amount: numeric("amount", { precision: 10, scale: 2 }),
 
     image: text("image"),
@@ -56,8 +56,10 @@ export const collection = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),
@@ -130,7 +132,7 @@ export const dlc = pgTable(
       .$defaultFn(() => uuidv7()),
 
     name: text("name").notNull(),
-    dateOfPurchase: timestamp("date_of_purchase", { mode: "string" }),
+    dateOfPurchase: timestamp("date_of_purchase", { withTimezone: true }),
     amount: numeric("amount", { precision: 10, scale: 2 }),
 
     image: text("image"),
@@ -155,8 +157,10 @@ export const dlc = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),

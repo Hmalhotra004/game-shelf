@@ -20,8 +20,8 @@ export const playthrough = pgTable(
       .primaryKey()
       .$defaultFn(() => uuidv7()),
 
-    startedAt: timestamp("started_at", { mode: "string" }).defaultNow(),
-    finishedAt: timestamp("finished_at", { mode: "string" }),
+    startedAt: timestamp("started_at", { withTimezone: true }).defaultNow(),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
 
     status: playthroughStatus("status").notNull().default("Active"),
 
@@ -46,8 +46,10 @@ export const playthrough = pgTable(
       onDelete: "set null",
     }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),
@@ -75,7 +77,7 @@ export const playthroughSession = pgTable(
       .primaryKey()
       .$defaultFn(() => uuidv7()),
 
-    playDate: timestamp("play_date", { mode: "string" }).notNull(),
+    playDate: timestamp("play_date", { withTimezone: true }).notNull(),
     secondsPlayed: integer("seconds_played").notNull(),
 
     playthroughId: uuid("playthrough_id")
@@ -86,7 +88,9 @@ export const playthroughSession = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => [
     index("session_playthrough_idx").on(table.playthroughId),
