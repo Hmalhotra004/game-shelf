@@ -22,7 +22,7 @@ export const completion = pgTable(
 
     gameType: GameType("game_type").notNull().default("Game"),
     totalPlaytime: integer("total_playtime"),
-    completedAt: timestamp("completed_at", { mode: "string" }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
     notes: text("notes"),
 
     completionStyle: completionStyle("completion_style")
@@ -44,8 +44,10 @@ export const completion = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
       .defaultNow()
       .$onUpdate(() => new Date())
       .notNull(),

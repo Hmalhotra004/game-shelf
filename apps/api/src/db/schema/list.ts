@@ -23,7 +23,9 @@ export const list = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => [index("list_user_idx").on(table.userId)],
 );
@@ -42,7 +44,9 @@ export const listItem = pgTable(
       .notNull()
       .references(() => collection.id, { onDelete: "cascade" }),
 
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => [
     index("list_item_list_idx").on(table.listId),
