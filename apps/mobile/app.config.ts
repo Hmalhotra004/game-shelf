@@ -56,6 +56,9 @@ const config: ExpoConfig = {
     "expo-build-properties",
     "expo-font",
     "expo-image",
+    "expo-secure-store",
+    "expo-status-bar",
+    "expo-web-browser",
   ],
   experiments: {
     typedRoutes: true,
