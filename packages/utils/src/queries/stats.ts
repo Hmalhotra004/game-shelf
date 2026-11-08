@@ -3,7 +3,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
 
 import {
-  getOverViewStateResponse,
+  getOverViewStatResponse,
   WeeklyPlaytimeResponse,
 } from "@repo/schemas/types/stats";
 
@@ -24,7 +24,7 @@ export const getOverviewStatsQueryOptions = (api: AxiosInstance) =>
     queryKey: StatsQueryKeys.getOverview(),
     queryFn: async () => {
       const response =
-        await api.get<getOverViewStateResponse>(`/stats/getOverview`);
+        await api.get<getOverViewStatResponse>(`/stats/getOverview`);
 
       return response.data;
     },

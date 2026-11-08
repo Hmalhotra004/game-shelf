@@ -1,6 +1,6 @@
 import { DataType } from "./index";
 
-export type getOverViewStateResponse = {
+export type getOverViewStatResponse = {
   totalGames: number;
   totalDLCs: number;
   totalPlaytimeHours: number;
