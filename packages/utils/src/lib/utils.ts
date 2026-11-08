@@ -92,17 +92,17 @@ export function betterTimeText(seconds: number, withS?: boolean): string {
 
   // Only hours
   if (h > 0 && m === 0 && s === 0) {
-    return `${h} h`;
+    return `${h}h`;
   }
 
   // Only minutes
   if (h === 0 && m > 0 && s === 0) {
-    return `${m} m`;
+    return `${m}m`;
   }
 
   // Only seconds
   if (h === 0 && m === 0 && s > 0) {
-    return `${s} s`;
+    return `${s}s`;
   }
 
   // Mixed values

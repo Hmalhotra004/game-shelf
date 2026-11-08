@@ -10,16 +10,15 @@ const HomePage = () => {
       <Header />
 
       <ScreenWrapper paddingTop={16}>
-        <View className="">
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 100 }}
-          >
-            <OverviewTitles />
+        <ScrollView
+          contentContainerClassName="gap-3"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <OverviewTitles />
 
-            <WeeklyPlaytimeChart />
-          </ScrollView>
-        </View>
+          <WeeklyPlaytimeChart />
+        </ScrollView>
       </ScreenWrapper>
     </View>
   );

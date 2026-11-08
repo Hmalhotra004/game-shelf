@@ -1,8 +1,10 @@
+import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
+import { betterTimeText } from "@repo/utils/lib/utils";
 import { getWeeklyPlaytimeStatsQueryOptions } from "@repo/utils/queries/stats";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
@@ -18,13 +20,6 @@ import {
 
 const DAY_FORMAT = "yyyy-MM-dd";
 const MAX_OFFSET = 104; // keep in sync with weekStatsQuerySchema
-
-const formatDuration = (seconds: number) => {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.round((seconds % 3600) / 60);
-  if (h === 0) return `${m}m`;
-  return m === 0 ? `${h}h` : `${h}h ${m}m`;
-};
 
 const formatRange = (start: string, end: string) =>
   `${format(parseISO(start), "d MMM")} – ${format(parseISO(end), "d MMM")}`;
@@ -76,8 +71,8 @@ const WeeklyPlaytimeChart = () => {
     return { bars, unit: useHours ? "h" : "m", maxSeconds };
   }, [data, selectedDate, todayKey, colors]);
 
+  // TODO:Improve this
   if (isLoading) {
-    // Swap for the existing <Skeleton /> primitive if you want to match other screens.
     return <View className="h-72 rounded-xl bg-muted" />;
   }
 
@@ -108,20 +103,22 @@ const WeeklyPlaytimeChart = () => {
   const spacing = (chartWidth - 7 * 28) / 7;
 
   return (
-    <View className="gap-4 rounded-xl bg-card p-4">
+    <View className="gap-4 rounded-xl bg-card p-0">
       {/* Header: week pager */}
       <View className="flex-row items-center justify-between">
-        <Pressable
+        <Button
+          variant="ghost"
+          size="icon"
           hitSlop={12}
           disabled={offset >= MAX_OFFSET}
           onPress={() => changeWeek(offset + 1)}
-          className={cn(offset >= MAX_OFFSET && "opacity-30")}
+          className={cn("", offset >= MAX_OFFSET && "opacity-30")}
         >
           <ChevronLeftIcon
             size={20}
             color={colors.foreground}
           />
-        </Pressable>
+        </Button>
 
         <Text className="text-sm font-medium text-foreground">
           {offset === 0
@@ -129,7 +126,9 @@ const WeeklyPlaytimeChart = () => {
             : formatRange(data.weekStart, data.weekEnd)}
         </Text>
 
-        <Pressable
+        <Button
+          variant="ghost"
+          size="icon"
           hitSlop={12}
           disabled={offset === 0}
           onPress={() => changeWeek(offset - 1)}
@@ -139,19 +138,19 @@ const WeeklyPlaytimeChart = () => {
             size={20}
             color={colors.foreground}
           />
-        </Pressable>
+        </Button>
       </View>
 
       {/* Total + delta */}
       <View className="gap-1">
         <Text className="text-3xl font-bold text-foreground">
-          {formatDuration(data.totalSeconds)}
+          {betterTimeText(data.totalSeconds)}
         </Text>
         <Text className="text-xs text-muted-foreground">
           {formatRange(data.weekStart, data.weekEnd)}
           {deltaPct !== null && (
             <Text
-              className={deltaPct >= 0 ? "text-primary" : "text-destructive"}
+              className={deltaPct >= 0 ? "text-success" : "text-destructive"}
             >
               {"  "}
               {deltaPct >= 0 ? "+" : ""}
@@ -190,7 +189,7 @@ const WeeklyPlaytimeChart = () => {
       {selected ? (
         <Text className="text-center text-sm text-foreground">
           {format(parseISO(selected.date), "EEEE, d MMM")} ·{" "}
-          {formatDuration(selected.seconds)} · {selected.sessions}{" "}
+          {betterTimeText(selected.seconds)} · {selected.sessions}{" "}
           {selected.sessions === 1 ? "session" : "sessions"}
         </Text>
       ) : (
