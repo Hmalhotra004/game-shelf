@@ -1,18 +1,28 @@
 import Header from "@/components/Header";
 import OverviewTitles from "@/components/home/OverviewTitles";
+import WeeklyPlaytimeChart from "@/components/home/WeeklyPlayTimeChart";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
-export default function Index() {
+const HomePage = () => {
   return (
     <View className="flex-1">
       <Header />
 
       <ScreenWrapper paddingTop={16}>
-        <View className="flex-1">
-          <OverviewTitles />
+        <View className="">
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
+            <OverviewTitles />
+
+            <WeeklyPlaytimeChart />
+          </ScrollView>
         </View>
       </ScreenWrapper>
     </View>
   );
-}
+};
+
+export default HomePage;
