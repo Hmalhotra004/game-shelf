@@ -1,3 +1,4 @@
+import { ErrorState } from "@/components/ErrorState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -21,7 +22,7 @@ const cardWrapperClass = (index: number): string =>
   cn("mb-3", index % 2 === 0 ? "pr-1.5" : "pl-1.5");
 
 const OverviewTitles = () => {
-  const { data, isLoading, isError, error } = useQuery(
+  const { data, isLoading, isError, error, refetch } = useQuery(
     getOverviewStatsQueryOptions(api),
   );
 
@@ -44,14 +45,12 @@ const OverviewTitles = () => {
     );
   }
 
-  // TODO:Add Better error handling
   if (isError || !data) {
     return (
-      <View className="items-center justify-center py-8">
-        <Text className="text-destructive">
-          {error instanceof Error ? error.message : "Failed to load stats"}
-        </Text>
-      </View>
+      <ErrorState
+        refetch={refetch}
+        error={error}
+      />
     );
   }
 

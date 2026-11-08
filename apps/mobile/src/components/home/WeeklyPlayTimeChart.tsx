@@ -1,3 +1,4 @@
+import { ErrorState } from "@/components/ErrorState";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { api } from "@/lib/api";
@@ -9,7 +10,7 @@ import { getWeeklyPlaytimeStatsQueryOptions } from "@repo/utils/queries/stats";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { useMemo, useState } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 
 import {
@@ -35,7 +36,7 @@ const WeeklyPlaytimeChart = () => {
   // Device-local calendar day; the API treats `today` as an opaque date string.
   const todayKey = format(new Date(), DAY_FORMAT);
 
-  const { data, isLoading, isError, refetch, isFetching } = useQuery(
+  const { data, isLoading, isError, error, refetch, isFetching } = useQuery(
     getWeeklyPlaytimeStatsQueryOptions(api, { today: todayKey, offset }),
   );
 
@@ -76,17 +77,12 @@ const WeeklyPlaytimeChart = () => {
     return <View className="h-72 rounded-xl bg-muted" />;
   }
 
-  // TODO:handle erro better
   if (isError || !data || !chart) {
     return (
-      <View className="items-center gap-3 rounded-xl bg-card p-6">
-        <Text className="text-center text-muted-foreground">
-          Couldn&apos;t load your weekly playtime.
-        </Text>
-        <Pressable onPress={() => refetch()}>
-          <Text className="text-primary">Retry</Text>
-        </Pressable>
-      </View>
+      <ErrorState
+        refetch={refetch}
+        error={error}
+      />
     );
   }
 
