@@ -44,7 +44,7 @@ export const addCollectionMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
@@ -69,7 +69,7 @@ export const addCollectionBundleMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
@@ -95,7 +95,7 @@ export const updateCollectionMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getByIdAll(collectionId),
@@ -171,7 +171,7 @@ export const archiveCollectionMutationOptions = (
 
     onSettled: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.all() }),
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
         }),
@@ -245,7 +245,7 @@ export const deleteCollectionMutationOptions = (
 
     onSettled: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.all() }),
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
         }),

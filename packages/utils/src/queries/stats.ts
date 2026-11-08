@@ -9,9 +9,9 @@ import {
 
 // Keys
 export const StatsQueryKeys = {
-  all: ["Stats"] as const,
+  all: () => ["Stats"] as const,
 
-  homeStats: () => [...StatsQueryKeys.all, "homeStats"] as const,
+  homeStats: () => [...StatsQueryKeys.all(), "homeStats"] as const,
 
   getOverview: () => [...StatsQueryKeys.homeStats(), "getOverview"] as const,
 

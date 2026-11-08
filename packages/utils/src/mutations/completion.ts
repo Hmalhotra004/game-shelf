@@ -39,7 +39,7 @@ export const addCompletionMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
@@ -68,7 +68,7 @@ export const updateCompletionMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CompletionQueryKeys.getManyAll(),
@@ -147,7 +147,7 @@ export const deleteCompletionMutationOptions = (
 
     onSettled: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.all() }),
         queryClient.invalidateQueries({
           queryKey: CompletionQueryKeys.getManyAll(),
         }),
