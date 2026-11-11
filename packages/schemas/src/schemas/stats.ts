@@ -5,4 +5,9 @@ export const weekStatsQuerySchema = z.object({
   offset: z.coerce.number().int().min(0).max(104).default(0),
 });
 
+export const pickNextQuerySchema = z.object({
+  exclude: z.uuidv7().optional(),
+});
+
+export type PickNextQuerySchemaType = z.infer<typeof pickNextQuerySchema>;
 export type WeekStatsQueryType = z.infer<typeof weekStatsQuerySchema>;
