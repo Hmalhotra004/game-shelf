@@ -18,7 +18,7 @@ interface Props {
 }
 
 const Header = ({ className, paddingTop, onBack }: Props) => {
-  const { session, isPending } = useSession();
+  const { session } = useSession();
 
   const user = session?.user;
   const insets = useSafeAreaInsets();
