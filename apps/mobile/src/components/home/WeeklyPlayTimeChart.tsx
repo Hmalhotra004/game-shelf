@@ -100,7 +100,7 @@ const WeeklyPlaytimeChart = () => {
   const spacing = (chartWidth - 7 * 28) / 7;
 
   return (
-    <View className="gap-4 rounded-xl bg-card px-0">
+    <View className="gap-4 rounded-xl bg-card px-1.5">
       {/* Header: week pager */}
       <View className="flex-row items-center justify-between">
         <Button
