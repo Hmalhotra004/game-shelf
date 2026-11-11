@@ -6,7 +6,7 @@ import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
 import type { SearchGameClientResponse } from "@repo/schemas/types/igdb";
 import { searchGameQueryOptions } from "@repo/utils/queries/igdb";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { BackHandler, Text, View } from "react-native";
@@ -27,12 +27,19 @@ const MIN_QUERY_LENGTH = 2;
 
 const SearchBottomSheet = ({ sheetRef }: Props) => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [prevSearch, setPrevSearch] = useState(debouncedSearch);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   const theme = useThemeStore((s) => s.theme);
   const router = useRouter();
 
   const canSearch = debouncedSearch.length >= MIN_QUERY_LENGTH;
+
+  if (prevSearch !== debouncedSearch) {
+    setPrevSearch(debouncedSearch);
+    setSelectedId(null);
+  }
 
   useEffect(() => {
     if (!isOpen) return;
@@ -62,15 +69,9 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
 
   const snapPoints = useMemo(() => ["91%"], []);
 
-  const { data, isFetching, isError, error } = useQuery({
-    ...searchGameQueryOptions(api, canSearch, debouncedSearch),
-    placeholderData: keepPreviousData, // avoids list flicker between queries
-  });
-
-  // Clear selection whenever the results change
-  useEffect(() => {
-    setSelectedId(null);
-  }, [debouncedSearch]);
+  const { data, isFetching, isError, error } = useQuery(
+    searchGameQueryOptions(api, canSearch, debouncedSearch),
+  );
 
   const handlePress = useCallback((id: number) => {
     setSelectedId((prev) => (prev === id ? null : id));
@@ -81,24 +82,27 @@ const SearchBottomSheet = ({ sheetRef }: Props) => {
     console.log("wishlist", game.id);
   }, []);
 
-  const handleAddToCollection = useCallback((game: Game) => {
-    if (game.isBundle) {
-      router.push({
-        pathname: "/(collection)/add/addBundle",
-        params: { igdbId: game.id },
-      });
-    } else if (game.isDLC) {
-      router.push({
-        pathname: "/(collection)/add/addDLC",
-        params: { igdbId: game.id },
-      });
-    } else {
-      router.push({
-        pathname: "/(collection)/add",
-        params: { igdbId: game.id },
-      });
-    }
-  }, []);
+  const handleAddToCollection = useCallback(
+    (game: Game) => {
+      if (game.isBundle) {
+        router.push({
+          pathname: "/(collection)/add/addBundle",
+          params: { igdbId: game.id },
+        });
+      } else if (game.isDLC) {
+        router.push({
+          pathname: "/(collection)/add/addDLC",
+          params: { igdbId: game.id },
+        });
+      } else {
+        router.push({
+          pathname: "/(collection)/add",
+          params: { igdbId: game.id },
+        });
+      }
+    },
+    [router],
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: Game }) => (
