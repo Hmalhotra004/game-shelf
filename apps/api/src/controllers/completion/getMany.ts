@@ -11,6 +11,7 @@ import {
   exists,
   ilike,
   inArray,
+  isNull,
   or,
   sql,
   type SQL,
@@ -35,7 +36,8 @@ export const getMany = async (req: Request, res: Response) => {
     // ---------- filters ----------
     const conditions: (SQL | undefined)[] = [
       eq(completion.userId, userId),
-      eq(parent.archived, false),
+      eq(parent.archived, false), // game archived, or DLC's parent game archived
+      or(isNull(dlc.id), eq(dlc.archived, false)), // the DLC itself archived
     ];
 
     if (search?.trim()) {

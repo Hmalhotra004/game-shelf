@@ -1,6 +1,7 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { playthroughSession } from "@/db/schema";
+import { notInArchivedCollection } from "@/lib/queryHelpers";
 import { WeekStatsQueryType } from "@repo/schemas/schemas/stats";
 import { and, desc, eq, gte, lt, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
@@ -68,6 +69,7 @@ export const getWeeklyPlaytime = async (req: Request, res: Response) => {
             eq(playthroughSession.userId, userId),
             gte(playthroughSession.playDate, sql`${prevStart}::timestamp`),
             lt(playthroughSession.playDate, sql`${rangeEnd}::timestamp`),
+            notInArchivedCollection(),
           ),
         )
         .groupBy(dayKey),
@@ -76,7 +78,9 @@ export const getWeeklyPlaytime = async (req: Request, res: Response) => {
       db
         .selectDistinct({ date: dayKey })
         .from(playthroughSession)
-        .where(eq(playthroughSession.userId, userId))
+        .where(
+          and(eq(playthroughSession.userId, userId), notInArchivedCollection()),
+        )
         .orderBy(desc(dayKey))
         .limit(MAX_STREAK_LOOKBACK),
     ]);

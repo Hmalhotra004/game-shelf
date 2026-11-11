@@ -1,7 +1,7 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { collection, completion, dlc, playthrough } from "@/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
 
 import {
@@ -31,7 +31,14 @@ export const getOverview = async (req: Request, res: Response) => {
         spentOnDLCs: sql<number>`coalesce(sum(${dlc.amount}), 0)`,
       })
       .from(dlc)
-      .where(and(eq(dlc.userId, userId), eq(dlc.archived, false)));
+      .innerJoin(collection, eq(collection.id, dlc.collectionId))
+      .where(
+        and(
+          eq(dlc.userId, userId),
+          eq(dlc.archived, false),
+          eq(collection.archived, false),
+        ),
+      );
 
     const [activePlaythroughs] = await db
       .select({
@@ -40,7 +47,12 @@ export const getOverview = async (req: Request, res: Response) => {
       })
       .from(playthrough)
       .where(
-        and(eq(playthrough.userId, userId), eq(playthrough.status, "Active")),
+        and(
+          eq(playthrough.userId, userId),
+          eq(playthrough.status, "Active"),
+          or(isNull(collection.id), eq(collection.archived, false)),
+          or(isNull(dlc.id), eq(dlc.archived, false)),
+        ),
       );
 
     const [completedAgg] = await db
@@ -49,7 +61,13 @@ export const getOverview = async (req: Request, res: Response) => {
         seconds: sql<number>`coalesce(sum(${completion.totalPlaytime}), 0)`,
       })
       .from(completion)
-      .where(eq(completion.userId, userId));
+      .where(
+        and(
+          eq(completion.userId, userId),
+          or(isNull(collection.id), eq(collection.archived, false)),
+          or(isNull(dlc.id), eq(dlc.archived, false)),
+        ),
+      );
 
     /* ------------------ ONLINE HOURS ------------------ */
     // TODO: add psn online hrs
