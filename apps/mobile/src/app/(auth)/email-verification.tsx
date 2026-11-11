@@ -11,7 +11,7 @@ import { otpSchema, OTPSchemaType } from "@repo/schemas/schemas/auth";
 import { OTP_LENGTH } from "@repo/utils/constants";
 import useOTPExpire from "@repo/utils/hooks/useOTPExpire";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -49,6 +49,8 @@ const EmailVerification = () => {
       pin: "",
     },
   });
+
+  const pin = useWatch({ control: form.control, name: "pin" });
 
   function onSubmit(data: OTPSchemaType) {
     setPending(true);
@@ -122,7 +124,7 @@ const EmailVerification = () => {
 
           <Button
             className="w-full"
-            disabled={pending || form.watch("pin").length !== OTP_LENGTH}
+            disabled={pending || pin.length !== OTP_LENGTH}
             onPress={() => form.handleSubmit(onSubmit)()}
           >
             {pending ? <Loader size={20} /> : <Text>Verify</Text>}

@@ -18,7 +18,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ImageIcon } from "lucide-react-native";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -85,6 +85,12 @@ const AddCompletion = () => {
     },
   });
 
+  const notes = useWatch({ control: form.control, name: "notes" });
+  const selectedPlatform = useWatch({
+    control: form.control,
+    name: "platform",
+  });
+
   async function onSubmit(values: CreateCompletionSchemaType) {
     await addCompletion.mutateAsync(values);
   }
@@ -118,8 +124,6 @@ const AddCompletion = () => {
     );
   }
 
-  const notes = form.watch("notes");
-  const selectedPlatform = form.watch("platform");
   const imageUri = game?.customImage ?? game.image;
 
   return (
@@ -244,7 +248,7 @@ const AddCompletion = () => {
           <View className="flex-row gap-3">
             <Button
               className="flex-1"
-              onPress={form.handleSubmit(onSubmit)}
+              onPress={() => form.handleSubmit(onSubmit)()}
               disabled={isPending}
             >
               <Text>{isPending ? "Adding..." : "Add Completion"}</Text>
