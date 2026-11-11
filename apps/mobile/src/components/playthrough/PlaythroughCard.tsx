@@ -124,7 +124,6 @@ const PlaythroughCard = ({ play }: Props) => {
       queryClient,
       (err) => handleError(err),
       () => {
-        addTimeSheetRef.current?.dismiss();
         showToast("success", "Session Added");
       },
     ),
@@ -145,7 +144,6 @@ const PlaythroughCard = ({ play }: Props) => {
       queryClient,
       (err) => handleError(err),
       () => {
-        editSessionSheetRef.current?.dismiss();
         showToast("success", "Session Updated");
       },
     ),
@@ -241,6 +239,7 @@ const PlaythroughCard = ({ play }: Props) => {
 
   async function onSubmitSession(values: CreatePlaythroughSessionSchemaType) {
     await createSession.mutateAsync({ id: play.id, ...values });
+    addTimeSheetRef.current?.dismiss();
   }
 
   function editSession(s: SessionType) {
@@ -259,6 +258,7 @@ const PlaythroughCard = ({ play }: Props) => {
       sessionId: editingSession.id,
       ...values,
     });
+    editSessionSheetRef.current?.dismiss();
   }
 
   function finish() {

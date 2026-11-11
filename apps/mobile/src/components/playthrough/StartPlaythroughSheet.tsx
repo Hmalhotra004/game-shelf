@@ -39,11 +39,8 @@ const StartPlaythroughSheet = ({ sheetRef }: Props) => {
   );
 
   const startPlaythrough = useMutation(
-    startPlaythroughMutationOptions(
-      api,
-      queryClient,
-      (err) => handleError(err),
-      () => sheetRef.current?.dismiss(),
+    startPlaythroughMutationOptions(api, queryClient, (err) =>
+      handleError(err),
     ),
   );
 
@@ -59,6 +56,7 @@ const StartPlaythroughSheet = ({ sheetRef }: Props) => {
       gameType,
       ...(gameType === "DLC" ? { dlcId: id } : { collectionId: id }),
     });
+    sheetRef.current?.dismiss();
   };
 
   return (
