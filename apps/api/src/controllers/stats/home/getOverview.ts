@@ -2,6 +2,7 @@ import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
 import { collection, completion, dlc, playthrough } from "@/db/schema";
 import { and, eq, isNull, or, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import type { Request, Response } from "express";
 
 import {
@@ -14,6 +15,8 @@ export const getOverview = async (req: Request, res: Response) => {
   try {
     const userId = req.user!.id;
     const steamId = req.user!.steamId;
+
+    const parent = alias(collection, "parent_collection");
 
     const [gamesAgg] = await db
       .select({
@@ -46,12 +49,16 @@ export const getOverview = async (req: Request, res: Response) => {
         seconds: sql<number>`coalesce(sum(${playthrough.totalSeconds}),0)`,
       })
       .from(playthrough)
+      .leftJoin(collection, eq(collection.id, playthrough.collectionId))
+      .leftJoin(dlc, eq(dlc.id, playthrough.dlcId))
+      .leftJoin(parent, eq(parent.id, dlc.collectionId))
       .where(
         and(
           eq(playthrough.userId, userId),
           eq(playthrough.status, "Active"),
           or(isNull(collection.id), eq(collection.archived, false)),
           or(isNull(dlc.id), eq(dlc.archived, false)),
+          or(isNull(parent.id), eq(parent.archived, false)),
         ),
       );
 
@@ -61,10 +68,18 @@ export const getOverview = async (req: Request, res: Response) => {
         seconds: sql<number>`coalesce(sum(${completion.totalPlaytime}), 0)`,
       })
       .from(completion)
+      .leftJoin(dlc, eq(dlc.id, completion.dlcId))
+      .leftJoin(
+        parent,
+        eq(
+          parent.id,
+          sql`COALESCE(${completion.collectionId}, ${dlc.collectionId})`,
+        ),
+      )
       .where(
         and(
           eq(completion.userId, userId),
-          or(isNull(collection.id), eq(collection.archived, false)),
+          eq(parent.archived, false),
           or(isNull(dlc.id), eq(dlc.archived, false)),
         ),
       );
