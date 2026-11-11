@@ -21,7 +21,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon } from "lucide-react-native";
 import { useCallback, useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -85,7 +85,10 @@ const AddDLC = () => {
     },
   });
 
-  const collectionId = form.watch("collectionId");
+  const collectionId = useWatch({
+    control: form.control,
+    name: "collectionId",
+  });
 
   const { data: userGames, isLoading: isLoadingUserGames } = useQuery(
     userGetCollectionQueryOptions(api, true),
@@ -222,7 +225,7 @@ const AddDLC = () => {
             <Controller
               name="collectionId"
               control={form.control}
-              render={({}) => (
+              render={() => (
                 <View className="gap-2">
                   <Text className="text-sm font-medium text-foreground">
                     Parent Game*
@@ -270,7 +273,7 @@ const AddDLC = () => {
           <View className="flex-row gap-3">
             <Button
               className="flex-1"
-              onPress={form.handleSubmit(onSubmit)}
+              onPress={() => form.handleSubmit(onSubmit)()}
               disabled={isPending || isLoading}
             >
               <Text>{isPending ? "Adding..." : "Add DLC"}</Text>

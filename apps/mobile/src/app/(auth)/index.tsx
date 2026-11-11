@@ -19,7 +19,7 @@ import {
   KeyboardController,
 } from "react-native-keyboard-controller";
 
-const login = () => {
+const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -100,7 +100,7 @@ const login = () => {
             placeholder="Password"
             disabled={pending}
             returnKeyType="done"
-            onSubmitEditing={form.handleSubmit(onSubmit)}
+            onSubmitEditing={() => form.handleSubmit(onSubmit)()}
           />
 
           {/* <Pressable
@@ -122,7 +122,7 @@ const login = () => {
 
           <Button
             size="lg"
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={() => form.handleSubmit(onSubmit)()}
             disabled={pending}
           >
             {pending ? (
@@ -134,7 +134,7 @@ const login = () => {
 
           <View className="flex-row items-center justify-center gap-1">
             <Text className="text-sm text-muted-foreground">
-              Don't have an account?
+              Don&apos;t have an account?
             </Text>
             <Pressable
               onPress={() => router.push({ pathname: "/(auth)/sign-up" })}
@@ -156,4 +156,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

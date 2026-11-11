@@ -50,7 +50,6 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
       (err) => handleError(err),
       () => {
         showToast("success", "Completion Updated");
-        editSheetRef.current?.dismiss();
       },
     ),
   );
@@ -119,6 +118,7 @@ const CompletionCardContextMenu = ({ children, completion }: Props) => {
         isSaving={updateCompletion.isPending}
         onSubmit={async (values) => {
           await updateCompletion.mutateAsync(values);
+          editSheetRef.current?.dismiss();
         }}
         onCancel={() => editSheetRef.current?.dismiss()}
       />

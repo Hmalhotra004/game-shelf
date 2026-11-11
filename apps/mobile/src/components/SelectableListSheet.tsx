@@ -86,7 +86,13 @@ function SelectableListSheet<
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState<K | undefined>(defaultTab);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [prevKey, setPrevKey] = useState({ search, tab });
   const theme = useThemeStore((s) => s.theme);
+
+  if (prevKey.search !== search || prevKey.tab !== tab) {
+    setPrevKey({ search, tab });
+    setSelectedId(null);
+  }
 
   useEffect(() => {
     if (!isOpen) return;
@@ -120,11 +126,6 @@ function SelectableListSheet<
     if (!q) return list;
     return list.filter((item) => getSearchText(item).toLowerCase().includes(q));
   }, [getItems, getSearchText, tab, search]);
-
-  // Clear selection when search or tab changes
-  useEffect(() => {
-    setSelectedId(null);
-  }, [search, tab]);
 
   const handlePress = useCallback((id: string) => {
     setSelectedId((prev) => (prev === id ? null : id));

@@ -18,7 +18,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -92,9 +92,12 @@ const AddCollection = () => {
     name: "DLCs",
   });
 
-  const selectedPlatform = form.watch("platform");
-  const dlcValues = form.watch("DLCs");
-  const baseDate = form.watch("dateOfPurchase");
+  const selectedPlatform = useWatch({
+    control: form.control,
+    name: "platform",
+  });
+  const dlcValues = useWatch({ control: form.control, name: "DLCs" });
+  const baseDate = useWatch({ control: form.control, name: "dateOfPurchase" });
 
   // A DLC is added through its own screen
   useEffect(() => {
@@ -403,7 +406,7 @@ const AddCollection = () => {
           <View className="flex-row gap-3">
             <Button
               className="flex-1"
-              onPress={form.handleSubmit(onSubmit)}
+              onPress={() => form.handleSubmit(onSubmit)()}
               disabled={isPending || isLoadingGame}
             >
               <Text>{isPending ? "Adding..." : "Add to Collection"}</Text>

@@ -8,7 +8,7 @@ import { MAX_NOTES_CHARACTERS } from "@repo/schemas/schemas/playthrough";
 import { CompletionGetMany } from "@repo/schemas/types/completion";
 import { COMPLETION_STYLE_OPTIONS, opts } from "@repo/utils/lib/gameOptions";
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
@@ -93,7 +93,7 @@ const EditCompletionSheet = ({
   // prefill whenever the completion being edited changes
   useEffect(() => {
     form.reset(initialValues);
-  }, [initialValues, form.reset]);
+  }, [initialValues, form]);
 
   // Android hardware back closes the sheet
   useEffect(() => {
@@ -138,7 +138,7 @@ const EditCompletionSheet = ({
 
   const snapPoints = useMemo(() => ["95%"], []);
 
-  const notes = form.watch("notes");
+  const notes = useWatch({ control: form.control, name: "notes" });
 
   const showPSVersion =
     completion.platform === "PS" &&
@@ -274,7 +274,7 @@ const EditCompletionSheet = ({
           </Button>
 
           <Button
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={() => form.handleSubmit(onSubmit)()}
             disabled={isSaving}
           >
             <Text>{isSaving ? "Saving..." : "Save Changes"}</Text>

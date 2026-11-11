@@ -3,8 +3,14 @@ import { Text } from "@/components/ui/text";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
 import { VariantProps } from "class-variance-authority";
-import { useCallback, useRef, useSyncExternalStore } from "react";
 import { View } from "react-native";
+
+import {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 
 import {
   BottomSheetBackdrop,
@@ -42,11 +48,13 @@ export const useConfirmSheet = (
 
   // Defaults from the hook arguments (always the latest render's values)
   const defaultsRef = useRef<Content>({ title, message, confirmText, variant });
-  defaultsRef.current = { title, message, confirmText, variant };
+  useLayoutEffect(() => {
+    defaultsRef.current = { title, message, confirmText, variant };
+  }, [title, message, confirmText, variant]);
 
   // What the sheet is currently showing. Changed only by confirm(), which
   // then notifies the sheet directly, so it never depends on parent re-renders.
-  const contentRef = useRef<Content>(defaultsRef.current);
+  const contentRef = useRef<Content>({ title, message, confirmText, variant });
   const listenersRef = useRef(new Set<() => void>());
 
   const subscribe = useCallback((listener: () => void) => {

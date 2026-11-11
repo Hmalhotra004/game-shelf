@@ -13,7 +13,7 @@ import { listGetManyQueryOptions } from "@repo/utils/queries/list";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Image, ScrollView, View } from "react-native";
 
 import {
@@ -105,7 +105,10 @@ export default function EditCollection() {
     });
   }, [data, form]);
 
-  const selectedPlatform = form.watch("platform");
+  const selectedPlatform = useWatch({
+    control: form.control,
+    name: "platform",
+  });
 
   async function onSubmit(values: UpdateCollectionSchemaType) {
     await updateGame.mutateAsync({
@@ -300,7 +303,7 @@ export default function EditCollection() {
           <View className="flex-row gap-3">
             <Button
               className="flex-1"
-              onPress={form.handleSubmit(onSubmit)}
+              onPress={() => form.handleSubmit(onSubmit)()}
               disabled={isPending || isLoadingLists}
             >
               <Text>{isPending ? "Saving..." : "Save Changes"}</Text>

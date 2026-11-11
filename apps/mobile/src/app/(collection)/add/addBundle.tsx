@@ -15,7 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -87,9 +87,18 @@ const AddBundle = () => {
     name: "collections",
   });
 
-  const selectedPlatform = form.watch("platform");
-  const rootAmount = form.watch("amount");
-  const collectionValues = form.watch("collections");
+  const selectedPlatform = useWatch({
+    control: form.control,
+    name: "platform",
+  });
+  const rootAmount = useWatch({
+    control: form.control,
+    name: "amount",
+  });
+  const collectionValues = useWatch({
+    control: form.control,
+    name: "collections",
+  });
 
   // Fill the games once, a refetch must not overwrite the user's edits
   const initialized = useRef(false);
@@ -441,7 +450,7 @@ const AddBundle = () => {
           <View className="flex-row gap-3">
             <Button
               className="flex-1"
-              onPress={form.handleSubmit(onSubmit)}
+              onPress={() => form.handleSubmit(onSubmit)()}
               disabled={isPending || fields.length === 0}
             >
               <Text>{isPending ? "Adding..." : "Add Bundle"}</Text>

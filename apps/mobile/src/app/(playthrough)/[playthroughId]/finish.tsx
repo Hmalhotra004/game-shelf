@@ -19,7 +19,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ImageIcon } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
@@ -105,9 +105,15 @@ const FinishPlaythrough = () => {
       dlcId: isDlc ? (data.dlcId ?? undefined) : undefined,
       playthroughId,
     });
-  }, [data, form, gameType, isDlc]);
+  }, [data, form, gameType, isDlc, playthroughId]);
 
   const isPending = addCompletion.isPending || deletePlaythrough.isPending;
+
+  const notes = useWatch({ control: form.control, name: "notes" });
+  const selectedPlatform = useWatch({
+    control: form.control,
+    name: "platform",
+  });
 
   async function onSubmit(values: CreateCompletionSchemaType) {
     try {
@@ -150,7 +156,7 @@ const FinishPlaythrough = () => {
 
         <View className="flex-1 items-center justify-center gap-3">
           <Text className="text-muted-foreground">
-            Couldn't load this playthrough.
+            Couldn&apos;t load this playthrough.
           </Text>
           <Button
             variant="outline"
@@ -163,8 +169,6 @@ const FinishPlaythrough = () => {
     );
   }
 
-  const notes = form.watch("notes");
-  const selectedPlatform = form.watch("platform");
   const imageUri = data.customImage ?? data.image;
 
   return (
@@ -307,7 +311,7 @@ const FinishPlaythrough = () => {
           <View className="flex-row gap-3">
             <Button
               className="flex-1"
-              onPress={form.handleSubmit(onSubmit)}
+              onPress={() => form.handleSubmit(onSubmit)()}
               disabled={isPending}
             >
               <Text>{isPending ? "Saving..." : "Finish Playthrough"}</Text>

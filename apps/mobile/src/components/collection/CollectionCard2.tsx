@@ -7,7 +7,6 @@ import { CollectionGetMany } from "@repo/schemas/types/collection";
 import { betterTimeText, statusColorMap } from "@repo/utils/lib/utils";
 import { formatDate } from "date-fns";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import CollectionCardContextMenu from "./CollectionCardContextMenu";
 
@@ -36,7 +35,6 @@ const formatAmount = (value: number) =>
 const CollectionCard2 = ({ game }: Props) => {
   const theme = useThemeStore((s) => s.theme);
   const imageUri = game.customImage ?? game.image;
-  const router = useRouter();
 
   const isOnline = game.status === "Online";
   const statusStyle = statusColorMap[game.status];

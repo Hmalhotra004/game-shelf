@@ -25,8 +25,11 @@ const DatePickerModal = ({
   // Keep latest callbacks without re-opening the Android dialog on re-render
   const onConfirmRef = useRef(onConfirm);
   const onCloseRef = useRef(onClose);
-  onConfirmRef.current = onConfirm;
-  onCloseRef.current = onClose;
+
+  useEffect(() => {
+    onConfirmRef.current = onConfirm;
+    onCloseRef.current = onClose;
+  });
 
   // Android: the native dialog is opened imperatively when this mounts
   useEffect(() => {

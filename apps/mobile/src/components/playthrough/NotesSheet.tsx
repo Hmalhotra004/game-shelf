@@ -48,15 +48,19 @@ const NotesSheet = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(initialNotes ?? "");
+  const [previousInitialNotes, setPreviousInitialNotes] =
+    useState(initialNotes);
+
+  // Reset the draft when the saved notes change, without synchronizing state
+  // from an effect.
+  if (previousInitialNotes !== initialNotes) {
+    setPreviousInitialNotes(initialNotes);
+    setValue(initialNotes ?? "");
+  }
 
   const theme = useThemeStore((s) => s.theme);
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
-
-  // keep in sync when the saved notes change (e.g. after a successful save)
-  useEffect(() => {
-    setValue(initialNotes ?? "");
-  }, [initialNotes]);
 
   // validate with the shared schema (it requires status too, so pass it along)
   const result = useMemo(
