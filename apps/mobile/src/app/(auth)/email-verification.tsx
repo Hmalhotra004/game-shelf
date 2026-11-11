@@ -123,7 +123,7 @@ const EmailVerification = () => {
           <Button
             className="w-full"
             disabled={pending || form.watch("pin").length !== OTP_LENGTH}
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={() => form.handleSubmit(onSubmit)()}
           >
             {pending ? <Loader size={20} /> : <Text>Verify</Text>}
           </Button>

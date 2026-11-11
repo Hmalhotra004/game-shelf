@@ -1,10 +1,10 @@
 import { Text } from "@/components/ui/text";
 import { THEME } from "@/lib/theme";
 import { useThemeStore } from "@/store/useThemeStore";
+import { Option } from "@repo/utils/lib/gameOptions";
 import { CheckIcon } from "lucide-react-native";
-import { RefObject, useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { BackHandler, Pressable, useWindowDimensions } from "react-native";
-import type { Option } from "./SelectValueBottomSheet";
 
 import {
   BottomSheetBackdrop,
@@ -32,7 +32,7 @@ const MultiSelectBottomSheet = ({
   const [isOpen, setIsOpen] = useState(false);
   const { height } = useWindowDimensions();
   const MAX_SHEET_HEIGHT = height * 0.85;
-  const selected = value ?? [];
+  const selected = useMemo(() => value ?? [], [value]);
 
   useEffect(() => {
     if (!isOpen) return;

@@ -14,20 +14,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SearchByUsernamePSNType } from "@repo/schemas/types/psn";
 import { linkPSNAccountMutationOptions } from "@repo/utils/mutations/psn";
 import { searchPSNByUsernameQueryOptions } from "@repo/utils/queries/psn";
+import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Redirect, useRouter } from "expo-router";
 import { CheckIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
 
 import {
   LinkPSNAccountSchemaType,
   linkPSNAccountSchema,
 } from "@repo/schemas/schemas/psn";
-
-import { FlashList } from "@shopify/flash-list";
-import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
 
 const MIN_QUERY_LENGTH = 3;
 
@@ -51,8 +50,16 @@ const Playstation = () => {
     defaultValues: { PSNAccountId: "", PSNAccountUsername: "" },
   });
 
-  const selectedId = form.watch("PSNAccountId");
-  const selectedUsername = form.watch("PSNAccountUsername");
+  useEffect(() => {
+    form.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
+
+  const selectedId = useWatch({ control: form.control, name: "PSNAccountId" });
+  const selectedUsername = useWatch({
+    control: form.control,
+    name: "PSNAccountUsername",
+  });
 
   const link = useMutation(
     linkPSNAccountMutationOptions(api, queryClient, (err) => handleError(err)),
@@ -144,11 +151,6 @@ const Playstation = () => {
     );
   };
 
-  useEffect(() => {
-    form.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
-
   return (
     <View className="flex-1">
       <Header />
@@ -195,7 +197,7 @@ const Playstation = () => {
 
           <Button
             disabled={!selectedId || isPending}
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={() => form.handleSubmit(onSubmit)()}
           >
             {isPending ? (
               <Loader />

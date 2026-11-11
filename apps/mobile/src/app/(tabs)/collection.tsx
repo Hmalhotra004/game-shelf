@@ -29,7 +29,7 @@ const Collection = () => {
       status: status.length ? status : undefined,
       lists: lists.length ? lists : undefined,
     }),
-    [debouncedSearch, platform, status],
+    [debouncedSearch, platform, status, lists],
   );
 
   const {

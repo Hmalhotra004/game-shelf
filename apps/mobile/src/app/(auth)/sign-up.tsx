@@ -121,7 +121,7 @@ const SignUp = () => {
             placeholder="Confirm password"
             disabled={pending}
             returnKeyType="done"
-            onSubmitEditing={form.handleSubmit(onSubmit)}
+            onSubmitEditing={() => form.handleSubmit(onSubmit)()}
           />
 
           {error && (
@@ -132,7 +132,7 @@ const SignUp = () => {
 
           <Button
             size="lg"
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={() => form.handleSubmit(onSubmit)()}
             disabled={pending}
           >
             {pending ? (
