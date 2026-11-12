@@ -2,6 +2,9 @@ name: Bug Report
 description: Report something that isn't working correctly.
 title: "[Bug]: "
 labels: ["bug", "triage"]
+assignees:
+  - Hmalhotra004
+
 body:
   - type: markdown
     attributes:
@@ -48,9 +51,9 @@ body:
     id: version
     attributes:
       label: App version
-      placeholder: "e.g. 1.0.0"
+      placeholder: "e.g. 0.4.0"
     validations:
-      required: false
+      required: true
 
   - type: dropdown
     id: platform
@@ -58,11 +61,20 @@ body:
       label: Platform
       options:
         - Android
-        - iOS
-        - Web
-        - Windows
-        - macOS
-        - Linux
-        - Other
+        # - iOS
+        # - Web
+        # - Windows
+        # - macOS
+        # - Linux
+        # - Other
     validations:
       required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this isn't a duplicate
+          required: true
+        - label: I'm on the latest version
