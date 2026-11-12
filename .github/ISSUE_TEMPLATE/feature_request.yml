@@ -2,6 +2,7 @@ name: Feature Request
 description: Suggest a new feature or improvement.
 title: "[Feature]: "
 labels: ["enhancement", "triage"]
+type: "Feature"
 assignees:
   - Hmalhotra004
 
@@ -36,8 +37,10 @@ body:
       label: Alternatives considered
       description: Have you considered other solutions?
 
-  - type: textarea
-    id: additional
+  - type: upload
+    id: screenshots
     attributes:
-      label: Additional context
-      description: Add screenshots, examples, or references.
+      label: Upload screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false

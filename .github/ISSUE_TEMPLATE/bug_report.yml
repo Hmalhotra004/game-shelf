@@ -2,6 +2,7 @@ name: Bug Report
 description: Report something that isn't working correctly.
 title: "[Bug]: "
 labels: ["bug", "triage"]
+type: "Bug"
 assignees:
   - Hmalhotra004
 
@@ -41,11 +42,13 @@ body:
     validations:
       required: true
 
-  - type: textarea
+  - type: upload
     id: screenshots
     attributes:
-      label: Screenshots or recordings
-      description: Attach screenshots or recordings if applicable.
+      label: Upload screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
 
   - type: input
     id: version
