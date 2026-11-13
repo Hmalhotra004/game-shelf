@@ -1,10 +1,15 @@
 import { addCasualSession } from "@/controllers/casualSession/addCasualSession";
 import { deleteCasualSession } from "@/controllers/casualSession/deleteCasualSession";
+import { updateCasualSession } from "@/controllers/casualSession/updateCasualSession";
 import { authenticateUser } from "@/middlewares/authMiddleware";
 import { verifyCasualSession } from "@/middlewares/playthroughMiddleware";
 import { validateData } from "@/middlewares/validationMiddleware";
-import { createCasualSessionSchema } from "@repo/schemas/server/schemas/casualSession";
 import { Router } from "express";
+
+import {
+  createCasualSessionSchema,
+  updateCasualSessionSchema,
+} from "@repo/schemas/server/schemas/casualSession";
 
 export default (baseUrl: string, app: Router) => {
   const router = Router();
@@ -14,6 +19,13 @@ export default (baseUrl: string, app: Router) => {
     authenticateUser,
     validateData(createCasualSessionSchema),
     addCasualSession,
+  );
+
+  router.patch(
+    "/:casualSessionId",
+    authenticateUser,
+    validateData(updateCasualSessionSchema),
+    updateCasualSession,
   );
 
   router.delete(
