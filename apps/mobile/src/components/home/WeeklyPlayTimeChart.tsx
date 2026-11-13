@@ -7,12 +7,13 @@ import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
+import { DAY_FORMAT, formatRange, MAX_OFFSET } from "@repo/utils/lib/stats";
 import { betterTimeText } from "@repo/utils/lib/utils";
 import { getWeeklyPlaytimeStatsQueryOptions } from "@repo/utils/queries/stats";
 import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { Fragment, useMemo, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 
 import {
@@ -21,12 +22,6 @@ import {
   FlameIcon,
   GamepadIcon,
 } from "lucide-react-native";
-
-const DAY_FORMAT = "yyyy-MM-dd";
-const MAX_OFFSET = 104; // keep in sync with weekStatsQuerySchema
-
-const formatRange = (start: string, end: string) =>
-  `${format(parseISO(start), "d MMM")} – ${format(parseISO(end), "d MMM")}`;
 
 const WeeklyPlaytimeChart = () => {
   const { width } = useWindowDimensions();
@@ -100,7 +95,7 @@ const WeeklyPlaytimeChart = () => {
   const spacing = (chartWidth - 7 * 28) / 7;
 
   return (
-    <View className="gap-4 rounded-xl bg-card px-1.5">
+    <View className="gap-4 rounded-xl bg-card p-3 border border-border">
       {/* Header: week pager */}
       <View className="flex-row items-center justify-between">
         <Button
@@ -109,7 +104,7 @@ const WeeklyPlaytimeChart = () => {
           hitSlop={12}
           disabled={offset >= MAX_OFFSET || isLoading}
           onPress={() => changeWeek(offset + 1)}
-          className={cn("w-0", offset >= MAX_OFFSET && "opacity-30")}
+          className={cn("", offset >= MAX_OFFSET && "opacity-30")}
         >
           <ChevronLeftIcon
             size={20}
@@ -131,7 +126,7 @@ const WeeklyPlaytimeChart = () => {
           hitSlop={12}
           disabled={offset === 0 || isLoading}
           onPress={() => changeWeek(offset - 1)}
-          className={cn("w-0", offset === 0 && "opacity-30")}
+          className={cn("", offset === 0 && "opacity-30")}
         >
           <ChevronRightIcon
             size={20}

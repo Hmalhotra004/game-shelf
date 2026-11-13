@@ -1,5 +1,7 @@
 import { GameType, PlatformType } from "./index";
 
+export type PickNextModeType = "oldest" | "random";
+
 export type getOverViewStatResponse = {
   totalGames: number;
   totalDLCs: number;
