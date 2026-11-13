@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 
 import {
   account,
+  casualSession,
   collection,
   completion,
   dlc,
@@ -26,6 +27,7 @@ export const userRelations = relations(user, ({ many }) => ({
 
   playthroughs: many(playthrough),
   playthroughSessions: many(playthroughSession),
+  casualSessions: many(casualSession),
   completions: many(completion),
 
   lists: many(list),
@@ -57,6 +59,7 @@ export const collectionRelations = relations(collection, ({ one, many }) => ({
 
   dlcs: many(dlc),
   playthroughs: many(playthrough),
+  casualSessions: many(casualSession),
   completions: many(completion),
 
   listItems: many(listItem),
@@ -75,6 +78,7 @@ export const dlcRelations = relations(dlc, ({ one, many }) => ({
   }),
 
   playthroughs: many(playthrough),
+  casualSessions: many(casualSession),
   completions: many(completion),
 }));
 
@@ -94,6 +98,11 @@ export const playthroughRelations = relations(playthrough, ({ one, many }) => ({
     references: [dlc.id],
   }),
 
+  completion: one(completion, {
+    fields: [playthrough.completionId],
+    references: [completion.id],
+  }),
+
   sessions: many(playthroughSession),
 }));
 
@@ -111,6 +120,23 @@ export const playthroughSessionRelations = relations(
     }),
   }),
 );
+
+export const casualSessionRelations = relations(casualSession, ({ one }) => ({
+  user: one(user, {
+    fields: [casualSession.userId],
+    references: [user.id],
+  }),
+
+  collection: one(collection, {
+    fields: [casualSession.collectionId],
+    references: [collection.id],
+  }),
+
+  dlc: one(dlc, {
+    fields: [casualSession.dlcId],
+    references: [dlc.id],
+  }),
+}));
 
 export const completionRelations = relations(completion, ({ one }) => ({
   user: one(user, {
