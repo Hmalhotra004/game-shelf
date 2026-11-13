@@ -1,7 +1,14 @@
 import { db } from "@/db";
-import { collection, dlc, playthrough, playthroughSession } from "@/db/schema";
 import { and, eq, notExists, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+
+import {
+  casualSession,
+  collection,
+  dlc,
+  playthrough,
+  playthroughSession,
+} from "@/db/schema";
 
 /**
  * Excludes sessions whose playthrough is hidden by an archived game,
@@ -27,5 +34,35 @@ export const notInArchivedCollection = () => {
           ),
         ),
       ),
+  );
+};
+
+export const casualNotInArchivedCollection = () => {
+  const parent = alias(collection, "casual_parent_collection");
+
+  return and(
+    notExists(
+      db
+        .select({ one: sql`1` })
+        .from(collection)
+        .where(
+          and(
+            eq(collection.id, casualSession.collectionId),
+            eq(collection.archived, true),
+          ),
+        ),
+    ),
+    notExists(
+      db
+        .select({ one: sql`1` })
+        .from(dlc)
+        .leftJoin(parent, eq(parent.id, dlc.collectionId))
+        .where(
+          and(
+            eq(dlc.id, casualSession.dlcId),
+            or(eq(dlc.archived, true), eq(parent.archived, true)),
+          ),
+        ),
+    ),
   );
 };
