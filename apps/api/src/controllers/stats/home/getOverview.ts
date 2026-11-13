@@ -1,9 +1,17 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
-import { collection, completion, dlc, playthrough } from "@/db/schema";
+import { casualNotInArchivedCollection } from "@/lib/queryHelpers";
 import { and, eq, isNull, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { Request, Response } from "express";
+
+import {
+  casualSession,
+  collection,
+  completion,
+  dlc,
+  playthrough,
+} from "@/db/schema";
 
 import {
   getOnlineSteamPlaySecs,
@@ -60,6 +68,15 @@ export const getOverview = async (req: Request, res: Response) => {
           or(isNull(dlc.id), eq(dlc.archived, false)),
           or(isNull(parent.id), eq(parent.archived, false)),
         ),
+      );
+
+    const [casualAgg] = await db
+      .select({
+        seconds: sql<number>`coalesce(sum(${casualSession.secondsPlayed}), 0)`,
+      })
+      .from(casualSession)
+      .where(
+        and(eq(casualSession.userId, userId), casualNotInArchivedCollection()),
       );
 
     const [completedAgg] = await db
@@ -120,12 +137,14 @@ export const getOverview = async (req: Request, res: Response) => {
 
     const activeSeconds = Number(activePlaythroughs.seconds ?? 0);
     const completedSeconds = Number(completedAgg.seconds ?? 0);
+    const casualSeconds = Number(casualAgg.seconds ?? 0);
 
     return res.status(200).json({
       totalGames: Number(gamesAgg.totalGames),
       totalDLCs: Number(dlcAgg.totalDLCs),
       totalPlaytimeHours: Math.round(
-        (activeSeconds + completedSeconds + onlineSeconds) / 3600,
+        (activeSeconds + completedSeconds + casualSeconds + onlineSeconds) /
+          3600,
       ),
       totalSpent: Number(gamesAgg.spentOnGames) + Number(dlcAgg.spentOnDLCs),
       activePlaythroughs: Number(activePlaythroughs.count),
