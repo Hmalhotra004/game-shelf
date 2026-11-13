@@ -1,10 +1,14 @@
 import { GenericErrorMessage } from "@/constants";
 import { db } from "@/db";
-import { playthroughSession } from "@/db/schema";
-import { notInArchivedCollection } from "@/lib/queryHelpers";
+import { casualSession, playthroughSession } from "@/db/schema";
 import { WeekStatsQueryType } from "@repo/schemas/schemas/stats";
 import { and, desc, eq, gte, lt, sql } from "drizzle-orm";
 import type { Request, Response } from "express";
+
+import {
+  casualNotInArchivedCollection,
+  notInArchivedCollection,
+} from "@/lib/queryHelpers";
 
 import {
   addDays,
@@ -33,6 +37,27 @@ const currentStreak = (playDays: Set<string>, today: Date) => {
   return count;
 };
 
+type DayRow = { date: string; seconds: number; sessions: number };
+
+/** Sums rows from several sources into one row per day. */
+const mergeDayRows = (...sources: DayRow[][]) => {
+  const merged = new Map<string, DayRow>();
+  for (const row of sources.flat()) {
+    const existing = merged.get(row.date);
+    merged.set(
+      row.date,
+      existing
+        ? {
+            date: row.date,
+            seconds: existing.seconds + row.seconds,
+            sessions: existing.sessions + row.sessions,
+          }
+        : row,
+    );
+  }
+  return [...merged.values()];
+};
+
 export const getWeeklyPlaytime = async (req: Request, res: Response) => {
   try {
     const { offset, today } = req.cleanQuery as WeekStatsQueryType;
@@ -53,13 +78,19 @@ export const getWeeklyPlaytime = async (req: Request, res: Response) => {
     const rangeEnd = toDay(addDays(weekStartDate, 7));
     const todayKey = toDay(todayDate);
 
-    const dayKey = sql<string>`to_char(${playthroughSession.playDate}, 'YYYY-MM-DD')`;
+    const playthroughDayKey = sql<string>`to_char(${playthroughSession.playDate}, 'YYYY-MM-DD')`;
+    const casualDayKey = sql<string>`to_char(${casualSession.playDate}, 'YYYY-MM-DD')`;
 
-    const [dayRows, streakRows] = await Promise.all([
-      // One query covering the viewed week and the week before it.
+    const [
+      playthroughDayRows,
+      casualDayRows,
+      playthroughStreakRows,
+      casualStreakRows,
+    ] = await Promise.all([
+      // Playthrough sessions: the viewed week and the week before it.
       db
         .select({
-          date: dayKey,
+          date: playthroughDayKey,
           seconds: sql<number>`coalesce(sum(${playthroughSession.secondsPlayed}), 0)::int`,
           sessions: sql<number>`count(*)::int`,
         })
@@ -72,19 +103,50 @@ export const getWeeklyPlaytime = async (req: Request, res: Response) => {
             notInArchivedCollection(),
           ),
         )
-        .groupBy(dayKey),
+        .groupBy(playthroughDayKey),
+
+      // Casual sessions: same range.
+      db
+        .select({
+          date: casualDayKey,
+          seconds: sql<number>`coalesce(sum(${casualSession.secondsPlayed}), 0)::int`,
+          sessions: sql<number>`count(*)::int`,
+        })
+        .from(casualSession)
+        .where(
+          and(
+            eq(casualSession.userId, userId),
+            gte(casualSession.playDate, sql`${prevStart}::timestamp`),
+            lt(casualSession.playDate, sql`${rangeEnd}::timestamp`),
+            casualNotInArchivedCollection(),
+          ),
+        )
+        .groupBy(casualDayKey),
 
       // Distinct play days for the streak, newest first.
       db
-        .selectDistinct({ date: dayKey })
+        .selectDistinct({ date: playthroughDayKey })
         .from(playthroughSession)
         .where(
           and(eq(playthroughSession.userId, userId), notInArchivedCollection()),
         )
-        .orderBy(desc(dayKey))
+        .orderBy(desc(playthroughDayKey))
+        .limit(MAX_STREAK_LOOKBACK),
+
+      db
+        .selectDistinct({ date: casualDayKey })
+        .from(casualSession)
+        .where(
+          and(
+            eq(casualSession.userId, userId),
+            casualNotInArchivedCollection(),
+          ),
+        )
+        .orderBy(desc(casualDayKey))
         .limit(MAX_STREAK_LOOKBACK),
     ]);
 
+    const dayRows = mergeDayRows(playthroughDayRows, casualDayRows);
     const byDate = new Map(dayRows.map((r) => [r.date, r]));
 
     const days = eachDayOfInterval({
@@ -101,7 +163,10 @@ export const getWeeklyPlaytime = async (req: Request, res: Response) => {
       .filter((r) => r.date >= prevStart && r.date < weekStart)
       .reduce((sum, r) => sum + r.seconds, 0);
 
-    const playDays = new Set(streakRows.map((r) => r.date));
+    const playDays = new Set([
+      ...playthroughStreakRows.map((r) => r.date),
+      ...casualStreakRows.map((r) => r.date),
+    ]);
 
     return res.json({
       weekStart,
