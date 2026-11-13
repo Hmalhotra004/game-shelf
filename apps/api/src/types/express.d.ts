@@ -1,6 +1,7 @@
 import { InferSelectModel } from "drizzle-orm";
 
 import {
+  casualSession,
   collection,
   completion,
   list,
@@ -34,6 +35,7 @@ declare global {
       collection: InferSelectModel<typeof collection>;
       playthrough: InferSelectModel<typeof playthrough>;
       playthroughSession: InferSelectModel<typeof playthroughSession>;
+      casualSession: InferSelectModel<typeof casualSession>;
       completion: InferSelectModel<typeof completion>;
 
       list: InferSelectModel<typeof list>;
