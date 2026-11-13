@@ -16,6 +16,7 @@ import {
 } from "drizzle-orm";
 
 import {
+  casualSession,
   collection,
   completion,
   dlc,
@@ -154,6 +155,8 @@ export const getMany = async (req: Request, res: Response) => {
       dlcTotals,
       dlcCompletionTotals,
       dlcPlaythroughTotals,
+      casualTotals,
+      dlcCasualTotals,
     ] = await Promise.all([
       db
         .select({
@@ -223,6 +226,32 @@ export const getMany = async (req: Request, res: Response) => {
           ),
         )
         .groupBy(dlc.collectionId),
+
+      db
+        .select({
+          collectionId: casualSession.collectionId,
+          total: sql<string>`COALESCE(SUM(${casualSession.secondsPlayed}), 0)`,
+        })
+        .from(casualSession)
+        .where(
+          and(
+            eq(casualSession.userId, userId),
+            inArray(casualSession.collectionId, ids),
+          ),
+        )
+        .groupBy(casualSession.collectionId),
+
+      db
+        .select({
+          collectionId: dlc.collectionId,
+          total: sql<string>`COALESCE(SUM(${casualSession.secondsPlayed}), 0)`,
+        })
+        .from(casualSession)
+        .innerJoin(dlc, eq(dlc.id, casualSession.dlcId))
+        .where(
+          and(eq(casualSession.userId, userId), inArray(dlc.collectionId, ids)),
+        )
+        .groupBy(dlc.collectionId),
     ]);
 
     const listsByGameId = Object.fromEntries(
@@ -243,6 +272,12 @@ export const getMany = async (req: Request, res: Response) => {
     const dlcPlaythroughByGameId = Object.fromEntries(
       dlcPlaythroughTotals.map((r) => [r.collectionId, Number(r.total)]),
     );
+    const casualByGameId = Object.fromEntries(
+      casualTotals.map((r) => [r.collectionId, Number(r.total)]),
+    );
+    const dlcCasualByGameId = Object.fromEntries(
+      dlcCasualTotals.map((r) => [r.collectionId, Number(r.total)]),
+    );
 
     // ---------- steam playtime (only if this page needs it) ----------
     const steamPlaytimeByAppId = games.some(needsSteamPlaytime)
@@ -258,7 +293,9 @@ export const getMany = async (req: Request, res: Response) => {
         (playthroughByGameId[g.id] ?? 0) +
         (completionByGameId[g.id] ?? 0) +
         (dlcPlaythroughByGameId[g.id] ?? 0) +
-        (dlcCompletionByGameId[g.id] ?? 0),
+        (dlcCompletionByGameId[g.id] ?? 0) +
+        (casualByGameId[g.id] ?? 0) +
+        (dlcCasualByGameId[g.id] ?? 0),
       onlinePlaySecs: getOnlineSteamPlaySecs(g, steamPlaytimeByAppId),
     }));
 
