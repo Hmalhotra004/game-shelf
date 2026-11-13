@@ -29,13 +29,6 @@ export const getStats = async (req: Request, res: Response) => {
       .from(dlc)
       .where(and(eq(dlc.userId, userId), eq(dlc.archived, false)));
 
-    // const [activePlaytime] = await db
-    //   .select({
-    //     seconds: sql<number>`coalesce(sum(${playthroughSession.secondsPlayed}), 0)`,
-    //   })
-    //   .from(playthroughSession)
-    //   .where(eq(playthroughSession.userId, userId));
-
     const [activePlaythroughs] = await db
       .select({
         count: sql<number>`count(*)`,

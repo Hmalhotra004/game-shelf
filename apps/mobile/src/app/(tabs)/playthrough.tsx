@@ -1,8 +1,8 @@
+import { ErrorState } from "@/components/ErrorState";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import PlaythroughCard from "@/components/playthrough/PlaythroughCard";
 import PlaythroughFilters from "@/components/playthrough/PlaythroughFilters";
-import { Button } from "@/components/ui/button";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
@@ -41,6 +41,7 @@ const Playthrough = () => {
     isFetchingNextPage,
     isLoading,
     isError,
+    error,
     isRefetching,
     refetch,
   } = useInfiniteQuery(PlaythroughGetManyQueryOptions(api, filters));
@@ -95,17 +96,10 @@ const Playthrough = () => {
               ))}
             </View>
           ) : isError ? (
-            <View className="flex-1 items-center justify-center">
-              <Text className="mb-2 text-muted-foreground">
-                Couldn't load your playthroughs.
-              </Text>
-              <Button
-                variant="outline"
-                onPress={() => refetch()}
-              >
-                <Text className="font-semibold">Try again</Text>
-              </Button>
-            </View>
+            <ErrorState
+              refetch={refetch}
+              error={error}
+            />
           ) : (
             <FlashList
               data={games}

@@ -7,7 +7,7 @@ import list from "./list";
 import mobile from "./mobile";
 import playthrough from "./playthrough";
 import psn from "./psn";
-import stats from "./stats";
+import stats from "./stats/index";
 import steam from "./steam";
 import steamGridDB from "./steamGridDB";
 import user from "./user";

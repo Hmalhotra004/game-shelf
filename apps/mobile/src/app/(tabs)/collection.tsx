@@ -1,5 +1,6 @@
 import CollectionCard2 from "@/components/collection/CollectionCard2";
 import CollectionFilters from "@/components/collection/CollectionFilters";
+import { ErrorState } from "@/components/ErrorState";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
@@ -13,7 +14,7 @@ import { useCollectionFilterStore } from "@repo/utils/store/useCollectionFilterS
 import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 const Collection = () => {
   const search = useCollectionFilterStore((s) => s.search);
@@ -39,6 +40,7 @@ const Collection = () => {
     isFetchingNextPage,
     isLoading,
     isError,
+    error,
     isRefetching,
     refetch,
   } = useInfiniteQuery(collectionGetManyQueryOptions(api, filters));
@@ -92,14 +94,10 @@ const Collection = () => {
               ))}
             </View>
           ) : isError ? (
-            <View className="flex-1 items-center justify-center">
-              <Text className="mb-3 text-muted-foreground">
-                Couldn't load your collection.
-              </Text>
-              <Pressable onPress={() => refetch()}>
-                <Text className="font-semibold text-primary">Try again</Text>
-              </Pressable>
-            </View>
+            <ErrorState
+              refetch={refetch}
+              error={error}
+            />
           ) : (
             <FlashList
               data={games}

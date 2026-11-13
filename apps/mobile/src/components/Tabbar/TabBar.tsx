@@ -1,6 +1,7 @@
 import { THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
+import type { BottomTabBarProps } from "expo-router/tabs";
 import { Pressable, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
@@ -14,9 +15,7 @@ import {
   PlusIcon,
 } from "lucide-react-native";
 
-interface Props {
-  state: { index: number; routes: { key: string; name: string }[] };
-  navigation: { navigate: (name: string) => void };
+interface Props extends BottomTabBarProps {
   onAddPress?: (routeName: string) => void;
 }
 
@@ -60,7 +59,7 @@ const buildPath = (w: number, h: number) => {
   ].join(" ");
 };
 
-const TabBar = ({ navigation, state, onAddPress }: Props) => {
+const TabBar = ({ navigateToTab, state, onAddPress }: Props) => {
   const insets = useSafeAreaInsets();
   const theme = useThemeStore((s) => s.theme);
   const { width: screenWidth } = useWindowDimensions();
@@ -91,7 +90,7 @@ const TabBar = ({ navigation, state, onAddPress }: Props) => {
         accessibilityLabel={config.label}
         accessibilityState={{ selected: active }}
         onPress={() => {
-          if (!active) navigation.navigate(route.name);
+          if (!active) navigateToTab(route.key);
         }}
         className="flex-1 items-center justify-center"
       >

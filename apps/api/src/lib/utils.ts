@@ -23,3 +23,5 @@ export const stripRemaster = (name: string) =>
   name.replace(REMASTER_SUFFIX, "").trim();
 
 export const TROPHY_VERSIONS = ["PS3", "PS4", "PS5"];
+
+export const toISO = (value: Date | string) => new Date(value).toISOString();

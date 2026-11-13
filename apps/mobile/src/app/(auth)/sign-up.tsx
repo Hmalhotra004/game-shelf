@@ -99,6 +99,7 @@ const SignUp = () => {
             placeholder="Email"
             keyboardType="email-address"
             autoComplete="email"
+            autoCapitalize="none"
             disabled={pending}
             returnKeyType="next"
             submitBehavior="submit"

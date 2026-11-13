@@ -1,5 +1,6 @@
 import CompletionCard from "@/components/completion/CompletionCard";
 import CompletionFilters from "@/components/completion/CompletionFilters";
+import { ErrorState } from "@/components/ErrorState";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
@@ -14,7 +15,7 @@ import { useCompletionFilterStore } from "@repo/utils/store/useCompletionFilterS
 import { FlashList } from "@shopify/flash-list";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 const Completion = () => {
   const search = useCompletionFilterStore((s) => s.search);
@@ -40,6 +41,7 @@ const Completion = () => {
     isFetchingNextPage,
     isLoading,
     isError,
+    error,
     isRefetching,
     refetch,
   } = useInfiniteQuery(completionGetManyQueryOptions(api, filters));
@@ -95,14 +97,10 @@ const Completion = () => {
               ))}
             </View>
           ) : isError ? (
-            <View className="flex-1 items-center justify-center">
-              <Text className="mb-3 text-muted-foreground">
-                Couldn't load your completions.
-              </Text>
-              <Pressable onPress={() => refetch()}>
-                <Text className="font-semibold text-primary">Try again</Text>
-              </Pressable>
-            </View>
+            <ErrorState
+              refetch={refetch}
+              error={error}
+            />
           ) : (
             <FlashList
               data={completions}

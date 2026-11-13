@@ -21,7 +21,9 @@ import {
   getTableColumns,
   ilike,
   inArray,
+  isNull,
   ne,
+  or,
   sql,
   type SQL,
 } from "drizzle-orm";
@@ -66,7 +68,14 @@ export const getMany = async (req: Request, res: Response) => {
     const effectiveGameId = sql<string>`COALESCE(${playthrough.collectionId}, ${dlc.collectionId})`;
 
     // ---------- filters ----------
-    const conditions: (SQL | undefined)[] = [eq(playthrough.userId, userId)];
+    const conditions: (SQL | undefined)[] = [
+      eq(playthrough.userId, userId),
+
+      // hide playthroughs whose game, DLC, or a DLC's parent game is archived
+      or(isNull(collection.id), eq(collection.archived, false)),
+      or(isNull(dlc.id), eq(dlc.archived, false)),
+      or(isNull(parent.id), eq(parent.archived, false)),
+    ];
 
     if (search?.trim()) {
       conditions.push(ilike(effectiveName, `%${search.trim()}%`));

@@ -124,6 +124,7 @@ function FormBase<
 export const FormInput: FormControlFunc<{
   placeholder?: string;
   autoComplete?: TextInputProps["autoComplete"];
+  autoCapitalize?: TextInputProps["autoCapitalize"];
   keyboardType?: TextInputProps["keyboardType"];
   maxLength?: TextInputProps["maxLength"];
   autoFocus?: boolean;
@@ -139,6 +140,7 @@ export const FormInput: FormControlFunc<{
   maxLength,
   className,
   autoFocus,
+  autoCapitalize,
   returnKeyType,
   submitBehavior,
   onSubmitEditing,
@@ -156,6 +158,7 @@ export const FormInput: FormControlFunc<{
         maxLength={maxLength}
         editable={!disabled}
         autoFocus={autoFocus}
+        autoCapitalize={autoCapitalize}
         returnKeyType={returnKeyType}
         submitBehavior={submitBehavior}
         onSubmitEditing={onSubmitEditing}

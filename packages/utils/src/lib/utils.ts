@@ -1,4 +1,6 @@
 import { CompletionStatusValues } from "@repo/schemas/enums/index";
+import { GenericErrorMessage } from "@repo/utils/constants";
+import { isAxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -92,17 +94,17 @@ export function betterTimeText(seconds: number, withS?: boolean): string {
 
   // Only hours
   if (h > 0 && m === 0 && s === 0) {
-    return `${h} h`;
+    return `${h}h`;
   }
 
   // Only minutes
   if (h === 0 && m > 0 && s === 0) {
-    return `${m} m`;
+    return `${m}m`;
   }
 
   // Only seconds
   if (h === 0 && m === 0 && s > 0) {
-    return `${s} s`;
+    return `${s}s`;
   }
 
   // Mixed values
@@ -132,4 +134,18 @@ export const PlatformTrophyMap: Record<PlatformType, string> = {
   PS: "Trophies",
   PC: "Acheviements",
   XBOX: "Acheviements",
+};
+
+export const getErrorDescription = (error: Error | null): string => {
+  if (!isAxiosError(error)) return GenericErrorMessage;
+
+  // No response = network error / timeout
+  if (!error.response) {
+    return "Can't reach the server. Check your connection.";
+  }
+
+  const serverMessage = (error.response.data as { error?: string } | undefined)
+    ?.error;
+
+  return serverMessage ?? GenericErrorMessage;
 };

@@ -63,7 +63,7 @@ export const startPlaythroughMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
@@ -129,7 +129,7 @@ export const updatePlaythroughMutationOptions = (
 
     onSettled: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.all() }),
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
         }),
@@ -197,7 +197,7 @@ export const deletePlaythroughMutationOptions = (
 
     onSettled: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.getStats() }),
+        queryClient.invalidateQueries({ queryKey: StatsQueryKeys.all() }),
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
         }),
@@ -224,7 +224,7 @@ export const addPlaythroughSessionMutationOptions = (
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: StatsQueryKeys.getStats(),
+        queryKey: StatsQueryKeys.all(),
       });
       await queryClient.invalidateQueries({
         queryKey: CollectionQueryKeys.getManyAll(),
@@ -312,7 +312,7 @@ export const updatePlaythroughSessionMutationOptions = (
     onSettled: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: StatsQueryKeys.getStats(),
+          queryKey: StatsQueryKeys.all(),
         }),
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),
@@ -396,7 +396,7 @@ export const deletePlaythroughSessionMutationOptions = (
     onSettled: async () => {
       await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: StatsQueryKeys.getStats(),
+          queryKey: StatsQueryKeys.all(),
         }),
         queryClient.invalidateQueries({
           queryKey: CollectionQueryKeys.getManyAll(),

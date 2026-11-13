@@ -1,18 +1,36 @@
 import Header from "@/components/Header";
+import RecentActivityCard from "@/components/home/HomeActivity";
+import OnHoldCard from "@/components/home/OnHoldCard";
+import OverviewTitles from "@/components/home/OverviewTitles";
+import PickNextCard from "@/components/home/PickNextCard";
+import WeeklyPlaytimeChart from "@/components/home/WeeklyPlayTimeChart";
 import ScreenWrapper from "@/components/ui/screen-wrapper";
-import { Text } from "@/components/ui/text";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
-export default function Index() {
+const HomePage = () => {
   return (
     <View className="flex-1">
       <Header />
 
-      <ScreenWrapper>
-        <View className="flex-1 items-center justify-center">
-          <Text>Stats Coming Soon!!</Text>
-        </View>
+      <ScreenWrapper paddingTop={16}>
+        <ScrollView
+          contentContainerClassName="gap-3 pb-24"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <OverviewTitles />
+
+          <WeeklyPlaytimeChart />
+
+          <RecentActivityCard />
+
+          <OnHoldCard />
+
+          <PickNextCard />
+        </ScrollView>
       </ScreenWrapper>
     </View>
   );
-}
+};
+
+export default HomePage;
