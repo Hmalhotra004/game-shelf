@@ -19,6 +19,8 @@ export const getHomeActivity = async (req: Request, res: Response) => {
 
     const completedAt = sql<Date>`coalesce(${completion.completedAt}, ${completion.createdAt})`;
     const startedAt = sql<Date>`coalesce(${playthrough.startedAt}, ${playthrough.createdAt})`;
+    const gameAddedAt = sql<Date>`coalesce(${collection.dateOfPurchase}, ${collection.createdAt})`;
+    const dlcAddedAt = sql<Date>`coalesce(${dlc.dateOfPurchase}, ${dlc.createdAt})`;
 
     const [completions, started, games, dlcs] = await Promise.all([
       db
@@ -57,13 +59,13 @@ export const getHomeActivity = async (req: Request, res: Response) => {
           name: collection.name,
           image: collection.image,
           customImage: collection.customImage,
-          occurredAt: collection.createdAt,
+          occurredAt: gameAddedAt,
         })
         .from(collection)
         .where(
           and(eq(collection.userId, userId), eq(collection.archived, false)),
         )
-        .orderBy(desc(collection.createdAt))
+        .orderBy(desc(gameAddedAt))
         .limit(LIMIT),
 
       db
@@ -74,12 +76,12 @@ export const getHomeActivity = async (req: Request, res: Response) => {
           customImage: dlc.customImage,
           collectionId: dlc.collectionId,
           parentName: collection.name,
-          occurredAt: dlc.createdAt,
+          occurredAt: dlcAddedAt,
         })
         .from(dlc)
         .innerJoin(collection, eq(dlc.collectionId, collection.id))
         .where(and(eq(dlc.userId, userId), eq(dlc.archived, false)))
-        .orderBy(desc(dlc.createdAt))
+        .orderBy(desc(dlcAddedAt))
         .limit(LIMIT),
     ]);
 
