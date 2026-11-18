@@ -10,7 +10,7 @@ import express from "express";
 import helmet from "helmet";
 import http from "node:http";
 import { ORIGINS } from "./constants";
-import { backgroundJobs } from "./jobs";
+import { backgroundJobs, cronJobs } from "./jobs";
 import { boss, startBoss } from "./lib/boss";
 import { isProd } from "./lib/isProd";
 import { logger } from "./lib/logger";
@@ -56,6 +56,7 @@ async function start() {
   // Boss + queues BEFORE accepting traffic
   await startBoss();
   await backgroundJobs();
+  await cronJobs();
 
   server.listen(PORT, "0.0.0.0", () => {
     logger.info(`Server running on port ${PORT}`);

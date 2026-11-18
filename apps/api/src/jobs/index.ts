@@ -1,3 +1,5 @@
+import { boss } from "@/lib/boss";
+import { registerKeepAlive } from "./keepAlive";
 import { ensureResolveNPCIdQueue, registerResolveNPCId } from "./resolveNPCId";
 
 import {
@@ -13,4 +15,8 @@ export const backgroundJobs = async () => {
   // SteamAppId
   await ensureResolveSteamAppIdQueue();
   await registerResolveSteamAppId();
+};
+
+export const cronJobs = async () => {
+  await registerKeepAlive(boss);
 };
