@@ -35,23 +35,19 @@ jobs:
       # ---- Shared packages (checked first: apps depend on them) ----
 
       - name: Schemas format check
-        run: pnpm --filter ./packages/schemas exec prettier --check .
+        run: pnpm --filter ./packages/schemas run format:check
 
       - name: Schemas typecheck
         run: pnpm --filter ./packages/schemas exec tsc --noEmit
 
       - name: Schemas build
-        run: pnpm --filter ./packages/schemas run --if-present build
+        run: pnpm --filter ./packages/schemas run build
 
       - name: Utils format check
-        run: pnpm --filter ./packages/utils exec prettier --check .
+        run: pnpm --filter ./packages/utils run format:check
 
       - name: Utils typecheck
         run: pnpm --filter ./packages/utils exec tsc --noEmit
-
-      # Skipped automatically if the package has no build script
-      - name: Utils build
-        run: pnpm --filter ./packages/utils run --if-present build
 
       # ---- API ----
 
