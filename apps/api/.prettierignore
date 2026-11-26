@@ -5,3 +5,4 @@ build
 .next
 coverage
 *.lock
+drizzle/meta
