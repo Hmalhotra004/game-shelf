@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from the "packageManager" field in the root package.json
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ---- Shared packages (checked first: apps depend on them) ----
+
+      - name: Schemas format check
+        run: pnpm --filter ./packages/schemas exec prettier --check .
+
+      - name: Schemas typecheck
+        run: pnpm --filter ./packages/schemas exec tsc --noEmit
+
+      - name: Schemas build
+        run: pnpm --filter ./packages/schemas run --if-present build
+
+      - name: Utils format check
+        run: pnpm --filter ./packages/utils exec prettier --check .
+
+      - name: Utils typecheck
+        run: pnpm --filter ./packages/utils exec tsc --noEmit
+
+      # Skipped automatically if the package has no build script
+      - name: Utils build
+        run: pnpm --filter ./packages/utils run --if-present build
+
+      # ---- API ----
+
+      - name: API format check
+        run: pnpm --filter ./apps/api run format:check
+
+      - name: API typecheck
+        run: pnpm --filter ./apps/api exec tsc --noEmit
+
+      - name: API build
+        run: pnpm --filter ./apps/api run build
+
+      # ---- Mobile ----
+
+      - name: Mobile typecheck
+        run: pnpm --filter ./apps/mobile exec tsc --noEmit
+
+      - name: Mobile lint
+        run: pnpm --filter ./apps/mobile run lint
+
+      # Expo Doctor uses the network and can warn on unrelated PRs; non-blocking for now
+      - name: Mobile Doctor
+        continue-on-error: true
+        run: pnpm --filter ./apps/mobile run doc

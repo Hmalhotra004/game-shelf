@@ -11,21 +11,24 @@
     "./mutations/*": "./src/mutations/*.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@repo/schemas": "workspace:*",
+    "@tanstack/react-query": "latest",
+    "axios": "^1.19.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "axios": "^1.19.0",
-    "@tanstack/react-query": "latest",
     "zod": "^4.4.3",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
-    "@types/react": "^19.2.0"
+    "@types/react": "^19.2.0",
+    "prettier": "^3.10.1"
   }
 }
