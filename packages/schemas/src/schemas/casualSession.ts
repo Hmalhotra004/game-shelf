@@ -66,3 +66,37 @@ export type CreateCasualSessionSchemaType = z.infer<
 export type UpdateCasualSessionSchemaType = z.infer<
   typeof updateCasualSessionSchema
 >;
+
+// ------------------------------- Query Schema -------------------------------------------
+export const casualSessionListQuerySchema = z
+  .object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    gameType: GameTypeSchema,
+    collectionId: z.uuidv7().trim().optional(),
+    dlcId: z.uuidv7().trim().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.gameType === "Game") return !!data.collectionId;
+      return true;
+    },
+    {
+      message: "Game is required",
+      path: ["collectionId"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.gameType === "DLC") return !!data.dlcId;
+      return true;
+    },
+    {
+      message: "DLC is required",
+      path: ["dlcId"],
+    },
+  );
+
+export type CasualSessionListQuerySchemaType = z.infer<
+  typeof casualSessionListQuerySchema
+>;
