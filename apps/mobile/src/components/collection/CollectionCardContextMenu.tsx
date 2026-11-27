@@ -3,6 +3,7 @@ import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { handleError, showToast } from "@/lib/utils";
 import { CollectionGetMany } from "@repo/schemas/types/collection";
+import { PlatformTrophyMap } from "@repo/utils/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
@@ -22,7 +23,6 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { PlatformTrophyMap } from "@repo/utils/lib/utils";
 
 interface Props {
   children: ReactNode;
@@ -119,6 +119,19 @@ const CollectionCardContextMenu = ({ children, game }: Props) => {
             >
               <Text>View {PlatformTrophyMap[game.platform]}</Text>
             </ContextMenuItem>
+
+            <ContextMenuItem
+              onPress={() =>
+                router.push({
+                  pathname: "/(collection)/[collectionId]/casual-sessions",
+                  params: { collectionId: game.id },
+                })
+              }
+            >
+              <Text>Casual Sessions</Text>
+            </ContextMenuItem>
+
+            <ContextMenuSeparator />
 
             <ContextMenuItem
               onPress={() =>
