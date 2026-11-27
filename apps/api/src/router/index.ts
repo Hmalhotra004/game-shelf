@@ -1,5 +1,6 @@
 import { Router } from "express";
 import auth from "./auth";
+import casualSession from "./casualSession";
 import collection from "./collection";
 import completion from "./completion";
 import igdb from "./igdb";
@@ -22,6 +23,8 @@ export default (): Router => {
   collection("/collection", router);
   playthrough("/playthrough", router);
   completion("/completion", router);
+
+  casualSession("/casualSession", router);
 
   list("/list", router);
   stats("/stats", router);
