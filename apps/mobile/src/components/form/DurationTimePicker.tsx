@@ -2,7 +2,7 @@ import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 import type { ClassValue } from "clsx";
 import { cssInterop } from "nativewind";
-import { Fragment, memo, useRef } from "react";
+import { ComponentRef, Fragment, memo, useRef } from "react";
 import { TextInput, View } from "react-native";
 
 import {
@@ -12,6 +12,8 @@ import {
 
 // lets className work on BottomSheetTextInput (plain TextInput already supports it)
 cssInterop(BottomSheetTextInput, { className: "style" });
+
+type InputInstance = ComponentRef<typeof TextInput>;
 
 interface Props {
   value: number; // total seconds
@@ -48,9 +50,11 @@ export const DurationTimePicker = memo(function DurationTimePicker({
   // returns null (instead of throwing) when rendered outside a bottom sheet
   const sheetContext = useBottomSheetInternal(true);
   const useSheetInput = inBottomSheet ?? !!sheetContext;
-  const Input = useSheetInput ? BottomSheetTextInput : TextInput;
+  const Input = (
+    useSheetInput ? BottomSheetTextInput : TextInput
+  ) as typeof TextInput;
 
-  const inputRefs = useRef<(TextInput | null | undefined)[]>([]);
+  const inputRefs = useRef<(InputInstance | null)[]>([]);
   const lastIndex = UNITS.length - 1;
 
   const total = Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
@@ -81,7 +85,7 @@ export const DurationTimePicker = memo(function DurationTimePicker({
 
           <View className="items-center gap-1">
             <Input
-              ref={(el: TextInput | null | undefined) => {
+              ref={(el: InputInstance | null) => {
                 inputRefs.current[i] = el;
               }}
               value={pad(parts[u.field], u.size)}

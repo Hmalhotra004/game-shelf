@@ -173,7 +173,7 @@ const TimeBottomSheet = ({
           </Button>
 
           <Button
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={() => form.handleSubmit(onSubmit)()}
             disabled={isSaving}
           >
             <Text>{isSaving ? "Saving..." : submitLabel}</Text>

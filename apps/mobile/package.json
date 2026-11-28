@@ -21,7 +21,10 @@
     "patch": "npm version patch --no-git-tag-version",
     "minor": "npm version minor --no-git-tag-version",
     "major": "npm version major --no-git-tag-version",
-    "version:show": "node -p \"require('./package.json').version\""
+    "version:show": "node -p \"require('./package.json').version\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@better-auth/expo": "^1.7.5",

@@ -142,7 +142,7 @@ const SteamAccount = () => {
 
               <Button
                 disabled={isPending}
-                onPress={form.handleSubmit(onSubmit)}
+                onPress={() => form.handleSubmit(onSubmit)()}
               >
                 {isPending ? <Loader /> : <Text>Link account</Text>}
               </Button>

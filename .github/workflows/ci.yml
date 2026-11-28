@@ -62,6 +62,9 @@ jobs:
 
       # ---- Mobile ----
 
+      - name: Generate Expo types
+        run: pnpm --filter ./apps/mobile exec expo customize tsconfig.json
+
       - name: Mobile typecheck
         run: pnpm --filter ./apps/mobile exec tsc --noEmit
 

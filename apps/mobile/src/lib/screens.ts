@@ -30,6 +30,10 @@ export const SCREENS: Partial<Record<AppRoute, ScreenMeta>> = {
     title: "Edit Images",
     showAvatar: false,
   },
+  "/(collection)/[collectionId]/casual-sessions": {
+    title: "Casual Sessions",
+    showAvatar: false,
+  },
   "/(collection)/[collectionId]/manage-dlcs": {
     title: "Manage DLCs",
     showAvatar: false,

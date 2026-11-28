@@ -82,3 +82,39 @@ export async function verifyPlaythroughSession(
     res.status(500).json({ error: GenericErrorMessage });
   }
 }
+
+export async function verifyCasualSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const casualSessionId = req.params.casualSessionId as string;
+
+    if (!casualSessionId) {
+      return res.status(400).json({ error: "Casual Session is required" });
+    }
+
+    const userId = req.user.id;
+
+    const casualSession = await db.query.casualSession.findFirst({
+      where: (cs, { and, eq }) =>
+        and(eq(cs.id, casualSessionId), eq(cs.userId, userId)),
+    });
+
+    if (!casualSession) {
+      return res.status(404).json({ error: "Casual Session not found" });
+    }
+
+    req.casualSession = casualSession;
+
+    next();
+  } catch (err) {
+    console.error("verifyCasualSession middleware error:", err);
+    res.status(500).json({ error: GenericErrorMessage });
+  }
+}

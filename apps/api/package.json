@@ -16,7 +16,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:migrate:prod": "drizzle-kit migrate --config=drizzle.prod.config.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
