@@ -12,11 +12,13 @@ export const providerChartColorMap: Record<ProviderType, string> = {
   Steam: "oklch(27.9% 0.041 260.031)",
   Epic: "#000000",
   Physical: "#d97706",
+  XBOX: "#107C10",
 };
 
 export const platformChartColorMap: Record<PlatformType, string> = {
   PS: "#1447e6",
   PC: "oklch(27.9% 0.041 260.031)",
+  XBOX: "#107C10",
 };
 
 export const playthroughStatusChartColorMap: Record<
@@ -26,6 +28,7 @@ export const playthroughStatusChartColorMap: Record<
   Active: "#16a34a", // green-600
   "On Hold": "#eab308", // yellow-500
   Archived: "#6b7280", // gray-500
+  Completed: "#107C10",
 };
 
 export const statusChartColorMap: Record<CollectionStatusType, string> = {
