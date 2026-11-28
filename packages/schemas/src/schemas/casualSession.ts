@@ -59,6 +59,15 @@ export const updateCasualSessionSchema = z.object({
     .nullable(),
 });
 
+export const casualSessionTimeSchema = z.object({
+  playDate: createCasualSessionSchema.shape.playDate,
+  secondsPlayed: createCasualSessionSchema.shape.secondsPlayed,
+});
+
+export type CasualSessionTimeSchemaType = z.infer<
+  typeof casualSessionTimeSchema
+>;
+
 export type CreateCasualSessionSchemaType = z.infer<
   typeof createCasualSessionSchema
 >;

@@ -33,6 +33,7 @@ export default (baseUrl: string, app: Router) => {
   router.patch(
     "/:casualSessionId",
     authenticateUser,
+    verifyCasualSession,
     validateData(updateCasualSessionSchema),
     updateCasualSession,
   );

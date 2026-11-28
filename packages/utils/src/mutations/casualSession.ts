@@ -1,5 +1,6 @@
 import type { CasualSessionGetManyResponse } from "@repo/schemas/types/casualSession";
 import { CasualSessionQueryKeys } from "@repo/utils/queries/casualSession";
+import { CollectionQueryKeys } from "@repo/utils/queries/collection";
 import { StatsQueryKeys } from "@repo/utils/queries/stats";
 import { AxiosInstance } from "axios";
 
@@ -30,6 +31,9 @@ const invalidateAll = (queryClient: QueryClient) =>
     queryClient.invalidateQueries({ queryKey: StatsQueryKeys.all() }),
     queryClient.invalidateQueries({
       queryKey: CasualSessionQueryKeys.getManyAll(),
+    }),
+    queryClient.invalidateQueries({
+      queryKey: CollectionQueryKeys.getManyAll(),
     }),
   ]);
 

@@ -10,7 +10,7 @@ export const getCasualSessions = async (req: Request, res: Response) => {
     const userId = req.user!.id;
 
     const { gameType, limit, page, collectionId, dlcId } =
-      req.cleanQuery as CasualSessionListQuerySchemaType;
+      req.cleanBody as CasualSessionListQuerySchemaType;
 
     const where = and(
       eq(casualSession.userId, userId),
