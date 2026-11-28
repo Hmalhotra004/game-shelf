@@ -4,5 +4,4 @@ declare global {
   var pgPool: Pool | undefined;
 }
 
-export { };
-
+export {};
