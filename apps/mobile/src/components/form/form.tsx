@@ -14,7 +14,7 @@ import { OTP_LENGTH } from "@repo/utils/constants";
 import { Option } from "@repo/utils/lib/gameOptions";
 import type { ClassValue } from "clsx";
 import { formatDate } from "date-fns";
-import { ReactNode, useRef, useState } from "react";
+import { ComponentRef, ReactNode, useRef, useState } from "react";
 import { DurationTimePicker } from "./DurationTimePicker";
 import MultiSelectBottomSheet from "./MultiSelectBottomSheet";
 
@@ -262,7 +262,7 @@ export const FormOTPInput: FormControlFunc<{
   onComplete,
   ...props
 }) => {
-  const inputRef = useRef<RNTextInput>(null);
+  const inputRef = useRef<ComponentRef<typeof RNTextInput>>(null);
   const [focused, setFocused] = useState(false);
 
   return (
