@@ -62,6 +62,7 @@ export const updateCasualSessionSchema = z.object({
 export const casualSessionTimeSchema = z.object({
   playDate: createCasualSessionSchema.shape.playDate,
   secondsPlayed: createCasualSessionSchema.shape.secondsPlayed,
+  notes: createCasualSessionSchema.shape.notes,
 });
 
 export type CasualSessionTimeSchemaType = z.infer<

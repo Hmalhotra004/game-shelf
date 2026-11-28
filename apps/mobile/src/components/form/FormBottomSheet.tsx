@@ -61,7 +61,8 @@ type FormBottomSheetProps<
    * (e.g. "now"). Object values must be referentially stable (useMemo / module
    * constant), otherwise the form resets on every render.
    */
-  defaultValues: DefaultValues<TFieldValues> | (() => DefaultValues<TFieldValues>);
+  defaultValues:
+    DefaultValues<TFieldValues> | (() => DefaultValues<TFieldValues>);
 
   /** Render the fields; `form` is fully typed to this sheet's form. */
   children: (

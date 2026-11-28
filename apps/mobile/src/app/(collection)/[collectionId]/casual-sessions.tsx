@@ -10,10 +10,10 @@ import { Text } from "@/components/ui/text";
 import { useConfirmSheet } from "@/hooks/useConfirmSheet";
 import { api } from "@/lib/api";
 import { THEME } from "@/lib/theme";
-import { handleError, showToast } from "@/lib/utils";
+import { cn, handleError, showToast } from "@/lib/utils";
 import { useThemeStore } from "@/store/useThemeStore";
-import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { MAX_NOTES_CHARACTERS } from "@repo/schemas/schemas/playthrough";
 import type { CasualSessionGetManyItem } from "@repo/schemas/types/casualSession";
 import { GameType } from "@repo/schemas/types/index";
 import { betterTimeText, secondsToHMS } from "@repo/utils/lib/utils";
@@ -23,8 +23,13 @@ import { formatDate } from "date-fns";
 import { useLocalSearchParams } from "expo-router";
 import { PlusIcon, TrashIcon } from "lucide-react-native";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Control } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { Pressable, View } from "react-native";
+
+import {
+  BottomSheetTextInput,
+  type BottomSheetModal,
+} from "@gorhom/bottom-sheet";
 
 import {
   addCasualSessionMutationOptions,
@@ -45,6 +50,86 @@ import {
 
 const SESSION_ROW_HEIGHT = 48;
 
+const resolver = zodResolver(casualSessionTimeSchema);
+
+const getDefaults = (): CasualSessionTimeSchemaType => ({
+  playDate: new Date().toISOString(),
+  secondsPlayed: 0,
+  notes: null,
+});
+
+const SessionFields = ({
+  control,
+  disabled,
+}: {
+  control: Control<CasualSessionTimeSchemaType>;
+  disabled: boolean;
+}) => {
+  const theme = useThemeStore((s) => s.theme);
+
+  return (
+    <>
+      <FormDatePicker
+        control={control}
+        name="playDate"
+        label="Date"
+        disabled={disabled}
+      />
+
+      <FormTimePicker
+        control={control}
+        name="secondsPlayed"
+        label="Time played"
+        disabled={disabled}
+        inBottomSheet
+      />
+
+      <Controller
+        control={control}
+        name="notes"
+        render={({ field: { value, onChange, onBlur }, fieldState }) => (
+          <View className="gap-1.5">
+            <Text className="text-sm font-medium">Notes</Text>
+
+            <BottomSheetTextInput
+              value={value ?? ""}
+              onChangeText={(text) => onChange(text.length > 0 ? text : null)}
+              onBlur={onBlur}
+              multiline
+              editable={!disabled}
+              placeholder="Write your thoughts..."
+              placeholderTextColor={THEME[theme].mutedForeground}
+              textAlignVertical="top"
+              style={{
+                minHeight: 112,
+                borderRadius: 16,
+                padding: 12,
+                fontSize: 14,
+                color: THEME[theme].foreground,
+                backgroundColor: THEME[theme].muted,
+              }}
+            />
+
+            <View className="flex-row justify-between">
+              <Text className="flex-1 text-xs text-destructive">
+                {fieldState.error?.message ?? ""}
+              </Text>
+              <Text
+                className={cn(
+                  "text-xs text-muted-foreground",
+                  !!fieldState.error && "text-destructive",
+                )}
+              >
+                {(value ?? "").length}/{MAX_NOTES_CHARACTERS}
+              </Text>
+            </View>
+          </View>
+        )}
+      />
+    </>
+  );
+};
+
 const CasualSessions = () => {
   const { collectionId, dlcId } = useLocalSearchParams<{
     collectionId?: string;
@@ -62,37 +147,6 @@ const CasualSessions = () => {
 
   const gameType: GameType = dlcId ? "DLC" : "Game";
   const canAdd = !!(collectionId || dlcId);
-
-  const resolver = zodResolver(casualSessionTimeSchema);
-
-  const getDefaults = (): CasualSessionTimeSchemaType => ({
-    playDate: new Date().toISOString(),
-    secondsPlayed: 0,
-  });
-
-  const TimeFields = ({
-    control,
-    disabled,
-  }: {
-    control: Control<CasualSessionTimeSchemaType>;
-    disabled: boolean;
-  }) => (
-    <>
-      <FormDatePicker
-        control={control}
-        name="playDate"
-        label="Date"
-        disabled={disabled}
-      />
-      <FormTimePicker
-        control={control}
-        name="secondsPlayed"
-        label="Time played"
-        disabled={disabled}
-        inBottomSheet
-      />
-    </>
-  );
 
   const filters = useMemo(
     () => ({
@@ -132,6 +186,7 @@ const CasualSessions = () => {
         ? {
             playDate: new Date(editingSession.playDate).toISOString(),
             secondsPlayed: editingSession.secondsPlayed,
+            notes: editingSession.notes ?? null,
           }
         : undefined,
     [editingSession],
@@ -188,7 +243,6 @@ const CasualSessions = () => {
   async function onSubmitSession(values: CasualSessionTimeSchemaType) {
     await createSession.mutateAsync({
       ...values,
-      notes: null,
       gameType,
       collectionId: dlcId ? undefined : (collectionId ?? undefined),
       dlcId: dlcId ?? undefined,
@@ -205,7 +259,6 @@ const CasualSessions = () => {
     if (!editingSession) return;
     await updateSession.mutateAsync({
       id: editingSession.id,
-      notes: editingSession.notes ?? null, // keeps existing notes
       ...values,
     });
     editSessionSheetRef.current?.dismiss();
@@ -347,7 +400,7 @@ const CasualSessions = () => {
         onCancel={() => addTimeSheetRef.current?.dismiss()}
       >
         {(form) => (
-          <TimeFields
+          <SessionFields
             control={form.control}
             disabled={createSession.isPending}
           />
@@ -357,7 +410,7 @@ const CasualSessions = () => {
       <FormBottomSheet<CasualSessionTimeSchemaType>
         sheetRef={editSessionSheetRef}
         title="Edit Session"
-        description="Update the date or time for this session."
+        description="Update the date, time or notes for this session."
         submitLabel="Save Changes"
         resolver={resolver}
         defaultValues={editInitialValues ?? getDefaults}
@@ -367,7 +420,7 @@ const CasualSessions = () => {
         onDismissed={() => setEditingSession(null)}
       >
         {(form) => (
-          <TimeFields
+          <SessionFields
             control={form.control}
             disabled={updateSession.isPending}
           />
